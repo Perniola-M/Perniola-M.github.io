@@ -1,20 +1,4 @@
-Come accennato in precedenza, non è possibile generare un file con estensione `.html` direttamente nel pannello Studio a causa dei vincoli sui formati scaricabili. Tuttavia, ho progettato e scritto per te il **codice completo di un sito web interattivo a pagina singola (Single Page Application)**, moderno, responsive e già funzionante.
-
-Per utilizzarlo, basta **copiare tutto il codice sottostante, incollarlo in un file di testo (ad esempio con Blocco Note) e salvarlo come `index.html`**: facendoci doppio clic sopra si aprirà direttamente nel tuo browser (Chrome, Safari, Edge o Firefox).
-
-Questo sito include diverse **funzionalità interattive**:
-1. **Calcolatore interattivo delle tratte sanitarie**: permette al visitatore di selezionare gli ospedali (Verona, Bologna, Torino, Pisa, Bari) e calcolare in tempo reale chilometri, ore di guida per Anna e impatto dei costi.
-2. **Calcolatore di donazione dinamico ("Regala un KM di Speranza")**: uno slider interattivo che mostra immediatamente l'equivalente concreto della donazione in "chilometri sicuri" percorsi dal van.
-3. **Schede cliniche e familiari a schede/filtri**: per consultare la storia delle tre generazioni (Michele e Anna, i tre figli, i nipoti) e la scheda sulla sindrome di Axenfeld senza appesantire la lettura.
-4. **Modulo di contatto adattivo**: i campi cambiano a seconda che a scrivere sia un privato, una concessionaria, un'azienda o un Lions Club.
-5. **Design caldo e incentrato sul sorriso**: grafica accogliente in Tailwind CSS, priva di pietismo e ricca di speranza e dignità.
-
----
-
-### Codice HTML Interattivo (`index.html`)
-
-```html
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="it" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
@@ -38,6 +22,36 @@ Questo sito include diverse **funzionalità interattive**:
     </script>
     <!-- Font Awesome per le icone -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        html, body { overflow-x: hidden; }
+        * { box-sizing: border-box; }
+        @media (max-width: 640px) {
+            nav .h-20 { height: auto; min-height: 4.25rem; padding-top: .65rem; padding-bottom: .65rem; }
+            nav .space-x-3 > :not([hidden]) ~ :not([hidden]) { margin-left: .65rem; }
+            nav .text-xl { font-size: 1rem; line-height: 1.15rem; }
+            nav .text-xs { font-size: .66rem; line-height: .9rem; }
+            .mobile-nav-cta { padding: .6rem .8rem; font-size: .78rem; white-space: nowrap; }
+            header { padding-top: 3rem !important; padding-bottom: 3.5rem !important; }
+            h1 { font-size: 2.15rem !important; line-height: 1.08 !important; }
+            h2 { font-size: 1.85rem !important; line-height: 1.15 !important; }
+            h3 { font-size: 1.35rem !important; line-height: 1.2 !important; }
+            section { padding-top: 3.5rem !important; padding-bottom: 3.5rem !important; }
+            .mobile-panel { border-radius: 1.25rem !important; padding: 1.15rem !important; }
+            .tab-btn { width: 100%; padding: .85rem 1rem !important; border-radius: 1rem !important; }
+            .trip-option { align-items: flex-start !important; gap: .75rem; }
+            .trip-option > span { align-self: flex-start; margin-left: 2rem; white-space: normal; }
+            .trip-option .font-bold { line-height: 1.2; }
+            #total-km, #donation-km { font-size: 2.4rem !important; line-height: 1; }
+            #donation-km + span { font-size: 1.35rem !important; }
+            header span.inline-flex { max-width: 100%; white-space: normal; justify-content: center; }
+        }
+        @media (max-width: 380px) {
+            .mobile-nav-cta span { display: none; }
+            .mobile-nav-cta { width: 2.75rem; height: 2.75rem; padding: 0 !important; justify-content: center; border-radius: 9999px; }
+            nav .text-xl { font-size: .92rem; }
+            nav .text-xs { font-size: .6rem; }
+        }
+    </style>
 </head>
 <body class="bg-amber-50/30 text-slate-800 font-sans antialiased selection:bg-amber-500 selection:text-white">
 
@@ -61,7 +75,7 @@ Questo sito include diverse **funzionalità interattive**:
                     <a href="#contatti" class="hover:text-amber-600 transition-colors">Contatti</a>
                 </div>
                 <div>
-                    <a href="#calcolatore-dona" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-5 py-2.5 rounded-full font-bold text-sm transition-all shadow-md hover:shadow-lg inline-flex items-center space-x-2">
+                    <a href="#calcolatore-dona" class="mobile-nav-cta bg-amber-500 hover:bg-amber-600 text-slate-950 px-5 py-2.5 rounded-full font-bold text-sm transition-all shadow-md hover:shadow-lg inline-flex items-center space-x-2">
                         <span>Sostienici Ora</span>
                         <i class="fa-solid fa-heart text-rose-600"></i>
                     </a>
@@ -97,7 +111,7 @@ Questo sito include diverse **funzionalità interattive**:
     </header>
 
     <!-- SEZIONE INTERATTIVA: LA FAMIGLIA (TABS/SCHEDE) -->
-    <section id="storia" class="py-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="storia" class="py-16 sm:py-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-3xl mx-auto mb-12">
             <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Chi siamo: La nostra storia a tappe</h2>
             <div class="w-16 h-1.5 bg-amber-500 mx-auto mt-4 rounded-full"></div>
@@ -123,7 +137,7 @@ Questo sito include diverse **funzionalità interattive**:
         </div>
 
         <!-- Contenuti Tab -->
-        <div class="bg-white rounded-3xl p-8 sm:p-12 border border-amber-100 shadow-sm min-h-[380px] transition-all">
+        <div class="mobile-panel bg-white rounded-3xl p-5 sm:p-12 border border-amber-100 shadow-sm min-h-[380px] transition-all">
             
             <!-- Tab 1: Michele e Anna -->
             <div id="tab-content-gen1" class="tab-content">
@@ -142,7 +156,7 @@ Questo sito include diverse **funzionalità interattive**:
                             <em>"Non chiediamo una macchina di lusso. Cerchiamo solo un mezzo sicuro che non si fermi in autostrada di notte mentre Anna guida con i nostri cari a bordo."</em>
                         </div>
                     </div>
-                    <div class="bg-slate-900 text-white p-8 rounded-3xl">
+                    <div class="mobile-panel bg-slate-900 text-white p-5 sm:p-8 rounded-3xl">
                         <h4 class="font-bold text-amber-400 mb-4 flex items-center">
                             <i class="fa-solid fa-id-card mr-2"></i> Ruoli Chiave
                         </h4>
@@ -168,7 +182,7 @@ Questo sito include diverse **funzionalità interattive**:
             <div id="tab-content-gen2" class="tab-content hidden">
                 <h3 class="text-2xl font-bold text-slate-900 mb-6">I Tre Figli: Nicola, Francesco e Mattia</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200/80">
+                    <div class="mobile-panel p-5 sm:p-6 bg-slate-50 rounded-2xl border border-slate-200/80">
                         <div class="w-10 h-10 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center font-bold mb-4">
                             <i class="fa-solid fa-bone"></i>
                         </div>
@@ -179,7 +193,7 @@ Questo sito include diverse **funzionalità interattive**:
                         </p>
                     </div>
 
-                    <div class="p-6 bg-amber-50/50 rounded-2xl border border-amber-200">
+                    <div class="mobile-panel p-5 sm:p-6 bg-amber-50/50 rounded-2xl border border-amber-200">
                         <div class="w-10 h-10 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center font-bold mb-4">
                             <i class="fa-solid fa-kit-medical"></i>
                         </div>
@@ -190,7 +204,7 @@ Questo sito include diverse **funzionalità interattive**:
                         </p>
                     </div>
 
-                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200/80">
+                    <div class="mobile-panel p-5 sm:p-6 bg-slate-50 rounded-2xl border border-slate-200/80">
                         <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center font-bold mb-4">
                             <i class="fa-solid fa-eye"></i>
                         </div>
@@ -207,7 +221,7 @@ Questo sito include diverse **funzionalità interattive**:
             <div id="tab-content-gen3" class="tab-content hidden">
                 <h3 class="text-2xl font-bold text-slate-900 mb-6">La Terza Generazione: I Sei Nipoti</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="p-6 bg-rose-50/50 rounded-3xl border border-rose-100">
+                    <div class="mobile-panel p-5 sm:p-6 bg-rose-50/50 rounded-3xl border border-rose-100">
                         <div class="flex items-center space-x-3 mb-4">
                             <span class="p-3 bg-rose-500 text-white rounded-2xl"><i class="fa-solid fa-child"></i></span>
                             <div>
@@ -220,7 +234,7 @@ Questo sito include diverse **funzionalità interattive**:
                         </p>
                     </div>
 
-                    <div class="p-6 bg-sky-50/50 rounded-3xl border border-sky-100">
+                    <div class="mobile-panel p-5 sm:p-6 bg-sky-50/50 rounded-3xl border border-sky-100">
                         <div class="flex items-center space-x-3 mb-4">
                             <span class="p-3 bg-sky-500 text-white rounded-2xl"><i class="fa-solid fa-child-reaching"></i></span>
                             <div>
@@ -264,9 +278,9 @@ Questo sito include diverse **funzionalità interattive**:
     </section>
 
     <!-- SEZIONE INTERATTIVA 2: CALCOLATORE TRATTE SANITARIE -->
-    <section id="calcolatore-viaggi" class="py-20 bg-slate-900 text-white">
+    <section id="calcolatore-viaggi" class="py-16 sm:py-20 bg-slate-900 text-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
+            <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
                 <span class="text-amber-400 font-bold uppercase tracking-wider text-xs">Simulatore Interattivo</span>
                 <h2 class="text-3xl sm:text-4xl font-extrabold mt-2">La Mappa dei Viaggi di Anna</h2>
                 <p class="mt-4 text-slate-300">
@@ -277,11 +291,11 @@ Questo sito include diverse **funzionalità interattive**:
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 
                 <!-- Selettore Destinazioni -->
-                <div class="lg:col-span-7 space-y-4">
+                <div class="lg:col-span-7 space-y-3 sm:space-y-4">
                     <div class="text-sm font-semibold text-slate-300 mb-2">Seleziona i viaggi da includere nel calcolo:</div>
                     
                     <!-- Destinazione 1: Verona -->
-                    <label class="flex items-center justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
+                    <label class="trip-option flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
                         <div class="flex items-center space-x-3">
                             <input type="checkbox" checked value="1800" data-hours="18" data-patient="Michele (4 anni) - Oculistica pediatrica in narcosi" onchange="calculateTrips()" class="trip-checkbox w-5 h-5 accent-amber-500 rounded">
                             <div>
@@ -293,7 +307,7 @@ Questo sito include diverse **funzionalità interattive**:
                     </label>
 
                     <!-- Destinazione 2: Bologna -->
-                    <label class="flex items-center justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
+                    <label class="trip-option flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
                         <div class="flex items-center space-x-3">
                             <input type="checkbox" checked value="1400" data-hours="14" data-patient="Nicola - Follow-up sarcoma Rizzoli" onchange="calculateTrips()" class="trip-checkbox w-5 h-5 accent-amber-500 rounded">
                             <div>
@@ -305,7 +319,7 @@ Questo sito include diverse **funzionalità interattive**:
                     </label>
 
                     <!-- Destinazione 3: Torino -->
-                    <label class="flex items-center justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
+                    <label class="trip-option flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
                         <div class="flex items-center space-x-3">
                             <input type="checkbox" checked value="2100" data-hours="21" data-patient="Francesco - Oncologia Molinette" onchange="calculateTrips()" class="trip-checkbox w-5 h-5 accent-amber-500 rounded">
                             <div>
@@ -317,7 +331,7 @@ Questo sito include diverse **funzionalità interattive**:
                     </label>
 
                     <!-- Destinazione 4: Pisa -->
-                    <label class="flex items-center justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
+                    <label class="trip-option flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
                         <div class="flex items-center space-x-3">
                             <input type="checkbox" checked value="1600" data-hours="16" data-patient="Francesco - Controlli endocrinologici Cisanello" onchange="calculateTrips()" class="trip-checkbox w-5 h-5 accent-amber-500 rounded">
                             <div>
@@ -329,7 +343,7 @@ Questo sito include diverse **funzionalità interattive**:
                     </label>
 
                     <!-- Destinazione 5: Bari -->
-                    <label class="flex items-center justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
+                    <label class="trip-option flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
                         <div class="flex items-center space-x-3">
                             <input type="checkbox" checked value="200" data-hours="3" data-patient="Famiglia - Visite specialistiche Bari" onchange="calculateTrips()" class="trip-checkbox w-5 h-5 accent-amber-500 rounded">
                             <div>
@@ -342,7 +356,7 @@ Questo sito include diverse **funzionalità interattive**:
                 </div>
 
                 <!-- Risultato del Calcolo -->
-                <div class="lg:col-span-5 bg-slate-800/90 border border-amber-500/40 rounded-3xl p-8 sticky top-28 shadow-2xl">
+                <div class="mobile-panel lg:col-span-5 bg-slate-800/90 border border-amber-500/40 rounded-3xl p-5 sm:p-8 lg:sticky lg:top-28 shadow-2xl">
                     <h3 class="text-xl font-bold text-white mb-6 flex items-center">
                         <i class="fa-solid fa-gauge-high text-amber-400 mr-3"></i>Riepilogo del Viaggio
                     </h3>
@@ -376,8 +390,8 @@ Questo sito include diverse **funzionalità interattive**:
     </section>
 
     <!-- SEZIONE INTERATTIVA 3: CALCOLATORE DI DONAZIONE ("REGALA UN KM") -->
-    <section id="calcolatore-dona" class="py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white rounded-3xl p-8 sm:p-14 border border-amber-200/70 shadow-xl text-center relative overflow-hidden">
+    <section id="calcolatore-dona" class="py-16 sm:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mobile-panel bg-white rounded-3xl p-5 sm:p-14 border border-amber-200/70 shadow-xl text-center relative overflow-hidden">
             <div class="max-w-2xl mx-auto">
                 <span class="text-xs font-bold text-amber-600 uppercase tracking-widest bg-amber-50 px-4 py-1.5 rounded-full border border-amber-200">
                     Solidarietà Tangibile
@@ -388,7 +402,7 @@ Questo sito include diverse **funzionalità interattive**:
                 </p>
 
                 <!-- Slider Interattivo -->
-                <div class="my-10">
+                <div class="my-8 sm:my-10">
                     <input type="range" min="10" max="500" step="10" value="50" id="km-slider" oninput="updateDonation(this.value)" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500">
                     
                     <div class="mt-6 flex justify-center items-baseline space-x-2">
@@ -402,7 +416,7 @@ Questo sito include diverse **funzionalità interattive**:
                 </div>
 
                 <!-- Box Equivalente Tangibile -->
-                <div class="p-6 bg-amber-50/70 rounded-2xl border border-amber-200 text-sm text-slate-700 mb-8" id="donation-desc">
+                <div class="mobile-panel p-5 sm:p-6 bg-amber-50/70 rounded-2xl border border-amber-200 text-sm text-slate-700 mb-8" id="donation-desc">
                     🎉 Con questo gesto copri il tragitto e il carburante per accompagnare il piccolo Michele alle prime tappe del suo viaggio verso Verona.
                 </div>
 
@@ -420,7 +434,7 @@ Questo sito include diverse **funzionalità interattive**:
     </section>
 
     <!-- SEZIONE FORM DI CONTATTO ADATTIVO -->
-    <section id="contatti" class="bg-slate-900 text-white py-24 border-t border-slate-800">
+    <section id="contatti" class="bg-slate-900 text-white py-16 sm:py-24 border-t border-slate-800">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-16">
                 <h2 class="text-3xl font-extrabold">Parla direttamente con noi</h2>
@@ -429,7 +443,7 @@ Questo sito include diverse **funzionalità interattive**:
                 </p>
             </div>
 
-            <form class="bg-slate-800/80 p-8 sm:p-10 rounded-3xl border border-slate-700 space-y-6" onsubmit="handleFormSubmit(event)">
+            <form class="mobile-panel bg-slate-800/80 p-5 sm:p-10 rounded-3xl border border-slate-700 space-y-6" onsubmit="handleFormSubmit(event)">
                 
                 <!-- Tipo di Sostenitore -->
                 <div>
@@ -559,11 +573,3 @@ Questo sito include diverse **funzionalità interattive**:
 
 </body>
 </html>
-```
-
----
-
-### Cosa fa questo file una volta aperto:
-* **Tutti i calcoli avvengono in tempo reale**: deselezionando o selezionando le caselle dei viaggi verso Verona, Torino, Bologna o Pisa, il totale dei chilometri e delle ore di guida di Anna si aggiorna istantaneamente.
-* **Lo slider delle donazioni interagisce dal vivo**: muovendo la barra, l'utente vede variare i chilometri "adottati", la stima in euro e un messaggio personalizzato che spiega l'impatto reale di quella cifra.
-* **Le schede informative** permettono a chi visita il sito di approfondire la parte medica o biografica senza dover scorrere una pagina infinita.
