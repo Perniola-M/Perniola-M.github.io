@@ -1,0 +1,569 @@
+Come accennato in precedenza, non è possibile generare un file con estensione `.html` direttamente nel pannello Studio a causa dei vincoli sui formati scaricabili. Tuttavia, ho progettato e scritto per te il **codice completo di un sito web interattivo a pagina singola (Single Page Application)**, moderno, responsive e già funzionante.
+
+Per utilizzarlo, basta **copiare tutto il codice sottostante, incollarlo in un file di testo (ad esempio con Blocco Note) e salvarlo come `index.html`**: facendoci doppio clic sopra si aprirà direttamente nel tuo browser (Chrome, Safari, Edge o Firefox).
+
+Questo sito include diverse **funzionalità interattive**:
+1. **Calcolatore interattivo delle tratte sanitarie**: permette al visitatore di selezionare gli ospedali (Verona, Bologna, Torino, Pisa, Bari) e calcolare in tempo reale chilometri, ore di guida per Anna e impatto dei costi.
+2. **Calcolatore di donazione dinamico ("Regala un KM di Speranza")**: uno slider interattivo che mostra immediatamente l'equivalente concreto della donazione in "chilometri sicuri" percorsi dal van.
+3. **Schede cliniche e familiari a schede/filtri**: per consultare la storia delle tre generazioni (Michele e Anna, i tre figli, i nipoti) e la scheda sulla sindrome di Axenfeld senza appesantire la lettura.
+4. **Modulo di contatto adattivo**: i campi cambiano a seconda che a scrivere sia un privato, una concessionaria, un'azienda o un Lions Club.
+5. **Design caldo e incentrato sul sorriso**: grafica accogliente in Tailwind CSS, priva di pietismo e ricca di speranza e dignità.
+
+---
+
+### Codice HTML Interattivo (`index.html`)
+
+```html
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un Van per i Perniola - La Speranza Viaggia in 7</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0f172a',
+                        accent: '#f59e0b', /* Ambra caldo */
+                        accentHover: '#d97706',
+                        softbg: '#fffdfa'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome per le icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-amber-50/30 text-slate-800 font-sans antialiased selection:bg-amber-500 selection:text-white">
+
+    <!-- NAVBAR -->
+    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur shadow-sm border-b border-amber-100/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <div class="bg-amber-500 text-slate-950 p-2.5 rounded-2xl shadow-md">
+                        <i class="fa-solid fa-van-shuttle text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold text-slate-900 tracking-tight block leading-tight">Famiglia Perniola</span>
+                        <span class="text-xs font-semibold text-amber-600 tracking-wide uppercase">Un Van per la Speranza</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-8 font-medium text-slate-600 text-sm">
+                    <a href="#storia" class="hover:text-amber-600 transition-colors">Chi Siamo</a>
+                    <a href="#calcolatore-viaggi" class="hover:text-amber-600 transition-colors">La Mappa dei Viaggi</a>
+                    <a href="#calcolatore-dona" class="hover:text-amber-600 transition-colors">Dona un KM</a>
+                    <a href="#contatti" class="hover:text-amber-600 transition-colors">Contatti</a>
+                </div>
+                <div>
+                    <a href="#calcolatore-dona" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-5 py-2.5 rounded-full font-bold text-sm transition-all shadow-md hover:shadow-lg inline-flex items-center space-x-2">
+                        <span>Sostienici Ora</span>
+                        <i class="fa-solid fa-heart text-rose-600"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="relative overflow-hidden bg-slate-900 text-white py-20 lg:py-28 px-4 sm:px-6 lg:px-8">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:20px_20px]"></div>
+        <div class="relative max-w-4xl mx-auto text-center">
+            <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-300 border border-amber-500/20 mb-6 uppercase tracking-wider">
+                <i class="fa-solid fa-location-dot mr-2"></i> Taranto • Appello di Solidarietà e Mobilità
+            </span>
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                Mettiamo le ruote alla nostra <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-100">voglia di sorridere</span>
+            </h1>
+            <p class="mt-6 text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+                Tre generazioni unite contro la sindrome di Axenfeld, il glaucoma e prove oncologiche. Migliaia di chilometri per curarsi, affidati ad <strong>Anna</strong>, l’unica guidatrice di casa. Aiutaci a regalare loro un van sicuro a 7 posti.
+            </p>
+            <div class="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
+                <a href="#calcolatore-dona" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-slate-950 px-8 py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-amber-500/20 inline-flex justify-center items-center space-x-3">
+                    <i class="fa-solid fa-gas-pump"></i>
+                    <span>Regala un Chilometro</span>
+                </a>
+                <a href="#calcolatore-viaggi" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 px-8 py-4 rounded-2xl font-semibold text-lg transition-all inline-flex justify-center items-center space-x-2">
+                    <i class="fa-solid fa-route text-amber-400"></i>
+                    <span>Esplora i Viaggi Sanitari</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- SEZIONE INTERATTIVA: LA FAMIGLIA (TABS/SCHEDE) -->
+    <section id="storia" class="py-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Chi siamo: La nostra storia a tappe</h2>
+            <div class="w-16 h-1.5 bg-amber-500 mx-auto mt-4 rounded-full"></div>
+            <p class="mt-4 text-slate-600 text-lg">
+                Clicca sulle schede per scoprire la storia dei singoli componenti della nostra famiglia. Affrontiamo ogni diagnosi con trasparenza, forza d'animo e sostegno reciproco.
+            </p>
+        </div>
+
+        <!-- Selettore Tab -->
+        <div class="flex flex-wrap justify-center gap-3 mb-10">
+            <button onclick="switchTab('gen1')" id="tab-btn-gen1" class="tab-btn px-6 py-3 rounded-2xl font-bold text-sm transition-all bg-amber-500 text-slate-950 shadow-md">
+                1ª Gen: Michele & Anna
+            </button>
+            <button onclick="switchTab('gen2')" id="tab-btn-gen2" class="tab-btn px-6 py-3 rounded-2xl font-bold text-sm transition-all bg-white text-slate-600 hover:bg-amber-50 border border-slate-200">
+                2ª Gen: I Tre Figli
+            </button>
+            <button onclick="switchTab('gen3')" id="tab-btn-gen3" class="tab-btn px-6 py-3 rounded-2xl font-bold text-sm transition-all bg-white text-slate-600 hover:bg-amber-50 border border-slate-200">
+                3ª Gen: I Piccoli Nipoti
+            </button>
+            <button onclick="switchTab('sindrome')" id="tab-btn-sindrome" class="tab-btn px-6 py-3 rounded-2xl font-bold text-sm transition-all bg-white text-slate-600 hover:bg-amber-50 border border-slate-200">
+                Scheda Clinica: Sindrome di Axenfeld
+            </button>
+        </div>
+
+        <!-- Contenuti Tab -->
+        <div class="bg-white rounded-3xl p-8 sm:p-12 border border-amber-100 shadow-sm min-h-[380px] transition-all">
+            
+            <!-- Tab 1: Michele e Anna -->
+            <div id="tab-content-gen1" class="tab-content">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <span class="text-xs font-bold text-amber-600 uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full">Il Cuore della Casa</span>
+                        <h3 class="text-2xl font-bold text-slate-900 mt-3 mb-4">Michele Perniola (64 anni) & Anna Albano</h3>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            Sposati da 40 anni, Michele e Anna sono l'anima della famiglia. Michele è affetto sin dalla nascita da <strong>glaucoma congenito bilaterale</strong> che nel tempo lo ha portato alla <strong>cecità assoluta</strong>.
+                        </p>
+                        <p class="text-slate-600 leading-relaxed mb-6">
+                            <strong>Anna è l'unica persona abilitata alla guida in tutta la famiglia</strong>: si carica sulle spalle la responsabilità di guidare per migliaia di chilometri da sola, assistendo marito, figli convalescenti e nipotini.
+                        </p>
+                        <div class="p-4 bg-amber-50/60 rounded-2xl border border-amber-200/50 text-sm text-slate-700">
+                            <i class="fa-solid fa-quote-left text-amber-500 mr-2"></i>
+                            <em>"Non chiediamo una macchina di lusso. Cerchiamo solo un mezzo sicuro che non si fermi in autostrada di notte mentre Anna guida con i nostri cari a bordo."</em>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 text-white p-8 rounded-3xl">
+                        <h4 class="font-bold text-amber-400 mb-4 flex items-center">
+                            <i class="fa-solid fa-id-card mr-2"></i> Ruoli Chiave
+                        </h4>
+                        <ul class="space-y-4 text-sm text-slate-300">
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-circle-check text-amber-400 mt-1 mr-3"></i>
+                                <span><strong>Michele:</strong> Colonna morale, portavoce della famiglia e ideatore dell'appello solidale.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-circle-check text-amber-400 mt-1 mr-3"></i>
+                                <span><strong>Anna:</strong> Unica autista per tratte autostradali fino a 1.000 km e instancabile caregiver.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-circle-check text-amber-400 mt-1 mr-3"></i>
+                                <span><strong>Obiettivo comune:</strong> La sicurezza dei bambini e la continuità delle cure oncologiche dei figli.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Seconda Generazione -->
+            <div id="tab-content-gen2" class="tab-content hidden">
+                <h3 class="text-2xl font-bold text-slate-900 mb-6">I Tre Figli: Nicola, Francesco e Mattia</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200/80">
+                        <div class="w-10 h-10 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center font-bold mb-4">
+                            <i class="fa-solid fa-bone"></i>
+                        </div>
+                        <h4 class="font-bold text-lg text-slate-900 mb-1">Nicola (Primogenito)</h4>
+                        <p class="text-xs text-sky-600 font-semibold mb-3">Istituto Rizzoli di Bologna</p>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Colpito 6 anni fa da un <strong>sarcoma maligno al quadricipite sinistro</strong>. Operato a Bologna con asportazione radicale di 12 cm di muscolo. Sottoposto a controlli periodici (TAC e risonanze) ogni 8-12 mesi.
+                        </p>
+                    </div>
+
+                    <div class="p-6 bg-amber-50/50 rounded-2xl border border-amber-200">
+                        <div class="w-10 h-10 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center font-bold mb-4">
+                            <i class="fa-solid fa-kit-medical"></i>
+                        </div>
+                        <h4 class="font-bold text-lg text-slate-900 mb-1">Francesco (35 anni)</h4>
+                        <p class="text-xs text-amber-700 font-semibold mb-3">Torino (Molinette) e Pisa (Cisanello)</p>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Quadro clinico severo: asportazione/sviscerazione dell'occhio destro a seguito di complicanza da glaucoma; <strong>seminoma testicolare</strong> operato a Torino con controlli decisi a ottobre; <strong>carcinoma tiroideo</strong> con tiroidectomia totale e 23 linfonodi asportati a Pisa.
+                        </p>
+                    </div>
+
+                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200/80">
+                        <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center font-bold mb-4">
+                            <i class="fa-solid fa-eye"></i>
+                        </div>
+                        <h4 class="font-bold text-lg text-slate-900 mb-1">Mattia (Terzogenito)</h4>
+                        <p class="text-xs text-emerald-600 font-semibold mb-3">Oculistica specialistica</p>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Affetto da <strong>glaucoma congenito</strong> ereditario. Ha subìto molteplici interventi chirurgici; la pressione oculare è attualmente compensata grazie all'uso costante di colliri e a periodiche visite di controllo.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Terza Generazione -->
+            <div id="tab-content-gen3" class="tab-content hidden">
+                <h3 class="text-2xl font-bold text-slate-900 mb-6">La Terza Generazione: I Sei Nipoti</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="p-6 bg-rose-50/50 rounded-3xl border border-rose-100">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <span class="p-3 bg-rose-500 text-white rounded-2xl"><i class="fa-solid fa-child"></i></span>
+                            <div>
+                                <h4 class="font-bold text-lg text-slate-900">Michele (4 anni)</h4>
+                                <span class="text-xs font-semibold text-rose-600">Figlio di Francesco • Ospedale Borgo Roma, Verona</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Gli è stato diagnosticato il <strong>glaucoma congenito bilaterale</strong>. Per salvare la vista ed esaminare accuratamente le fibre del nervo ottico, il piccolo viene sottoposto a controlli periodici specialistici <strong>in narcosi (anestesia generale) a Verona</strong> ogni 6–8 mesi.
+                        </p>
+                    </div>
+
+                    <div class="p-6 bg-sky-50/50 rounded-3xl border border-sky-100">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <span class="p-3 bg-sky-500 text-white rounded-2xl"><i class="fa-solid fa-child-reaching"></i></span>
+                            <div>
+                                <h4 class="font-bold text-lg text-slate-900">Samuel (6 anni)</h4>
+                                <span class="text-xs font-semibold text-sky-600">Figlio di Mattia • Chirurgia Pediatrica</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Operato per ben due volte all'età di 2 anni per una malformazione congenita all'uretra (<strong>ipospadia</strong>) legata alla sindrome genetica di famiglia. Attualmente sotto costante sorveglianza specialistica nella crescita.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Sindrome Axenfeld -->
+            <div id="tab-content-sindrome" class="tab-content hidden">
+                <div class="max-w-3xl">
+                    <span class="text-xs font-bold text-amber-700 uppercase tracking-widest bg-amber-100 px-3 py-1 rounded-full">Nota Clinica e Scientifica</span>
+                    <h3 class="text-2xl font-bold text-slate-900 mt-3 mb-4">La Sindrome di Axenfeld (Axenfeld-Rieger)</h3>
+                    <p class="text-slate-600 leading-relaxed mb-4 text-sm">
+                        La radice comune di molte delle patologie che colpiscono la famiglia Perniola è riconducibile alla <strong>Sindrome di Axenfeld</strong>, una rara condizione a trasmissione autosomica dominante caratterizzata da disgenesia del segmento anteriore dell'occhio.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                            <h5 class="font-bold text-slate-900 text-sm mb-1"><i class="fa-solid fa-eye mr-2 text-amber-500"></i>Oculare</h5>
+                            <p class="text-xs text-slate-500">Ipertensione endoculare cronica e glaucoma congenito giovanile ad alto rischio di cecità.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                            <h5 class="font-bold text-slate-900 text-sm mb-1"><i class="fa-solid fa-mars mr-2 text-sky-500"></i>Urologico</h5>
+                            <p class="text-xs text-slate-500">Alterazioni nello sviluppo dell'apparato genito-urinario (es. ipospadia pediatrica).</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                            <h5 class="font-bold text-slate-900 text-sm mb-1"><i class="fa-solid fa-heart-pulse mr-2 text-rose-500"></i>Cardiologico</h5>
+                            <p class="text-xs text-slate-500">Possibile suscettibilità ad anomalie cardiache e valvolari monitorate nel tempo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SEZIONE INTERATTIVA 2: CALCOLATORE TRATTE SANITARIE -->
+    <section id="calcolatore-viaggi" class="py-20 bg-slate-900 text-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-amber-400 font-bold uppercase tracking-wider text-xs">Simulatore Interattivo</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold mt-2">La Mappa dei Viaggi di Anna</h2>
+                <p class="mt-4 text-slate-300">
+                    Seleziona le destinazioni sanitarie della famiglia Perniola con partenza da <strong>Taranto</strong> per calcolare l'impegno chilometrico e le ore di guida sostenute da Anna.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Selettore Destinazioni -->
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="text-sm font-semibold text-slate-300 mb-2">Seleziona i viaggi da includere nel calcolo:</div>
+                    
+                    <!-- Destinazione 1: Verona -->
+                    <label class="flex items-center justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" checked value="1800" data-hours="18" data-patient="Michele (4 anni) - Oculistica pediatrica in narcosi" onchange="calculateTrips()" class="trip-checkbox w-5 h-5 accent-amber-500 rounded">
+                            <div>
+                                <div class="font-bold text-white">Taranto ➔ Verona (Borgo Roma)</div>
+                                <div class="text-xs text-slate-400">Michele (4 anni) • Controlli glaucoma in narcosi</div>
+                            </div>
+                        </div>
+                        <span class="font-bold text-amber-400 text-sm">~1.800 km A/R</span>
+                    </label>
+
+                    <!-- Destinazione 2: Bologna -->
+                    <label class="flex items-center justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" checked value="1400" data-hours="14" data-patient="Nicola - Follow-up sarcoma Rizzoli" onchange="calculateTrips()" class="trip-checkbox w-5 h-5 accent-amber-500 rounded">
+                            <div>
+                                <div class="font-bold text-white">Taranto ➔ Bologna (Ist. Rizzoli)</div>
+                                <div class="text-xs text-slate-400">Nicola • Follow-up sarcoma al quadricipite</div>
+                            </div>
+                        </div>
+                        <span class="font-bold text-amber-400 text-sm">~1.400 km A/R</span>
+                    </label>
+
+                    <!-- Destinazione 3: Torino -->
+                    <label class="flex items-center justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" checked value="2100" data-hours="21" data-patient="Francesco - Oncologia Molinette" onchange="calculateTrips()" class="trip-checkbox w-5 h-5 accent-amber-500 rounded">
+                            <div>
+                                <div class="font-bold text-white">Taranto ➔ Torino (Molinette)</div>
+                                <div class="text-xs text-slate-400">Francesco • Controlli oncologici seminoma</div>
+                            </div>
+                        </div>
+                        <span class="font-bold text-amber-400 text-sm">~2.100 km A/R</span>
+                    </label>
+
+                    <!-- Destinazione 4: Pisa -->
+                    <label class="flex items-center justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" checked value="1600" data-hours="16" data-patient="Francesco - Controlli endocrinologici Cisanello" onchange="calculateTrips()" class="trip-checkbox w-5 h-5 accent-amber-500 rounded">
+                            <div>
+                                <div class="font-bold text-white">Taranto ➔ Pisa (Cisanello)</div>
+                                <div class="text-xs text-slate-400">Francesco • Controlli tiroidei e metabolici</div>
+                            </div>
+                        </div>
+                        <span class="font-bold text-amber-400 text-sm">~1.600 km A/R</span>
+                    </label>
+
+                    <!-- Destinazione 5: Bari -->
+                    <label class="flex items-center justify-between p-4 rounded-2xl bg-slate-800 border border-slate-700/80 cursor-pointer hover:border-amber-500/60 transition-all">
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" checked value="200" data-hours="3" data-patient="Famiglia - Visite specialistiche Bari" onchange="calculateTrips()" class="trip-checkbox w-5 h-5 accent-amber-500 rounded">
+                            <div>
+                                <div class="font-bold text-white">Taranto ➔ Bari (Policlinico)</div>
+                                <div class="text-xs text-slate-400">Samuel e famiglia • Visite pediatriche e oculistiche</div>
+                            </div>
+                        </div>
+                        <span class="font-bold text-amber-400 text-sm">~200 km A/R</span>
+                    </label>
+                </div>
+
+                <!-- Risultato del Calcolo -->
+                <div class="lg:col-span-5 bg-slate-800/90 border border-amber-500/40 rounded-3xl p-8 sticky top-28 shadow-2xl">
+                    <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+                        <i class="fa-solid fa-gauge-high text-amber-400 mr-3"></i>Riepilogo del Viaggio
+                    </h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Chilometri Complessivi</span>
+                            <div class="text-4xl font-extrabold text-amber-400" id="total-km">7.100 km</div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-700">
+                            <div>
+                                <span class="text-xs text-slate-400 block">Ore di guida stimate:</span>
+                                <span class="text-xl font-bold text-white" id="total-hours">~72 ore</span>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-400 block">Unica guidatrice:</span>
+                                <span class="text-xl font-bold text-rose-400">Anna (da sola)</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-700 text-xs text-slate-300 leading-relaxed">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i>
+                            Questi tragitti vengono attualmente affrontati con un'utilitaria logorata. Un guasto notturno lontano da casa metterebbe a rischio la salute di chi viaggia.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SEZIONE INTERATTIVA 3: CALCOLATORE DI DONAZIONE ("REGALA UN KM") -->
+    <section id="calcolatore-dona" class="py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-3xl p-8 sm:p-14 border border-amber-200/70 shadow-xl text-center relative overflow-hidden">
+            <div class="max-w-2xl mx-auto">
+                <span class="text-xs font-bold text-amber-600 uppercase tracking-widest bg-amber-50 px-4 py-1.5 rounded-full border border-amber-200">
+                    Solidarietà Tangibile
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-4">Regala un KM di Speranza</h2>
+                <p class="mt-4 text-slate-600">
+                    Muovi la barra per scegliere quanti chilometri di viaggio sicuro vuoi donare alla famiglia Perniola per raggiungere i loro ospedali.
+                </p>
+
+                <!-- Slider Interattivo -->
+                <div class="my-10">
+                    <input type="range" min="10" max="500" step="10" value="50" id="km-slider" oninput="updateDonation(this.value)" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                    
+                    <div class="mt-6 flex justify-center items-baseline space-x-2">
+                        <span class="text-5xl font-black text-slate-900" id="donation-km">50</span>
+                        <span class="text-2xl font-bold text-amber-600">km donati</span>
+                    </div>
+
+                    <div class="mt-2 text-slate-500 font-medium text-sm">
+                        Valore stimato del contributo: <strong class="text-slate-900 font-bold text-lg" id="donation-euro">€ 25</strong>
+                    </div>
+                </div>
+
+                <!-- Box Equivalente Tangibile -->
+                <div class="p-6 bg-amber-50/70 rounded-2xl border border-amber-200 text-sm text-slate-700 mb-8" id="donation-desc">
+                    🎉 Con questo gesto copri il tragitto e il carburante per accompagnare il piccolo Michele alle prime tappe del suo viaggio verso Verona.
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="https://gofundme.com/placeholder" target="_blank" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-8 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all inline-flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-heart text-rose-600"></i>
+                        <span>Dona ora questo importo</span>
+                    </a>
+                    <a href="#contatti" class="bg-slate-100 hover:bg-slate-200 text-slate-800 px-6 py-4 rounded-2xl font-bold text-sm transition-colors inline-flex items-center justify-center">
+                        Vuoi offrire direttamente un mezzo? Scrivici
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEZIONE FORM DI CONTATTO ADATTIVO -->
+    <section id="contatti" class="bg-slate-900 text-white py-24 border-t border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-3xl font-extrabold">Parla direttamente con noi</h2>
+                <p class="mt-3 text-slate-400 text-sm">
+                    Sei un Club di Servizio (Lions), un'azienda, una concessionaria o un cittadino? Compila il modulo: i campi si adatteranno al tuo profilo.
+                </p>
+            </div>
+
+            <form class="bg-slate-800/80 p-8 sm:p-10 rounded-3xl border border-slate-700 space-y-6" onsubmit="handleFormSubmit(event)">
+                
+                <!-- Tipo di Sostenitore -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-300 mb-2">Chi sei o che tipo di aiuto vorresti proporre?</label>
+                    <select id="user-type" onchange="adaptForm(this.value)" class="w-full p-3.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:border-amber-500 focus:outline-none">
+                        <option value="privato">Privato Cittadino / Donatore</option>
+                        <option value="concessionaria">Concessionaria o Privato con Veicolo da Donare / Cedere</option>
+                        <option value="lions">Lions Club o Altro Club di Servizio (Service)</option>
+                        <option value="azienda">Azienda (Responsabilità Sociale / Sponsorizzazione)</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-300 mb-2" id="label-name">Nome e Cognome</label>
+                        <input type="text" required class="w-full p-3.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:border-amber-500 focus:outline-none" placeholder="Mario Rossi">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-300 mb-2">Email di contatto</label>
+                        <input type="email" required class="w-full p-3.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:border-amber-500 focus:outline-none" placeholder="mario.rossi@email.it">
+                    </div>
+                </div>
+
+                <!-- Campo Dinamico -->
+                <div id="dynamic-field" class="hidden">
+                    <label class="block text-sm font-semibold text-slate-300 mb-2" id="label-dynamic">Dettagli specifici</label>
+                    <input type="text" id="input-dynamic" class="w-full p-3.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:border-amber-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-300 mb-2">Messaggio o proposta</label>
+                    <textarea rows="4" required class="w-full p-3.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:border-amber-500 focus:outline-none" placeholder="Scrivi qui liberamente il tuo messaggio o la tua disponibilità..."></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-4 rounded-xl transition-all shadow-lg text-base">
+                    Invia Proposta con il Sorriso
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 text-slate-500 py-12 text-center text-xs border-t border-slate-900">
+        <div class="max-w-4xl mx-auto px-4">
+            <p class="font-medium text-slate-400">&copy; 2026 Progetto di Solidarietà per la Famiglia Perniola • Taranto</p>
+            <p class="mt-2">Iniziativa privata finalizzata esclusivamente alla mobilità sanitaria e alla tutela della salute dei minori e degli assistiti.</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPT LOGICO INTERATTIVO -->
+    <script>
+        // Gestione Tab
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = 'tab-btn px-6 py-3 rounded-2xl font-bold text-sm transition-all bg-white text-slate-600 hover:bg-amber-50 border border-slate-200';
+            });
+
+            document.getElementById('tab-content-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-btn-' + tabId);
+            activeBtn.className = 'tab-btn px-6 py-3 rounded-2xl font-bold text-sm transition-all bg-amber-500 text-slate-950 shadow-md';
+        }
+
+        // Gestione Calcolatore Viaggi
+        function calculateTrips() {
+            let totalKm = 0;
+            let totalHours = 0;
+            const checkboxes = document.querySelectorAll('.trip-checkbox:checked');
+            checkboxes.forEach(cb => {
+                totalKm += parseInt(cb.value);
+                totalHours += parseInt(cb.dataset.hours);
+            });
+            document.getElementById('total-km').innerText = totalKm.toLocaleString('it-IT') + ' km';
+            document.getElementById('total-hours').innerText = '~' + totalHours + ' ore';
+        }
+
+        // Gestione Calcolatore Donazione
+        function updateDonation(km) {
+            document.getElementById('donation-km').innerText = km;
+            const euro = Math.round(km * 0.5);
+            document.getElementById('donation-euro').innerText = '€ ' + euro;
+
+            const descBox = document.getElementById('donation-desc');
+            if (km < 50) {
+                descBox.innerHTML = '🌱 <strong>Un contributo simbolico prezioso:</strong> copri i primi chilometri autostradali di Anna per raggiungere i centri medici.';
+            } else if (km < 200) {
+                descBox.innerHTML = '🚗 <strong>Tratta regionale o parte di quella nazionale:</strong> garantisci il carburante e i pedaggi per visite a Bari o l\'avvicinamento verso Bologna.';
+            } else if (km < 400) {
+                descBox.innerHTML = '🌟 <strong>Grande sostenitore:</strong> assicuri quasi metà del viaggio di andata e ritorno verso Verona per la narcosi del piccolo Michele!';
+            } else {
+                descBox.innerHTML = '💖 <strong>Un pilastro fondamentale:</strong> copri intere tratte interregionali per le cure oncologiche di Francesco o Nicola, donando immensa serenità.';
+            }
+        }
+
+        // Gestione Form Adattivo
+        function adaptForm(type) {
+            const dynamicContainer = document.getElementById('dynamic-field');
+            const labelDynamic = document.getElementById('label-dynamic');
+            const inputDynamic = document.getElementById('input-dynamic');
+            const labelName = document.getElementById('label-name');
+
+            dynamicContainer.classList.remove('hidden');
+
+            if (type === 'concessionaria') {
+                labelName.innerText = 'Nome referente / Concessionaria';
+                labelDynamic.innerText = 'Modello del mezzo a 7 posti proposto (e se donazione/comodato/sconto)';
+                inputDynamic.placeholder = 'Es: Fiat Talento / Ford Transit Custom a 7 posti (usato garantito)';
+            } else if (type === 'lions') {
+                labelName.innerText = 'Nome del Club / Carica (es: Lions Club Taranto)';
+                labelDynamic.innerText = 'Tipologia di Service ipotizzata o richiesta incontro';
+                inputDynamic.placeholder = 'Es: Valutazione Service Interclub o contributo distrettuale';
+            } else if (type === 'azienda') {
+                labelName.innerText = 'Ragione Sociale Azienda';
+                labelDynamic.innerText = 'Interesse CSR / Logo sul veicolo';
+                inputDynamic.placeholder = 'Es: Donazione aziendale con applicazione logo come Partner Mobilità';
+            } else {
+                dynamicContainer.classList.add('hidden');
+                labelName.innerText = 'Nome e Cognome';
+            }
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            alert('Grazie di cuore! La tua proposta è stata simulata con successo e verrà gestita con la massima trasparenza.');
+        }
+    </script>
+
+</body>
+</html>
+```
+
+---
+
+### Cosa fa questo file una volta aperto:
+* **Tutti i calcoli avvengono in tempo reale**: deselezionando o selezionando le caselle dei viaggi verso Verona, Torino, Bologna o Pisa, il totale dei chilometri e delle ore di guida di Anna si aggiorna istantaneamente.
+* **Lo slider delle donazioni interagisce dal vivo**: muovendo la barra, l'utente vede variare i chilometri "adottati", la stima in euro e un messaggio personalizzato che spiega l'impatto reale di quella cifra.
+* **Le schede informative** permettono a chi visita il sito di approfondire la parte medica o biografica senza dover scorrere una pagina infinita.
