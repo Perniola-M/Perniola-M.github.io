@@ -439,7 +439,7 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="https://gofund.me/3d89b0931" target="_blank" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-8 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all inline-flex items-center justify-center space-x-2">
+                    <a href="https://www.gofundme.com/f/un-van-per-la-speranza-aiutiamo-la-famiglia-perniola/donate?amount=25&lang=it_IT" id="donation-link" target="_blank" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-8 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all inline-flex items-center justify-center space-x-2">
                         <i class="fa-solid fa-heart text-rose-600"></i>
                         <span>Dona ora questo importo</span>
                     </a>
@@ -666,6 +666,10 @@
             document.getElementById('donation-km').innerText = km;
             const euro = Math.round(km * 0.5);
             document.getElementById('donation-euro').innerText = '€ ' + euro;
+            const donationLink = document.getElementById('donation-link');
+            if (donationLink) {
+                donationLink.href = 'https://www.gofundme.com/f/un-van-per-la-speranza-aiutiamo-la-famiglia-perniola/donate?amount=' + euro + '&lang=it_IT';
+            }
 
             const descBox = document.getElementById('donation-desc');
             if (km < 50) {
