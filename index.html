@@ -39,6 +39,10 @@
     <style>
         html, body { overflow-x: hidden; }
         * { box-sizing: border-box; }
+            .audio-title { cursor: pointer; display: inline-block; outline: none; position: relative; }
+            .audio-title::after { content: "\00a0\f028"; font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: .42em; color: #f59e0b; vertical-align: middle; }
+            .audio-title:focus-visible { box-shadow: 0 0 0 4px rgba(245, 158, 11, .35); border-radius: .75rem; }
+            .audio-title.is-playing::after { content: "\00a0\f04c"; color: #fb7185; }
         @media (max-width: 640px) {
             nav .h-20 { height: auto; min-height: 4.25rem; padding-top: .65rem; padding-bottom: .65rem; }
             nav .space-x-3 > :not([hidden]) ~ :not([hidden]) { margin-left: .65rem; }
@@ -99,13 +103,13 @@
     </nav>
 
     <!-- HERO SECTION -->
-    <header class="relative overflow-hidden bg-slate-900 text-white py-20 lg:py-28 px-4 sm:px-6 lg:px-8">
+    <header id="pagina1" data-page-audio="pagina1" class="relative overflow-hidden bg-slate-900 text-white py-20 lg:py-28 px-4 sm:px-6 lg:px-8">
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:20px_20px]"></div>
         <div class="relative max-w-4xl mx-auto text-center">
             <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-300 border border-amber-500/20 mb-6 uppercase tracking-wider">
                 <i class="fa-solid fa-location-dot mr-2"></i> Taranto • Appello di Solidarietà e Mobilità
             </span>
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
+            <h1 class="audio-title text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight" data-audio-key="pagina1" role="button" tabindex="0" title="Ascolta o interrompi il racconto di questa pagina">
                 Mettiamo le ruote alla nostra <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-100">voglia di sorridere</span>
             </h1>
             <p class="mt-6 text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
@@ -125,9 +129,9 @@
     </header>
 
     <!-- SEZIONE INTERATTIVA: LA FAMIGLIA (TABS/SCHEDE) -->
-    <section id="storia" class="py-16 sm:py-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="storia" data-page-audio="pagina2" class="py-16 sm:py-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-3xl mx-auto mb-12">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Chi siamo: La nostra storia a tappe</h2>
+            <h2 class="audio-title text-3xl sm:text-4xl font-extrabold text-slate-900" data-audio-key="pagina2" role="button" tabindex="0" title="Ascolta o interrompi il racconto di questa pagina">Chi siamo: La nostra storia a tappe</h2>
             <div class="w-16 h-1.5 bg-amber-500 mx-auto mt-4 rounded-full"></div>
             <p class="mt-4 text-slate-600 text-lg">
                 Clicca sulle schede per scoprire la storia dei singoli componenti della nostra famiglia. Affrontiamo ogni diagnosi con trasparenza, forza d'animo e sostegno reciproco.
@@ -509,6 +513,74 @@
 
     <!-- SCRIPT LOGICO INTERATTIVO -->
     <script>
+
+        // Titoli audio: tocco/click per avviare, secondo tocco per interrompere.
+        const pageAudio = {
+            pagina1: new Audio('Pagina1.mp3'),
+            pagina2: new Audio('Pagina2.mp3')
+        };
+        let currentAudioKey = null;
+
+        function setPlayingTitle(key) {
+            document.querySelectorAll('.audio-title').forEach(title => {
+                title.classList.toggle('is-playing', title.dataset.audioKey === key);
+                title.setAttribute('aria-pressed', title.dataset.audioKey === key ? 'true' : 'false');
+            });
+        }
+
+        function pauseCurrentAudio() {
+            if (!currentAudioKey) return;
+            pageAudio[currentAudioKey].pause();
+            setPlayingTitle(null);
+            currentAudioKey = null;
+        }
+
+        function togglePageAudio(key) {
+            const selectedAudio = pageAudio[key];
+            if (!selectedAudio) return;
+
+            if (currentAudioKey === key && !selectedAudio.paused) {
+                pauseCurrentAudio();
+                return;
+            }
+
+            pauseCurrentAudio();
+            currentAudioKey = key;
+            selectedAudio.play().then(() => setPlayingTitle(key)).catch(() => {
+                currentAudioKey = null;
+                setPlayingTitle(null);
+            });
+        }
+
+        document.querySelectorAll('.audio-title').forEach(title => {
+            title.setAttribute('aria-label', 'Ascolta o interrompi il racconto di questa pagina');
+            title.setAttribute('aria-pressed', 'false');
+            title.addEventListener('click', () => togglePageAudio(title.dataset.audioKey));
+            title.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    togglePageAudio(title.dataset.audioKey);
+                }
+            });
+        });
+
+        Object.entries(pageAudio).forEach(([key, audio]) => {
+            audio.preload = 'none';
+            audio.addEventListener('ended', () => {
+                if (currentAudioKey === key) pauseCurrentAudio();
+            });
+        });
+
+        const visiblePageObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                const visibleAudioKey = entry.target.dataset.pageAudio;
+                if (entry.isIntersecting && currentAudioKey && currentAudioKey !== visibleAudioKey) {
+                    pauseCurrentAudio();
+                }
+            });
+        }, { threshold: 0.45 });
+
+        document.querySelectorAll('[data-page-audio]').forEach(section => visiblePageObserver.observe(section));
         // Gestione Tab
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
