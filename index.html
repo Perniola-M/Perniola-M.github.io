@@ -300,7 +300,7 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
                 <span class="text-amber-400 font-bold uppercase tracking-wider text-xs">Simulatore Interattivo</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold mt-2">La Mappa dei Viaggi di Anna</h2>
+                <h2 class="audio-title text-3xl sm:text-4xl font-extrabold mt-2" data-audio-key="pagina3" role="button" tabindex="0" title="Ascolta o interrompi il racconto di questa pagina">La Mappa dei Viaggi di Anna</h2>
                 <p class="mt-4 text-slate-300">
                     Seleziona le destinazioni sanitarie della famiglia Perniola con partenza da <strong>Taranto</strong> per calcolare l'impegno chilometrico e le ore di guida sostenute da Anna.
                 </p>
@@ -414,7 +414,7 @@
                 <span class="text-xs font-bold text-amber-600 uppercase tracking-widest bg-amber-50 px-4 py-1.5 rounded-full border border-amber-200">
                     Solidarietà Tangibile
                 </span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-4">Regala un KM di Speranza</h2>
+                <h2 class="audio-title text-3xl sm:text-4xl font-extrabold text-slate-900 mt-4" data-audio-key="pagina4" role="button" tabindex="0" title="Ascolta o interrompi il racconto di questa pagina">Regala un KM di Speranza</h2>
                 <p class="mt-4 text-slate-600">
                     Muovi la barra per scegliere quanti chilometri di viaggio sicuro vuoi donare alla famiglia Perniola per raggiungere i loro ospedali.
                 </p>
@@ -516,9 +516,11 @@
         // Titoli audio: click/tocco singolo per avviare o mettere in pausa.
         const pageAudio = {
             pagina1: new Audio('Pagina1.mp3'),
-            pagina2: new Audio('Pagina2.mp3')
+            pagina2: new Audio('Pagina2.mp3'),
+            pagina3: new Audio('Pagina3.mp3'),
+            pagina4: new Audio('Pagina4.mp3')
         };
-        const audioSequence = ['pagina1', 'pagina2'];
+        const audioSequence = ['pagina1', 'pagina2', 'pagina3', 'pagina4'];
         let currentAudioKey = null;
         let userChoseAudio = false;
         let nextAudioTimer = null;
