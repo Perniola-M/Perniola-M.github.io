@@ -39,6 +39,18 @@
         html, body { overflow-x: hidden; }
         body { background: #fffdf7; }
         * { box-sizing: border-box; }
+        .audio-frame {
+            --progress: 0%;
+            padding: 6px;
+            border-radius: 1.25rem;
+            background: transparent;
+            transition: background .2s ease, padding .2s ease, box-shadow .2s ease;
+        }
+        .audio-frame.is-playing {
+            padding: 9px;
+            background: conic-gradient(#facc15 var(--progress), #22c55e 0);
+            box-shadow: 0 18px 45px rgba(15, 23, 42, .16);
+        }
         .audio-photo {
             cursor: pointer;
             display: block;
@@ -54,7 +66,7 @@
         }
         .audio-photo:hover { transform: translateY(-2px); box-shadow: 0 24px 60px rgba(15, 23, 42, .24); }
         .audio-photo:focus-visible { box-shadow: 0 0 0 5px rgba(245, 158, 11, .45), 0 24px 60px rgba(15, 23, 42, .24); }
-        .audio-photo.is-playing { box-shadow: 0 0 0 5px rgba(245, 158, 11, .55), 0 24px 60px rgba(15, 23, 42, .24); }
+        .audio-frame.is-playing .audio-photo { box-shadow: 0 18px 45px rgba(15, 23, 42, .22); }
         .audio-hint { margin-top: .85rem; text-align: center; font-weight: 900; color: #92400e; }
         .tab-panel { display: none; }
         .tab-panel.is-active { display: block; }
@@ -67,8 +79,8 @@
         }
     </style>
 </head>
-<body class="text-ink font-sans antialiased selection:bg-amber-500 selection:text-white">
-    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-amber-100 shadow-sm">
+<body class="pt-[76px] text-ink font-sans antialiased selection:bg-amber-500 selection:text-white">
+    <nav class="fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur border-b border-amber-100 shadow-sm">
         <div class="max-w-2xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
             <a href="#storia" class="flex items-center gap-3">
                 <span class="w-11 h-11 rounded-xl bg-amberAction text-ink grid place-items-center shadow-md">
@@ -86,8 +98,8 @@
         </div>
     </nav>
 
-    <header class="bg-ink text-white">
-        <div class="max-w-2xl mx-auto px-4 sm:px-6 py-14 sm:py-16 text-center">
+    <header class="py-4">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 py-14 sm:py-16 text-center bg-ink text-white rounded-none sm:rounded-2xl">
             <p class="text-xs font-black tracking-[.18em] uppercase text-amber-300">Taranto - appello di solidarietà e mobilità</p>
             <h1 class="mt-5 text-4xl font-black tracking-tight">Un van sicuro per una famiglia che deve viaggiare per curarsi</h1>
             <p class="mt-6 text-lg text-slate-200 leading-relaxed">
@@ -106,10 +118,12 @@
                 </p>
 
                 <div class="mt-8">
-                    <button class="audio-photo" data-audio-key="storia" aria-label="Ascolta o interrompi il racconto della storia della famiglia Perniola">
-                        <img src="Foto1.jpg" alt="Anna e Michele Perniola seduti vicini all'aperto" class="w-full aspect-[16/9] object-cover">
-                    </button>
-                    <p class="audio-hint"><i class="fa-solid fa-volume-high mr-2"></i>Tocca la foto per ascoltare la storia</p>
+                    <div class="audio-frame" data-audio-frame="storia">
+                        <button class="audio-photo" data-audio-key="storia" aria-label="Ascolta o interrompi il racconto della storia della famiglia Perniola">
+                            <img src="Foto1.jpg" alt="Anna e Michele Perniola seduti vicini all'aperto" class="w-full aspect-[16/9] object-cover">
+                        </button>
+                    </div>
+                    <p class="audio-hint" data-audio-hint="storia" data-default-text="Tocca la foto per ascoltare la storia"><i class="fa-solid fa-volume-high mr-2"></i>Tocca la foto per ascoltare la storia</p>
                 </div>
 
                 <div class="zone-card mt-10 bg-white rounded-2xl border border-amber-200 shadow-sm p-6 sm:p-8">
@@ -197,10 +211,12 @@
                 </p>
 
                 <div class="mt-8">
-                    <button class="audio-photo" data-audio-key="guida" aria-label="Ascolta o interrompi la guida audio all'uso del sito">
-                        <img src="Foto2.jpg" alt="Illustrazione: una domanda collegata a una risposta" class="w-full aspect-[16/9] object-cover">
-                    </button>
-                    <p class="audio-hint"><i class="fa-solid fa-volume-high mr-2"></i>Tocca la foto per ascoltare come usare il sito</p>
+                    <div class="audio-frame" data-audio-frame="guida">
+                        <button class="audio-photo" data-audio-key="guida" aria-label="Ascolta o interrompi la guida audio all'uso del sito">
+                            <img src="Foto2.jpg" alt="Illustrazione: una domanda collegata a una risposta" class="w-full aspect-[16/9] object-cover">
+                        </button>
+                    </div>
+                    <p class="audio-hint" data-audio-hint="guida" data-default-text="Tocca la foto per ascoltare come usare il sito"><i class="fa-solid fa-volume-high mr-2"></i>Tocca la foto per ascoltare come usare il sito</p>
                 </div>
 
                 <div class="mt-10 space-y-4">
@@ -233,10 +249,12 @@
                 </p>
 
                 <div class="mt-8">
-                    <button class="audio-photo" data-audio-key="aiuto" aria-label="Ascolta o interrompi la spiegazione sul van e sulla donazione">
-                        <img src="Foto3.jpg" alt="Illustrazione di un van a 7 posti con segno di conferma" class="w-full aspect-[16/9] object-cover">
-                    </button>
-                    <p class="audio-hint"><i class="fa-solid fa-volume-high mr-2"></i>Tocca il van per ascoltare la spiegazione pratica</p>
+                    <div class="audio-frame" data-audio-frame="aiuto">
+                        <button class="audio-photo" data-audio-key="aiuto" aria-label="Ascolta o interrompi la spiegazione sul van e sulla donazione">
+                            <img src="Foto3.jpg" alt="Illustrazione di un van a 7 posti con segno di conferma" class="w-full aspect-[16/9] object-cover">
+                        </button>
+                    </div>
+                    <p class="audio-hint" data-audio-hint="aiuto" data-default-text="Tocca il van per ascoltare la spiegazione pratica"><i class="fa-solid fa-volume-high mr-2"></i>Tocca il van per ascoltare la spiegazione pratica</p>
                 </div>
 
                 <div class="zone-card mt-10 rounded-2xl bg-ink text-white p-6 sm:p-8 shadow-xl">
@@ -288,19 +306,55 @@
         };
         let currentAudioKey = null;
 
+        function formatAudioTime(seconds) {
+            if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60).toString().padStart(2, '0');
+            return minutes + ':' + remainingSeconds;
+        }
+
+        function updateAudioDisplay(key) {
+            const audio = sectionAudio[key];
+            const frame = document.querySelector(`[data-audio-frame="${key}"]`);
+            const hint = document.querySelector(`[data-audio-hint="${key}"]`);
+            if (!audio || !frame || !hint) return;
+
+            const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
+            const progress = duration > 0 ? Math.min(100, Math.max(0, (audio.currentTime / duration) * 100)) : 0;
+            frame.style.setProperty('--progress', progress + '%');
+
+            if (currentAudioKey === key && !audio.paused) {
+                hint.innerHTML = '<i class="fa-solid fa-pause mr-2"></i>Pausa ' + formatAudioTime(audio.currentTime) + ' - ' + formatAudioTime(duration);
+                return;
+            }
+
+            hint.innerHTML = '<i class="fa-solid fa-volume-high mr-2"></i>' + hint.dataset.defaultText;
+        }
+
+        function resetAudioDisplay(key) {
+            const frame = document.querySelector(`[data-audio-frame="${key}"]`);
+            if (frame) frame.style.setProperty('--progress', '0%');
+            updateAudioDisplay(key);
+        }
+
         function setPlayingPhoto(key) {
             document.querySelectorAll('.audio-photo').forEach(photo => {
                 const isPlaying = photo.dataset.audioKey === key;
-                photo.classList.toggle('is-playing', isPlaying);
                 photo.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
             });
+            document.querySelectorAll('.audio-frame').forEach(frame => {
+                frame.classList.toggle('is-playing', frame.dataset.audioFrame === key);
+            });
+            Object.keys(sectionAudio).forEach(updateAudioDisplay);
         }
 
         function pauseCurrentAudio() {
             if (!currentAudioKey) return;
+            const pausedKey = currentAudioKey;
             sectionAudio[currentAudioKey].pause();
             currentAudioKey = null;
             setPlayingPhoto(null);
+            updateAudioDisplay(pausedKey);
         }
 
         function toggleAudio(key) {
@@ -313,7 +367,10 @@
             pauseCurrentAudio();
             currentAudioKey = key;
             if (selectedAudio.ended) selectedAudio.currentTime = 0;
-            selectedAudio.play().then(() => setPlayingPhoto(key)).catch(() => {
+            selectedAudio.play().then(() => {
+                setPlayingPhoto(key);
+                updateAudioDisplay(key);
+            }).catch(() => {
                 currentAudioKey = null;
                 setPlayingPhoto(null);
             });
@@ -334,10 +391,14 @@
 
         Object.entries(sectionAudio).forEach(([key, audio]) => {
             audio.preload = 'none';
+            audio.addEventListener('loadedmetadata', () => updateAudioDisplay(key));
+            audio.addEventListener('timeupdate', () => updateAudioDisplay(key));
             audio.addEventListener('ended', () => {
                 if (currentAudioKey === key) {
+                    audio.currentTime = 0;
                     currentAudioKey = null;
                     setPlayingPhoto(null);
+                    resetAudioDisplay(key);
                 }
             });
         });
