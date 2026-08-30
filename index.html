@@ -520,6 +520,7 @@
             pagina2: new Audio('Pagina2.mp3')
         };
         let currentAudioKey = null;
+        let userChoseAudio = false;
 
         function setPlayingTitle(key) {
             document.querySelectorAll('.audio-title').forEach(title => {
@@ -535,9 +536,22 @@
             currentAudioKey = null;
         }
 
-        function togglePageAudio(key) {
+        function stopAndRewindAudio(key) {
             const selectedAudio = pageAudio[key];
             if (!selectedAudio) return;
+            userChoseAudio = true;
+            selectedAudio.pause();
+            selectedAudio.currentTime = 0;
+            if (currentAudioKey === key) {
+                currentAudioKey = null;
+                setPlayingTitle(null);
+            }
+        }
+
+        function togglePageAudio(key, automaticStart = false) {
+            const selectedAudio = pageAudio[key];
+            if (!selectedAudio) return;
+            if (!automaticStart) userChoseAudio = true;
 
             if (currentAudioKey === key && !selectedAudio.paused) {
                 pauseCurrentAudio();
@@ -553,9 +567,36 @@
         }
 
         document.querySelectorAll('.audio-title').forEach(title => {
-            title.setAttribute('aria-label', 'Ascolta o interrompi il racconto di questa pagina');
+            let longPressTimer = null;
+            let longPressTriggered = false;
+
+            function clearLongPressTimer() {
+                if (!longPressTimer) return;
+                window.clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+
+            title.setAttribute('aria-label', 'Ascolta, interrompi o tieni premuto per ricominciare il racconto di questa pagina');
             title.setAttribute('aria-pressed', 'false');
-            title.addEventListener('click', () => togglePageAudio(title.dataset.audioKey));
+            title.addEventListener('pointerdown', () => {
+                longPressTriggered = false;
+                clearLongPressTimer();
+                longPressTimer = window.setTimeout(() => {
+                    longPressTriggered = true;
+                    stopAndRewindAudio(title.dataset.audioKey);
+                }, 3000);
+            });
+            ['pointerup', 'pointercancel', 'pointerleave'].forEach(eventName => {
+                title.addEventListener(eventName, clearLongPressTimer);
+            });
+            title.addEventListener('click', event => {
+                if (longPressTriggered) {
+                    event.preventDefault();
+                    longPressTriggered = false;
+                    return;
+                }
+                togglePageAudio(title.dataset.audioKey);
+            });
             title.addEventListener('keydown', event => {
                 if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault();
@@ -571,16 +612,13 @@
             });
         });
 
-        const visiblePageObserver = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                const visibleAudioKey = entry.target.dataset.pageAudio;
-                if (entry.isIntersecting && currentAudioKey && currentAudioKey !== visibleAudioKey) {
-                    pauseCurrentAudio();
+        window.addEventListener('load', () => {
+            window.setTimeout(() => {
+                if (!userChoseAudio && !currentAudioKey && window.scrollY < 120) {
+                    togglePageAudio('pagina1', true);
                 }
-            });
-        }, { threshold: 0.45 });
-
-        document.querySelectorAll('[data-page-audio]').forEach(section => visiblePageObserver.observe(section));
+            }, 5000);
+        });
         // Gestione Tab
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
