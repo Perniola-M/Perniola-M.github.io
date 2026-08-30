@@ -112,7 +112,7 @@
                     <span class="block text-xs font-bold uppercase tracking-wide text-amber-700">Un van per la speranza</span>
                 </span>
             </a>
-            <span class="hidden md:block absolute left-1/2 -translate-x-1/2 text-xs font-black text-slate-500 tabular-nums" aria-label="Versione del sito">30-08-26 17:09</span>
+            <span class="hidden md:block absolute left-1/2 -translate-x-1/2 text-xs font-black text-slate-500 tabular-nums" aria-label="Versione del sito">30-08-26 17:18</span>
             <a href="#aiuto" class="inline-flex items-center justify-center gap-2 bg-amberAction hover:bg-amber-600 text-ink px-4 sm:px-5 py-3 rounded-full font-black text-sm shadow-md">
                 <i class="fa-solid fa-heart text-rose-600"></i>
                 <span>Sostieni</span>
@@ -516,12 +516,20 @@
             });
         }
 
+        function vibrateOnMobileTap() {
+            const isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+            if (isTouchDevice && 'vibrate' in navigator) {
+                navigator.vibrate(35);
+            }
+        }
+
         document.querySelectorAll('.audio-photo').forEach(photo => {
             photo.setAttribute('role', 'button');
             photo.setAttribute('tabindex', '0');
             photo.setAttribute('aria-pressed', 'false');
             photo.addEventListener('click', event => {
                 event.stopPropagation();
+                vibrateOnMobileTap();
                 toggleAudio(photo.dataset.audioKey);
             });
             photo.addEventListener('keydown', event => {
