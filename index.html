@@ -112,7 +112,7 @@
                     <span class="block text-xs font-bold uppercase tracking-wide text-amber-700">Un van per la speranza</span>
                 </span>
             </a>
-            <span class="hidden md:block absolute left-1/2 -translate-x-1/2 text-xs font-black text-slate-500 tabular-nums" aria-label="Versione del sito">30-08-26 16:48</span>
+            <span class="hidden md:block absolute left-1/2 -translate-x-1/2 text-xs font-black text-slate-500 tabular-nums" aria-label="Versione del sito">30-08-26 17:09</span>
             <a href="#aiuto" class="inline-flex items-center justify-center gap-2 bg-amberAction hover:bg-amber-600 text-ink px-4 sm:px-5 py-3 rounded-full font-black text-sm shadow-md">
                 <i class="fa-solid fa-heart text-rose-600"></i>
                 <span>Sostieni</span>
@@ -289,6 +289,109 @@
                     </p>
                 </div>
 
+                <div id="calcolatore-viaggi" class="zone-card mt-10 rounded-2xl bg-ink text-white p-6 sm:p-8 shadow-xl">
+                    <p class="text-xs font-black uppercase tracking-[.16em] text-amber-300">Simulatore interattivo</p>
+                    <h3 class="mt-3 text-2xl font-black">La calcolatrice dei chilometri</h3>
+                    <p class="mt-4 text-slate-200 leading-relaxed">
+                        Seleziona o deseleziona le tratte sanitarie con partenza da Taranto. Il sito calcola subito i chilometri complessivi di andata e ritorno e le ore di guida stimate.
+                    </p>
+
+                    <div class="mt-7 space-y-3">
+                        <label class="block rounded-2xl bg-slate-800 border border-slate-700 p-4 cursor-pointer">
+                            <span class="flex items-start gap-3">
+                                <input type="checkbox" checked value="1800" data-hours="18" class="trip-checkbox mt-1 w-5 h-5 accent-amber-500">
+                                <span class="flex-1">
+                                    <span class="block font-black">Taranto - Verona, Borgo Roma</span>
+                                    <span class="block mt-1 text-sm text-slate-300">Michele, 4 anni: controlli glaucoma in narcosi.</span>
+                                    <span class="block mt-2 text-sm font-black text-amber-300">Circa 1.800 km A/R</span>
+                                </span>
+                            </span>
+                        </label>
+
+                        <label class="block rounded-2xl bg-slate-800 border border-slate-700 p-4 cursor-pointer">
+                            <span class="flex items-start gap-3">
+                                <input type="checkbox" checked value="1400" data-hours="14" class="trip-checkbox mt-1 w-5 h-5 accent-amber-500">
+                                <span class="flex-1">
+                                    <span class="block font-black">Taranto - Bologna, Istituto Rizzoli</span>
+                                    <span class="block mt-1 text-sm text-slate-300">Nicola: controlli periodici dopo il sarcoma al quadricipite.</span>
+                                    <span class="block mt-2 text-sm font-black text-amber-300">Circa 1.400 km A/R</span>
+                                </span>
+                            </span>
+                        </label>
+
+                        <label class="block rounded-2xl bg-slate-800 border border-slate-700 p-4 cursor-pointer">
+                            <span class="flex items-start gap-3">
+                                <input type="checkbox" checked value="2100" data-hours="21" class="trip-checkbox mt-1 w-5 h-5 accent-amber-500">
+                                <span class="flex-1">
+                                    <span class="block font-black">Taranto - Torino, Molinette</span>
+                                    <span class="block mt-1 text-sm text-slate-300">Francesco: controlli oncologici e chirurgici.</span>
+                                    <span class="block mt-2 text-sm font-black text-amber-300">Circa 2.100 km A/R</span>
+                                </span>
+                            </span>
+                        </label>
+
+                        <label class="block rounded-2xl bg-slate-800 border border-slate-700 p-4 cursor-pointer">
+                            <span class="flex items-start gap-3">
+                                <input type="checkbox" checked value="1600" data-hours="16" class="trip-checkbox mt-1 w-5 h-5 accent-amber-500">
+                                <span class="flex-1">
+                                    <span class="block font-black">Taranto - Pisa, Cisanello</span>
+                                    <span class="block mt-1 text-sm text-slate-300">Francesco: controlli tiroidei e metabolici.</span>
+                                    <span class="block mt-2 text-sm font-black text-amber-300">Circa 1.600 km A/R</span>
+                                </span>
+                            </span>
+                        </label>
+
+                        <label class="block rounded-2xl bg-slate-800 border border-slate-700 p-4 cursor-pointer">
+                            <span class="flex items-start gap-3">
+                                <input type="checkbox" checked value="200" data-hours="3" class="trip-checkbox mt-1 w-5 h-5 accent-amber-500">
+                                <span class="flex-1">
+                                    <span class="block font-black">Taranto - Bari, Policlinico</span>
+                                    <span class="block mt-1 text-sm text-slate-300">Samuel e famiglia: visite pediatriche e oculistiche.</span>
+                                    <span class="block mt-2 text-sm font-black text-amber-300">Circa 200 km A/R</span>
+                                </span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="mt-7 rounded-2xl bg-slate-800 border border-amber-500/50 p-5">
+                        <p class="text-xs font-black uppercase tracking-wide text-slate-300">Riepilogo delle tratte selezionate</p>
+                        <div class="mt-3 text-4xl font-black text-amber-300" id="total-km">7.100 km</div>
+                        <div class="mt-4 grid grid-cols-1 gap-3">
+                            <p class="rounded-xl bg-slate-900/70 p-4"><span class="block text-sm text-slate-300">Ore di guida stimate</span><strong class="text-xl" id="total-hours">Circa 72 ore</strong></p>
+                            <p class="rounded-xl bg-slate-900/70 p-4"><span class="block text-sm text-slate-300">Guidatrice disponibile</span><strong class="text-xl text-rose-300">Anna, da sola</strong></p>
+                        </div>
+                        <p class="mt-4 text-sm text-slate-300 leading-relaxed">
+                            I valori sono indicativi e servono a mostrare l'impegno dei viaggi: molte tratte, molte ore, una sola persona alla guida.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="calcolatore-dona" class="zone-card mt-8 rounded-2xl bg-white border border-amber-200 p-6 sm:p-8 shadow-sm text-center">
+                    <p class="text-xs font-black uppercase tracking-[.16em] text-amber-700">Regala un KM</p>
+                    <h3 class="mt-3 text-2xl font-black">Scegli un contributo simbolico</h3>
+                    <p class="mt-4 text-slate-700 leading-relaxed">
+                        Muovi il cursore per trasformare alcuni chilometri in un importo indicativo. Il pulsante apre GoFundMe, dove la donazione viene completata in modo guidato.
+                    </p>
+
+                    <div class="my-8">
+                        <input type="range" min="5" max="100" step="5" value="25" id="km-slider" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                        <div class="mt-6 flex justify-center items-baseline gap-2">
+                            <span class="text-5xl font-black text-ink" id="donation-km">25</span>
+                            <span class="text-2xl font-black text-amber-700">km donati</span>
+                        </div>
+                        <p class="mt-2 text-slate-600 font-bold">Valore indicativo: <span class="text-ink text-xl" id="donation-euro">€ 10</span></p>
+                    </div>
+
+                    <div class="rounded-2xl bg-amberSoft border border-amber-200 p-5 text-sm text-slate-700 leading-relaxed" id="donation-desc">
+                        Un contributo simbolico aiuta a coprire carburante, pedaggi e piccoli tratti dei viaggi sanitari.
+                    </div>
+
+                    <a href="https://www.gofundme.com/f/un-van-per-la-speranza-aiutiamo-la-famiglia-perniola/donate?lang=it_IT" target="_blank" class="mt-6 inline-flex items-center justify-center gap-2 bg-amberAction hover:bg-amber-600 text-ink px-6 py-4 rounded-xl font-black shadow-lg">
+                        <i class="fa-solid fa-heart text-rose-600"></i>
+                        Dona su GoFundMe
+                    </a>
+                </div>
+
                 <div class="mt-8 space-y-4">
                     <div class="rounded-2xl bg-white border border-amber-200 p-5">
                         <h3 class="font-black text-xl">GoFundMe</h3>
@@ -447,6 +550,53 @@
                 }
             });
         });
+
+        function calculateTrips() {
+            let totalKm = 0;
+            let totalHours = 0;
+            document.querySelectorAll('.trip-checkbox:checked').forEach(checkbox => {
+                totalKm += Number.parseInt(checkbox.value, 10);
+                totalHours += Number.parseInt(checkbox.dataset.hours, 10);
+            });
+
+            const totalKmElement = document.getElementById('total-km');
+            const totalHoursElement = document.getElementById('total-hours');
+            if (totalKmElement) totalKmElement.textContent = totalKm.toLocaleString('it-IT') + ' km';
+            if (totalHoursElement) totalHoursElement.textContent = 'Circa ' + totalHours + ' ore';
+        }
+
+        function updateDonation(kmValue) {
+            const km = Number.parseInt(kmValue, 10);
+            const euro = Math.max(5, Math.round(km * 0.4));
+            const kmElement = document.getElementById('donation-km');
+            const euroElement = document.getElementById('donation-euro');
+            const descElement = document.getElementById('donation-desc');
+
+            if (kmElement) kmElement.textContent = km;
+            if (euroElement) euroElement.textContent = '€ ' + euro;
+            if (!descElement) return;
+
+            if (km <= 15) {
+                descElement.textContent = 'Un piccolo contributo simbolico aiuta a coprire una parte dei costi vivi di viaggio.';
+            } else if (km <= 40) {
+                descElement.textContent = 'Questo contributo rappresenta un tratto concreto di carburante e pedaggi per raggiungere i centri di cura.';
+            } else if (km <= 70) {
+                descElement.textContent = 'Questa scelta sostiene una porzione più ampia degli spostamenti sanitari ricorrenti della famiglia.';
+            } else {
+                descElement.textContent = 'Un contributo di questo livello aiuta ad affrontare tratte più lunghe e ripetute, dove pesano carburante, pedaggi e continuità dei controlli.';
+            }
+        }
+
+        document.querySelectorAll('.trip-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', calculateTrips);
+        });
+
+        const kmSlider = document.getElementById('km-slider');
+        if (kmSlider) {
+            kmSlider.addEventListener('input', event => updateDonation(event.target.value));
+            updateDonation(kmSlider.value);
+        }
+        calculateTrips();
 
         document.querySelectorAll('.tab-button').forEach(button => {
             button.addEventListener('click', () => {
