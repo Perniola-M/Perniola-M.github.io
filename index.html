@@ -521,9 +521,7 @@
         const audioSequence = ['pagina1', 'pagina2'];
         let currentAudioKey = null;
         let userChoseAudio = false;
-        let userPressedBeforeAutoStart = false;
         let nextAudioTimer = null;
-        let waitingForFirstUserGesture = false;
 
         function clearNextAudioTimer() {
             if (!nextAudioTimer) return;
@@ -551,6 +549,22 @@
             title.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
+        function resetAllAudioPositions() {
+            Object.values(pageAudio).forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+            currentAudioKey = null;
+            setPlayingTitle(null);
+        }
+
+        function returnToFirstAudioTitle() {
+            const firstTitle = document.querySelector(`.audio-title[data-audio-key="${audioSequence[0]}"]`);
+            if (!firstTitle) return;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            firstTitle.focus({ preventScroll: true });
+        }
+
         function playPageAudio(key, automaticStart = false, restartFromBeginning = false) {
             const selectedAudio = pageAudio[key];
             if (!selectedAudio) return;
@@ -564,11 +578,9 @@
             focusAudioTitle(key);
             if (restartFromBeginning || automaticStart || selectedAudio.ended) selectedAudio.currentTime = 0;
             selectedAudio.play().then(() => {
-                waitingForFirstUserGesture = false;
                 setPlayingTitle(key);
             }).catch(() => {
                 currentAudioKey = null;
-                waitingForFirstUserGesture = automaticStart && key === 'pagina1';
                 setPlayingTitle(null);
             });
         }
@@ -590,9 +602,14 @@
         function scheduleNextAudioFrom(key) {
             clearNextAudioTimer();
             const currentIndex = audioSequence.indexOf(key);
-            const nextKey = audioSequence[(currentIndex + 1) % audioSequence.length];
+            const isLastAudio = currentIndex === audioSequence.length - 1;
             nextAudioTimer = window.setTimeout(() => {
-                playPageAudio(nextKey, true, true);
+                if (isLastAudio) {
+                    resetAllAudioPositions();
+                    returnToFirstAudioTitle();
+                    return;
+                }
+                playPageAudio(audioSequence[currentIndex + 1], true, true);
             }, 5000);
         }
 
@@ -616,26 +633,6 @@
                 setPlayingTitle(null);
                 scheduleNextAudioFrom(key);
             });
-        });
-
-        ['pointerdown', 'keydown', 'touchstart'].forEach(eventName => {
-            window.addEventListener(eventName, event => {
-                if (!event.isTrusted) return;
-                userPressedBeforeAutoStart = true;
-                if (event.target.closest && event.target.closest('.audio-title')) return;
-                if (waitingForFirstUserGesture && !userChoseAudio && !currentAudioKey) {
-                    playPageAudio('pagina1', true, true);
-                }
-            }, { passive: true });
-        });
-
-        window.addEventListener('load', () => {
-            window.setTimeout(() => {
-                const firstAudioTitle = document.querySelector('.audio-title[data-audio-key="pagina1"]');
-                if (!userPressedBeforeAutoStart && !userChoseAudio && !currentAudioKey && firstAudioTitle) {
-                    firstAudioTitle.click();
-                }
-            }, 5000);
         });
         // Gestione Tab
         function switchTab(tabId) {
