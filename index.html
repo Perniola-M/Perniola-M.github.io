@@ -521,6 +521,7 @@
         };
         let currentAudioKey = null;
         let userChoseAudio = false;
+        let userPressedBeforeAutoStart = false;
 
         function setPlayingTitle(key) {
             document.querySelectorAll('.audio-title').forEach(title => {
@@ -612,10 +613,17 @@
             });
         });
 
+        ['pointerdown', 'keydown', 'touchstart'].forEach(eventName => {
+            window.addEventListener(eventName, event => {
+                if (event.isTrusted) userPressedBeforeAutoStart = true;
+            }, { once: true, passive: true });
+        });
+
         window.addEventListener('load', () => {
             window.setTimeout(() => {
-                if (!userChoseAudio && !currentAudioKey && window.scrollY < 120) {
-                    togglePageAudio('pagina1', true);
+                const firstAudioTitle = document.querySelector('.audio-title[data-audio-key="pagina1"]');
+                if (!userPressedBeforeAutoStart && !userChoseAudio && !currentAudioKey && firstAudioTitle) {
+                    firstAudioTitle.click();
                 }
             }, 5000);
         });
