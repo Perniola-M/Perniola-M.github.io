@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -39,18 +39,31 @@
         html, body { overflow-x: hidden; }
         body { background: #fffdf7; }
         * { box-sizing: border-box; }
-        .audio-photo { cursor: pointer; outline: none; }
-        .audio-photo:focus-visible { box-shadow: 0 0 0 5px rgba(245, 158, 11, .45); }
-        .audio-photo.is-playing { box-shadow: 0 0 0 5px rgba(245, 158, 11, .55), 0 18px 55px rgba(15, 23, 42, .24); }
+        .audio-photo {
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 1rem;
+            border: 1px solid rgba(245, 158, 11, .35);
+            background: white;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, .18);
+            outline: none;
+            transform: translateY(0);
+            transition: box-shadow .2s ease, transform .2s ease;
+        }
+        .audio-photo:hover { transform: translateY(-2px); box-shadow: 0 24px 60px rgba(15, 23, 42, .24); }
+        .audio-photo:focus-visible { box-shadow: 0 0 0 5px rgba(245, 158, 11, .45), 0 24px 60px rgba(15, 23, 42, .24); }
+        .audio-photo.is-playing { box-shadow: 0 0 0 5px rgba(245, 158, 11, .55), 0 24px 60px rgba(15, 23, 42, .24); }
+        .audio-hint { margin-top: .85rem; text-align: center; font-weight: 900; color: #92400e; }
         .tab-panel { display: none; }
         .tab-panel.is-active { display: block; }
         .tab-button.is-active { background: #f59e0b; color: #0f172a; border-color: #f59e0b; box-shadow: 0 10px 24px rgba(245, 158, 11, .22); }
         @media (max-width: 640px) {
-            h1 { font-size: 2.35rem !important; line-height: 1.05 !important; }
-            h2 { font-size: 2rem !important; line-height: 1.12 !important; }
+            h1 { font-size: 2.2rem !important; line-height: 1.08 !important; }
+            h2 { font-size: 1.85rem !important; line-height: 1.15 !important; }
             .zone { padding-top: 3.5rem !important; padding-bottom: 3.5rem !important; }
             .zone-card { border-radius: 1.25rem !important; padding: 1.1rem !important; }
-            .tab-button { width: 100%; }
         }
     </style>
 </head>
@@ -66,11 +79,6 @@
                     <span class="block text-xs font-bold uppercase tracking-wide text-amber-700">Un van per la speranza</span>
                 </span>
             </a>
-            <div class="hidden items-center gap-6 text-sm font-bold text-slate-600">
-                <a href="#storia" class="hover:text-amber-700">La storia</a>
-                <a href="#guida" class="hover:text-amber-700">Come usare il sito</a>
-                <a href="#aiuto" class="hover:text-amber-700">Come aiutare</a>
-            </div>
             <a href="#aiuto" class="inline-flex items-center justify-center gap-2 bg-amberAction hover:bg-amber-600 text-ink px-4 sm:px-5 py-3 rounded-full font-black text-sm shadow-md">
                 <i class="fa-solid fa-heart text-rose-600"></i>
                 <span>Sostieni</span>
@@ -79,138 +87,187 @@
     </nav>
 
     <header class="bg-ink text-white">
-        <div class="max-w-2xl mx-auto px-4 sm:px-6 py-14 sm:py-20 text-center">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 py-14 sm:py-16 text-center">
             <p class="text-xs font-black tracking-[.18em] uppercase text-amber-300">Taranto - appello di solidarietà e mobilità</p>
             <h1 class="mt-5 text-4xl font-black tracking-tight">Un van sicuro per una famiglia che deve viaggiare per curarsi</h1>
-            <p class="mt-6 max-w-2xl mx-auto text-lg text-slate-200 leading-relaxed">
-                Tre sezioni, tre immagini da toccare, tre racconti audio: la storia della famiglia, la guida al sito e le modalità concrete per offrire aiuto.
+            <p class="mt-6 text-lg text-slate-200 leading-relaxed">
+                Tre zone verticali, tre foto da toccare, tre racconti audio. Il sito è impostato come una pagina da smartphone anche quando viene aperto da computer.
             </p>
         </div>
     </header>
 
     <main>
-        <section id="storia" class="zone py-20 sm:py-24">
+        <section id="storia" class="zone py-16">
             <div class="max-w-2xl mx-auto px-4 sm:px-6">
-                <div class="grid grid-cols-1 gap-10 items-center">
-                    <div>
-                        <p class="text-sm font-black uppercase tracking-[.16em] text-amber-700">Foto 1 - Anna & Michele</p>
-                        <h2 class="mt-3 text-3xl font-black tracking-tight">La storia della famiglia Perniola</h2>
-                        <p class="mt-5 text-lg text-slate-700 leading-relaxed">
-                            Questa sezione racconta la situazione familiare e clinica di Michele, Anna, dei figli e dei nipoti. La richiesta finale riguarda un mezzo sicuro a 7 posti, adatto ai viaggi sanitari lunghi e frequenti.
-                        </p>
-                        <div class="mt-6 flex flex-col gap-3">
-                            <a href="#aiuto" class="inline-flex items-center justify-center gap-2 bg-amberAction hover:bg-amber-600 text-ink px-5 py-3 rounded-xl font-black">
-                                <i class="fa-solid fa-hand-holding-heart"></i>
-                                Vai a come aiutare
-                            </a>
-                            <a href="#guida" class="inline-flex items-center justify-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 px-5 py-3 rounded-xl font-black">
-                                <i class="fa-solid fa-circle-question text-amber-600"></i>
-                                Come funziona
-                            </a>
-                        </div>
-                    </div>
-                    <button class="audio-photo group relative rounded-2xl overflow-hidden border border-amber-200 bg-white shadow-xl" data-audio-key="storia" aria-label="Ascolta o interrompi il racconto della storia della famiglia Perniola">
+                <p class="text-sm font-black uppercase tracking-[.16em] text-amber-700">Foto 1 - Anna & Michele</p>
+                <h2 class="mt-3 text-3xl font-black tracking-tight">La storia della famiglia Perniola</h2>
+                <p class="mt-5 text-lg text-slate-700 leading-relaxed">
+                    Michele Perniola ha 64 anni, è sposato con Anna da quarant'anni e vive con la famiglia in provincia di Taranto. Il racconto parte dalla sua voce e attraversa tre generazioni, segnate da una storia clinica complessa.
+                </p>
+
+                <div class="mt-8">
+                    <button class="audio-photo" data-audio-key="storia" aria-label="Ascolta o interrompi il racconto della storia della famiglia Perniola">
                         <img src="Foto1.jpg" alt="Anna e Michele Perniola seduti vicini all'aperto" class="w-full aspect-[16/9] object-cover">
-                        <span class="absolute inset-x-4 bottom-4 flex items-center justify-center gap-3 rounded-xl bg-ink/88 px-4 py-3 text-white font-black">
-                            <i class="fa-solid fa-volume-high text-amber-300"></i>
-                            Tocca la foto per ascoltare
-                        </span>
                     </button>
+                    <p class="audio-hint"><i class="fa-solid fa-volume-high mr-2"></i>Tocca la foto per ascoltare la storia</p>
                 </div>
 
-                <div class="zone-card mt-12 bg-white rounded-2xl border border-amber-200 shadow-sm p-6 sm:p-8">
+                <div class="zone-card mt-10 bg-white rounded-2xl border border-amber-200 shadow-sm p-6 sm:p-8">
                     <div class="flex flex-col gap-3 mb-8">
                         <button class="tab-button is-active px-5 py-3 rounded-xl border border-slate-200 bg-white font-black" data-tab="genitori">Michele e Anna</button>
                         <button class="tab-button px-5 py-3 rounded-xl border border-slate-200 bg-white font-black" data-tab="figli">I figli</button>
                         <button class="tab-button px-5 py-3 rounded-xl border border-slate-200 bg-white font-black" data-tab="nipoti">I nipoti</button>
-                        <button class="tab-button px-5 py-3 rounded-xl border border-slate-200 bg-white font-black" data-tab="clinica">Nota clinica</button>
+                        <button class="tab-button px-5 py-3 rounded-xl border border-slate-200 bg-white font-black" data-tab="clinica">Sindrome di Axenfeld</button>
                     </div>
 
                     <div id="tab-genitori" class="tab-panel is-active">
-                        <div class="grid grid-cols-1 gap-8">
-                            <div>
-                                <h3 class="text-2xl font-black">Michele Perniola e Anna Albano</h3>
-                                <p class="mt-4 text-slate-700 leading-relaxed">Michele e Anna sono sposati da quarant'anni. Michele convive dalla nascita con un glaucoma congenito bilaterale che nel tempo lo ha portato alla cecità assoluta.</p>
-                                <p class="mt-4 text-slate-700 leading-relaxed">Anna è l'unica persona della famiglia abilitata alla guida. Per visite, controlli e cure, affronta tratte lunghe, spesso con persone fragili a bordo.</p>
-                            </div>
-                            <div class="rounded-2xl bg-ink text-white p-6">
-                                <h4 class="font-black text-amber-300">Perché serve un van</h4>
-                                <p class="mt-4 text-slate-200 leading-relaxed">La famiglia ha bisogno di un mezzo stabile, capiente e sicuro. Un van a 7 posti permetterebbe di viaggiare insieme, riducendo rischi e difficoltà negli spostamenti verso gli ospedali.</p>
-                            </div>
-                        </div>
+                        <h3 class="text-2xl font-black">Michele, Anna e il peso dei viaggi</h3>
+                        <p class="mt-4 text-slate-700 leading-relaxed">
+                            Michele convive dalla nascita con un glaucoma congenito bilaterale. Nel corso degli anni la malattia lo ha portato alla cecità assoluta.
+                        </p>
+                        <p class="mt-4 text-slate-700 leading-relaxed">
+                            Anna è l'unica persona della famiglia che può guidare. Questo significa che ogni controllo, ogni visita e ogni spostamento lontano ricadono su di lei: viaggi lunghi, spesso verso città diverse d'Italia, con familiari fragili da accompagnare.
+                        </p>
                     </div>
 
                     <div id="tab-figli" class="tab-panel">
-                        <div class="grid grid-cols-1 gap-5">
-                            <article class="rounded-2xl bg-slate-50 border border-slate-200 p-5"><h3 class="text-xl font-black">Nicola</h3><p class="mt-3 text-sm text-slate-700 leading-relaxed">Seguito dall'Istituto Rizzoli di Bologna dopo un sarcoma maligno al quadricipite sinistro, con controlli periodici.</p></article>
-                            <article class="rounded-2xl bg-amberSoft border border-amber-200 p-5"><h3 class="text-xl font-black">Francesco</h3><p class="mt-3 text-sm text-slate-700 leading-relaxed">Ha affrontato gravi complicanze oculari e percorsi oncologici tra Torino e Pisa, con controlli specialistici.</p></article>
-                            <article class="rounded-2xl bg-slate-50 border border-slate-200 p-5"><h3 class="text-xl font-black">Mattia</h3><p class="mt-3 text-sm text-slate-700 leading-relaxed">Convive con glaucoma congenito ereditario, interventi chirurgici e visite oculistiche periodiche.</p></article>
+                        <div class="space-y-5">
+                            <article class="rounded-2xl bg-slate-50 border border-slate-200 p-5">
+                                <h3 class="text-xl font-black">Nicola</h3>
+                                <p class="mt-3 text-slate-700 leading-relaxed">
+                                    Nicola, il figlio maggiore, circa sei anni fa è stato colpito da un sarcoma maligno al quadricipite sinistro. È stato operato all'Istituto Rizzoli di Bologna, dove gli sono stati asportati dodici centimetri di muscolo. Continua a sottoporsi a controlli periodici, con TAC, risonanze e visite di follow-up.
+                                </p>
+                            </article>
+                            <article class="rounded-2xl bg-amberSoft border border-amber-200 p-5">
+                                <h3 class="text-xl font-black">Francesco</h3>
+                                <p class="mt-3 text-slate-700 leading-relaxed">
+                                    Francesco ha ereditato il glaucoma congenito. Dopo diversi interventi, una grave complicanza ha colpito l'occhio destro, portandolo prima alla cecità e poi alla sviscerazione dell'occhio.
+                                </p>
+                                <p class="mt-3 text-slate-700 leading-relaxed">
+                                    La sua storia clinica comprende anche un seminoma testicolare, con interventi e controlli alle Molinette di Torino, e un tumore maligno alla tiroide operato all'ospedale Cisanello di Pisa, con tiroidectomia totale, asportazione di ventitré linfonodi e successiva iodioterapia.
+                                </p>
+                            </article>
+                            <article class="rounded-2xl bg-slate-50 border border-slate-200 p-5">
+                                <h3 class="text-xl font-black">Mattia</h3>
+                                <p class="mt-3 text-slate-700 leading-relaxed">
+                                    Anche Mattia convive con il glaucoma congenito. Ha affrontato interventi in città diverse e oggi mantiene la situazione sotto controllo grazie a colliri e visite specialistiche periodiche.
+                                </p>
+                            </article>
                         </div>
                     </div>
 
                     <div id="tab-nipoti" class="tab-panel">
-                        <div class="grid grid-cols-1 gap-5">
-                            <article class="rounded-2xl bg-rose-50 border border-rose-100 p-5"><h3 class="text-xl font-black">Michele, 4 anni</h3><p class="mt-3 text-sm text-slate-700 leading-relaxed">Diagnosi di glaucoma congenito bilaterale. Deve raggiungere Verona per controlli specialistici in anestesia generale.</p></article>
-                            <article class="rounded-2xl bg-sky-50 border border-sky-100 p-5"><h3 class="text-xl font-black">Samuel, 6 anni</h3><p class="mt-3 text-sm text-slate-700 leading-relaxed">Operato per ipospadia in età pediatrica, resta seguito nel tempo da specialisti durante la crescita.</p></article>
+                        <div class="space-y-5">
+                            <article class="rounded-2xl bg-rose-50 border border-rose-100 p-5">
+                                <h3 class="text-xl font-black">Michele, 4 anni</h3>
+                                <p class="mt-3 text-slate-700 leading-relaxed">
+                                    Michele, figlio di Francesco, ha ricevuto anche lui diagnosi di glaucoma congenito. È seguito all'ospedale Borgo Roma di Verona, dove periodicamente deve effettuare visite in narcosi per controllare l'evoluzione della malattia e la risposta alle terapie.
+                                </p>
+                            </article>
+                            <article class="rounded-2xl bg-sky-50 border border-sky-100 p-5">
+                                <h3 class="text-xl font-black">Samuel, 6 anni</h3>
+                                <p class="mt-3 text-slate-700 leading-relaxed">
+                                    Samuel, figlio di Mattia, è stato operato due volte all'età di due anni per ipospadia, una malformazione congenita dell'uretra. Anche lui resta sotto controllo durante la crescita.
+                                </p>
+                            </article>
                         </div>
                     </div>
 
                     <div id="tab-clinica" class="tab-panel">
-                        <h3 class="text-2xl font-black">Sindrome di Axenfeld-Rieger</h3>
-                        <p class="mt-4 text-slate-700 leading-relaxed">Molte delle condizioni presenti nella famiglia sono riconducibili alla sindrome di Axenfeld-Rieger, una rara condizione genetica che può coinvolgere soprattutto l'occhio, ma anche altri apparati.</p>
-                        <div class="mt-6 grid grid-cols-1 gap-5">
-                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4"><strong>Oculare</strong><p class="mt-2 text-sm">Glaucoma congenito e rischio di perdita della vista.</p></div>
-                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4"><strong>Urologico</strong><p class="mt-2 text-sm">Possibili alterazioni dello sviluppo genito-urinario.</p></div>
-                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4"><strong>Controlli</strong><p class="mt-2 text-sm">Necessità di monitoraggi e spostamenti sanitari ricorrenti.</p></div>
+                        <h3 class="text-2xl font-black">Una condizione che attraversa la famiglia</h3>
+                        <p class="mt-4 text-slate-700 leading-relaxed">
+                            Nel racconto di Michele compare la sindrome di Axenfeld-Rieger, una condizione genetica rara che può essere associata a glaucoma congenito e ad altre manifestazioni. Michele collega a questa sindrome alcune delle difficoltà oculari e pediatriche presenti nella famiglia.
+                        </p>
+                        <div class="mt-6 space-y-4">
+                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4"><strong>Vista</strong><p class="mt-2 text-sm">Glaucoma congenito, controlli oculistici e rischio di perdita della vista.</p></div>
+                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4"><strong>Infanzia</strong><p class="mt-2 text-sm">Controlli pediatrici, interventi e visite periodiche per i nipoti.</p></div>
+                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4"><strong>Spostamenti</strong><p class="mt-2 text-sm">Viaggi verso Verona, Bologna, Torino, Pisa e altri centri specialistici.</p></div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="guida" class="zone py-20 sm:py-24 bg-slate-100">
+        <section id="guida" class="zone py-16 bg-slate-100">
             <div class="max-w-2xl mx-auto px-4 sm:px-6">
-                <div class="grid grid-cols-1 gap-10 items-center">
-                    <button class="audio-photo group relative rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-xl" data-audio-key="guida" aria-label="Ascolta o interrompi la guida audio all'uso del sito">
+                <p class="text-sm font-black uppercase tracking-[.16em] text-amber-700">Foto 2 - Come usare il sito</p>
+                <h2 class="mt-3 text-3xl font-black tracking-tight">Una guida per ascoltare invece di leggere</h2>
+                <p class="mt-5 text-lg text-slate-700 leading-relaxed">
+                    Questa sezione serve a orientare chi vede poco, chi usa lo smartphone, chi preferisce ascoltare o chi vuole capire rapidamente dove si trova e cosa può fare.
+                </p>
+
+                <div class="mt-8">
+                    <button class="audio-photo" data-audio-key="guida" aria-label="Ascolta o interrompi la guida audio all'uso del sito">
                         <img src="Foto2.jpg" alt="Illustrazione: una domanda collegata a una risposta" class="w-full aspect-[16/9] object-cover">
-                        <span class="absolute inset-x-4 bottom-4 flex items-center justify-center gap-3 rounded-xl bg-ink/88 px-4 py-3 text-white font-black"><i class="fa-solid fa-volume-high text-amber-300"></i>Tocca la foto per ascoltare</span>
                     </button>
-                    <div>
-                        <p class="text-sm font-black uppercase tracking-[.16em] text-amber-700">Foto 2 - Come usare il sito</p>
-                        <h2 class="mt-3 text-3xl font-black tracking-tight">Una guida pensata per chi preferisce ascoltare</h2>
-                        <p class="mt-5 text-lg text-slate-700 leading-relaxed">Questa sezione spiega come muoversi nel sito riducendo al minimo la necessità di leggere. Ogni foto principale può avviare una voce narrante dedicata.</p>
-                        <div class="mt-8 grid grid-cols-1 gap-4">
-                            <div class="rounded-xl bg-white border border-slate-200 p-5"><h3 class="font-black">Come ascolto?</h3><p class="mt-2 text-sm text-slate-700">Tocca la foto della sezione. Un secondo tocco sulla stessa foto mette in pausa.</p></div>
-                            <div class="rounded-xl bg-white border border-slate-200 p-5"><h3 class="font-black">Come cambio sezione?</h3><p class="mt-2 text-sm text-slate-700">Scorri la pagina oppure usa i collegamenti in alto. Puoi ascoltare una sezione alla volta.</p></div>
-                            <div class="rounded-xl bg-white border border-slate-200 p-5"><h3 class="font-black">Se parte un altro audio?</h3><p class="mt-2 text-sm text-slate-700">L'audio precedente si ferma automaticamente e parte quello scelto.</p></div>
-                            <div class="rounded-xl bg-white border border-slate-200 p-5"><h3 class="font-black">Su smartphone?</h3><p class="mt-2 text-sm text-slate-700">Le sezioni si dispongono in verticale, con immagini grandi e pulsanti facili da toccare.</p></div>
-                        </div>
+                    <p class="audio-hint"><i class="fa-solid fa-volume-high mr-2"></i>Tocca la foto per ascoltare come usare il sito</p>
+                </div>
+
+                <div class="mt-10 space-y-4">
+                    <div class="rounded-2xl bg-white border border-slate-200 p-5">
+                        <h3 class="font-black text-xl">Come si ascolta?</h3>
+                        <p class="mt-2 text-slate-700 leading-relaxed">Ogni foto principale è un pulsante audio. Toccando la foto parte la voce narrante. Toccando di nuovo la stessa foto, la voce si mette in pausa.</p>
+                    </div>
+                    <div class="rounded-2xl bg-white border border-slate-200 p-5">
+                        <h3 class="font-black text-xl">Che cosa succede se tocco un'altra foto?</h3>
+                        <p class="mt-2 text-slate-700 leading-relaxed">L'audio precedente si ferma e parte quello della nuova sezione. In questo modo non si sovrappongono più voci.</p>
+                    </div>
+                    <div class="rounded-2xl bg-white border border-slate-200 p-5">
+                        <h3 class="font-black text-xl">Come si naviga?</h3>
+                        <p class="mt-2 text-slate-700 leading-relaxed">Il sito è tutto in verticale. Si scorre dall'alto verso il basso, come una pagina da smartphone. In alto resta disponibile il pulsante “Sostieni”, che porta alla parte dedicata all'aiuto concreto.</p>
+                    </div>
+                    <div class="rounded-2xl bg-white border border-slate-200 p-5">
+                        <h3 class="font-black text-xl">A cosa servono le linguette?</h3>
+                        <p class="mt-2 text-slate-700 leading-relaxed">Nella storia della famiglia ci sono linguette per leggere un argomento alla volta: Michele e Anna, i figli, i nipoti e la nota clinica. La linguetta evidenziata indica il contenuto visibile.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="aiuto" class="zone py-20 sm:py-24">
+        <section id="aiuto" class="zone py-16">
             <div class="max-w-2xl mx-auto px-4 sm:px-6">
-                <div class="grid grid-cols-1 gap-10 items-center">
-                    <div>
-                        <p class="text-sm font-black uppercase tracking-[.16em] text-amber-700">Foto 3 - Come aiutare concretamente</p>
-                        <h2 class="mt-3 text-3xl font-black tracking-tight">La raccolta fondi per il van a 7 posti</h2>
-                        <p class="mt-5 text-lg text-slate-700 leading-relaxed">La raccolta si appoggia a GoFundMe, piattaforma internazionale per le donazioni online. La pagina di donazione è già collegata dal sito e permette di sostenere l'iniziativa in modo guidato.</p>
-                        <div class="mt-8 grid grid-cols-1 gap-4">
-                            <div class="rounded-xl bg-white border border-amber-200 p-5"><h3 class="font-black">Obiettivo</h3><p class="mt-2 text-sm text-slate-700">Raccogliere il necessario per un van sicuro a 7 posti.</p></div>
-                            <div class="rounded-xl bg-white border border-amber-200 p-5"><h3 class="font-black">Metodo</h3><p class="mt-2 text-sm text-slate-700">Aprire GoFundMe e scegliere liberamente l'importo.</p></div>
-                            <div class="rounded-xl bg-white border border-amber-200 p-5"><h3 class="font-black">Sicurezza</h3><p class="mt-2 text-sm text-slate-700">La donazione passa dalla pagina ufficiale della raccolta.</p></div>
-                        </div>
-                        <div class="mt-8 flex flex-col gap-3">
-                            <a href="https://www.gofundme.com/f/un-van-per-la-speranza-aiutiamo-la-famiglia-perniola/donate?lang=it_IT" target="_blank" class="inline-flex items-center justify-center gap-2 bg-amberAction hover:bg-amber-600 text-ink px-6 py-4 rounded-xl font-black text-lg shadow-lg"><i class="fa-solid fa-heart text-rose-600"></i>Vai alla donazione</a>
-                            <a href="https://gofund.me/3d89b0931" target="_blank" class="inline-flex items-center justify-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 px-6 py-4 rounded-xl font-black">Vedi l'iniziativa</a>
-                        </div>
-                    </div>
-                    <button class="audio-photo group relative rounded-2xl overflow-hidden border border-amber-200 bg-white shadow-xl" data-audio-key="aiuto" aria-label="Ascolta o interrompi la spiegazione su GoFundMe e sulle donazioni">
+                <p class="text-sm font-black uppercase tracking-[.16em] text-amber-700">Foto 3 - Come aiutare concretamente</p>
+                <h2 class="mt-3 text-3xl font-black tracking-tight">Il van a 7 posti</h2>
+                <p class="mt-5 text-lg text-slate-700 leading-relaxed">
+                    Questa sezione raccoglie le informazioni pratiche. La famiglia deve spostarsi verso più città per visite, controlli e cure. Il problema principale non è un singolo viaggio, ma la continuità degli spostamenti nel tempo.
+                </p>
+
+                <div class="mt-8">
+                    <button class="audio-photo" data-audio-key="aiuto" aria-label="Ascolta o interrompi la spiegazione sul van e sulla donazione">
                         <img src="Foto3.jpg" alt="Illustrazione di un van a 7 posti con segno di conferma" class="w-full aspect-[16/9] object-cover">
-                        <span class="absolute inset-x-4 bottom-4 flex items-center justify-center gap-3 rounded-xl bg-ink/88 px-4 py-3 text-white font-black"><i class="fa-solid fa-volume-high text-amber-300"></i>Tocca il van per ascoltare</span>
                     </button>
+                    <p class="audio-hint"><i class="fa-solid fa-volume-high mr-2"></i>Tocca il van per ascoltare la spiegazione pratica</p>
+                </div>
+
+                <div class="zone-card mt-10 rounded-2xl bg-ink text-white p-6 sm:p-8 shadow-xl">
+                    <h3 class="text-2xl font-black text-amber-300">La richiesta del mezzo</h3>
+                    <p class="mt-4 text-slate-200 leading-relaxed">
+                        Michele chiede l'aiuto di chi possa donare, mettere a disposizione o facilitare l'acquisto di un mezzo a 7 posti, anche non nuovo, purché sicuro e adatto agli spostamenti sanitari della famiglia.
+                    </p>
+                    <p class="mt-4 text-slate-200 leading-relaxed">
+                        Il motivo è concreto: Anna è l'unica autista disponibile. Francesco non può guidare per la sua condizione visiva; Mattia non può sostenere questo ruolo. Un mezzo più capiente permetterebbe di viaggiare con più persone, affrontando con maggiore sicurezza tratte verso Torino, Verona, Pisa, Bologna e altri centri specialistici.
+                    </p>
+                </div>
+
+                <div class="mt-8 space-y-4">
+                    <div class="rounded-2xl bg-white border border-amber-200 p-5">
+                        <h3 class="font-black text-xl">GoFundMe</h3>
+                        <p class="mt-2 text-slate-700 leading-relaxed">La raccolta fondi è predisposta su GoFundMe, piattaforma internazionale usata per donazioni online. Dal sito si può aprire la pagina ufficiale della raccolta e procedere con i passaggi guidati.</p>
+                    </div>
+                    <div class="rounded-2xl bg-white border border-amber-200 p-5">
+                        <h3 class="font-black text-xl">Donazione o contatto diretto</h3>
+                        <p class="mt-2 text-slate-700 leading-relaxed">Chi vuole donare può usare il pulsante verso GoFundMe. Chi invece può proporre un mezzo, un contatto, una concessionaria o un aiuto pratico può usare i riferimenti della raccolta e dell'iniziativa.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex flex-col gap-3">
+                    <a href="https://www.gofundme.com/f/un-van-per-la-speranza-aiutiamo-la-famiglia-perniola/donate?lang=it_IT" target="_blank" class="inline-flex items-center justify-center gap-2 bg-amberAction hover:bg-amber-600 text-ink px-6 py-4 rounded-xl font-black text-lg shadow-lg">
+                        <i class="fa-solid fa-heart text-rose-600"></i>
+                        Vai alla donazione
+                    </a>
+                    <a href="https://gofund.me/3d89b0931" target="_blank" class="inline-flex items-center justify-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 px-6 py-4 rounded-xl font-black">
+                        Vedi l'iniziativa
+                    </a>
                 </div>
             </div>
         </section>
