@@ -523,6 +523,7 @@
         let userChoseAudio = false;
         let userPressedBeforeAutoStart = false;
         let nextAudioTimer = null;
+        let waitingForFirstUserGesture = false;
 
         function clearNextAudioTimer() {
             if (!nextAudioTimer) return;
@@ -550,7 +551,7 @@
             title.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        function playPageAudio(key, automaticStart = false) {
+        function playPageAudio(key, automaticStart = false, restartFromBeginning = false) {
             const selectedAudio = pageAudio[key];
             if (!selectedAudio) return;
             if (!automaticStart) {
@@ -561,9 +562,13 @@
             pauseCurrentAudio();
             currentAudioKey = key;
             focusAudioTitle(key);
-            if (selectedAudio.ended) selectedAudio.currentTime = 0;
-            selectedAudio.play().then(() => setPlayingTitle(key)).catch(() => {
+            if (restartFromBeginning || automaticStart || selectedAudio.ended) selectedAudio.currentTime = 0;
+            selectedAudio.play().then(() => {
+                waitingForFirstUserGesture = false;
+                setPlayingTitle(key);
+            }).catch(() => {
                 currentAudioKey = null;
+                waitingForFirstUserGesture = automaticStart && key === 'pagina1';
                 setPlayingTitle(null);
             });
         }
@@ -579,7 +584,7 @@
                 return;
             }
 
-            playPageAudio(key, automaticStart);
+            playPageAudio(key, automaticStart, false);
         }
 
         function scheduleNextAudioFrom(key) {
@@ -587,8 +592,7 @@
             const currentIndex = audioSequence.indexOf(key);
             const nextKey = audioSequence[(currentIndex + 1) % audioSequence.length];
             nextAudioTimer = window.setTimeout(() => {
-                const nextTitle = document.querySelector(`.audio-title[data-audio-key="${nextKey}"]`);
-                if (nextTitle) nextTitle.click();
+                playPageAudio(nextKey, true, true);
             }, 5000);
         }
 
@@ -616,8 +620,13 @@
 
         ['pointerdown', 'keydown', 'touchstart'].forEach(eventName => {
             window.addEventListener(eventName, event => {
-                if (event.isTrusted) userPressedBeforeAutoStart = true;
-            }, { once: true, passive: true });
+                if (!event.isTrusted) return;
+                userPressedBeforeAutoStart = true;
+                if (event.target.closest && event.target.closest('.audio-title')) return;
+                if (waitingForFirstUserGesture && !userChoseAudio && !currentAudioKey) {
+                    playPageAudio('pagina1', true, true);
+                }
+            }, { passive: true });
         });
 
         window.addEventListener('load', () => {
