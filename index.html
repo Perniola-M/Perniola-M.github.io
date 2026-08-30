@@ -115,7 +115,7 @@
                     <span class="block text-xs font-bold uppercase tracking-wide text-amber-700">Un van per la speranza</span>
                 </span>
             </a>
-            <span class="hidden md:block absolute left-1/2 -translate-x-1/2 text-xs font-black text-slate-500 tabular-nums" aria-label="Versione del sito">30-08-26 17:47</span>
+            <span class="hidden md:block absolute left-1/2 -translate-x-1/2 text-xs font-black text-slate-500 tabular-nums" aria-label="Versione del sito">30-08-26 17:51</span>
             <a href="#aiuto" class="inline-flex items-center justify-center gap-2 bg-amberAction hover:bg-amber-600 text-ink px-4 sm:px-5 py-3 rounded-full font-black text-sm shadow-md">
                 <i class="fa-solid fa-heart text-rose-600"></i>
                 <span>Sostieni</span>
@@ -465,12 +465,11 @@
             updateAudioDisplay(key);
         }
 
-        function seekAudioFromFrame(event, key) {
+        function seekAudioFromFrame(event, key, frameElement = event.currentTarget) {
             const audio = sectionAudio[key];
             if (!audio || currentAudioKey !== key || audio.paused || !Number.isFinite(audio.duration) || audio.duration <= 0) return;
-            if (event.target.closest('.audio-photo')) return;
 
-            const frameBounds = event.currentTarget.getBoundingClientRect();
+            const frameBounds = frameElement.getBoundingClientRect();
             const bottomSeekArea = 28;
             if (event.clientY < frameBounds.bottom - bottomSeekArea) return;
 
@@ -478,6 +477,7 @@
             const progress = Math.min(1, Math.max(0, horizontalPosition));
             audio.currentTime = progress * audio.duration;
             updateAudioDisplay(key);
+            return true;
         }
 
         function setPlayingPhoto(key) {
@@ -532,6 +532,8 @@
             photo.setAttribute('aria-pressed', 'false');
             photo.addEventListener('click', event => {
                 event.stopPropagation();
+                const frame = photo.closest('.audio-frame');
+                if (frame && seekAudioFromFrame(event, photo.dataset.audioKey, frame)) return;
                 vibrateOnMobileTap();
                 toggleAudio(photo.dataset.audioKey);
             });
