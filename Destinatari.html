@@ -9,6 +9,8 @@
       --primary: #1e3a8a;
       --primary-hover: #172554;
       --secondary: #0284c7;
+      --orange-btn: #ea580c;
+      --orange-btn-hover: #c2410c;
       --success: #15803d;
       --bg: #f8fafc;
       --card: #ffffff;
@@ -26,7 +28,7 @@
       padding: 16px;
     }
 
-    .wrapper { max-width: 1200px; margin: 0 auto; }
+    .wrapper { max-width: 1250px; margin: 0 auto; }
 
     header {
       background: var(--card);
@@ -158,31 +160,49 @@
 
     .actions {
       display: flex;
-      gap: 8px;
+      flex-wrap: wrap;
+      gap: 6px;
       align-items: center;
     }
 
     .btn-send {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
+      gap: 5px;
+      padding: 7px 12px;
       background: var(--primary);
       color: #fff;
       text-decoration: none;
       border-radius: 6px;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       transition: background 0.2s;
       white-space: nowrap;
     }
     .btn-send:hover { background: var(--primary-hover); }
     .btn-send.sent-state { background: var(--success); }
 
+    /* Bottone Arancione per Nino */
+    .btn-nino {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 12px;
+      background: var(--orange-btn);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.82rem;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-nino:hover { background: var(--orange-btn-hover); }
+
     .btn-copy {
       background: #e2e8f0;
       border: none;
-      padding: 8px 10px;
+      padding: 7px 9px;
       border-radius: 6px;
       cursor: pointer;
       font-size: 0.8rem;
@@ -191,7 +211,7 @@
     }
     .btn-copy:hover { background: #cbd5e1; }
 
-    /* Modal */
+    /* Modal Anteprima */
     .modal {
       display: none;
       position: fixed;
@@ -235,7 +255,7 @@
   <header>
     <h1>Campagna Solidale Famiglia Perniola - Elenco Invio</h1>
     <div class="instructions">
-      👉 <strong>Come funziona:</strong> Clicca su <strong>"✉️ Invia Email"</strong> per aprire direttamente il tuo programma di posta (Gmail, Outlook, Mail, ecc.) con l'indirizzo, l'oggetto e il testo dell'appello già compilati. Ti basterà solo verificare e premere <em>Invia</em> nel tuo programma di posta.
+      👉 Clicca su <strong>"✉️ Invia Email"</strong> per inviare direttamente all'azienda, oppure su <strong>"🟠 Email Nino"</strong> per inviare la bozza personalizzata per quella specifica azienda a <em>s.mazzarisi@mazzarisi.it</em>.
     </div>
 
     <div class="stats-container">
@@ -286,6 +306,7 @@
 </div>
 
 <script>
+const EMAIL_NINO = "s.mazzarisi@mazzarisi.it";
 const OGGETTO_EMAIL = "Un appello dal cuore: richiesta di aiuto per i viaggi sanitari della famiglia Perniola (ricerca di un van/auto a 7 posti, anche usato)";
 
 const CORPO_BASE = `Mi chiamo Michele Perniola, ho 64 anni e vi scrivo insieme a mia moglie Anna da un piccolo paese in provincia di Taranto. Vi raggiungiamo con questo messaggio con la massima umiltà e trasparenza, per raccontarvi la storia della nostra famiglia e chiedervi un aiuto concreto che per noi rappresenterebbe una vera e propria svolta di vita.
@@ -342,7 +363,7 @@ const LISTA_DESTINATARI = [
   { name: "De Finis Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Amministrazione", email: "info@definisauto.it", city: "Foggia" },
   { name: "Giolì Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Vendite & Flotte", email: "info@gioliauto.it", city: "Lecce / Brindisi" },
   { name: "Lupò Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Titolare", email: "info@lupoauto.it", city: "Lecce / Taranto" },
-  { name: "Magno Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione", email: "info@magnoauto.it", city: "Bitonto (BA)" },
+  { name: "Magno Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Bitonto (BA)", email: "info@magnoauto.it", city: "Bitonto (BA)" },
   { name: "Pugliauto Srl", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Info", email: "info@pugliauto.it", city: "Bari" },
   { name: "Top Car Srl", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione", email: "info@topcartaranto.it", city: "Taranto" },
   { name: "Centro Auto Taranto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Vendite", email: "info@centroautotaranto.it", city: "Taranto" },
@@ -358,8 +379,8 @@ const LISTA_DESTINATARI = [
   { name: "Drivalia Mobility Store", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Customer Care", email: "customercare@drivalia.com", city: "Bari / Taranto" },
 
   // Noleggio Flotte
-  { name: "Arval Italia (CSR)", cat: "Noleggio", tag: "tag-noleggio", dept: "Corporate Social Responsibility", email: "csr@arval.it", city: "Milano / Roma" },
-  { name: "Arval Italia (Comunicazione)", cat: "Noleggio", tag: "tag-noleggio", dept: "Ufficio Comunicazione", email: "comunicazione@arval.it", city: "Milano" },
+  { name: "Arval Italia (CSR)", cat: "Noleggio", tag: "tag-noleggio", dept: "CSR", email: "csr@arval.it", city: "Milano / Roma" },
+  { name: "Arval Italia (Comunicazione)", cat: "Noleggio", tag: "tag-noleggio", dept: "Comunicazione", email: "comunicazione@arval.it", city: "Milano" },
   { name: "LeasePlan / ALD Automotive", cat: "Noleggio", tag: "tag-noleggio", dept: "CSR & Comunicazione", email: "csr@leaseplan.it", city: "Roma" },
   { name: "Ayvens Italia", cat: "Noleggio", tag: "tag-noleggio", dept: "Ufficio Stampa & CSR", email: "comunicazione.it@ayvens.com", city: "Roma / Milano" },
   { name: "Drivalia Corporate", cat: "Noleggio", tag: "tag-noleggio", dept: "Direzione Generale", email: "info@drivalia.com", city: "Torino" },
@@ -372,10 +393,10 @@ const LISTA_DESTINATARI = [
   { name: "Kinto Italia (Toyota)", cat: "Noleggio", tag: "tag-noleggio", dept: "Inclusive Mobility", email: "kinto.italia@toyota-europe.com", city: "Roma" },
   { name: "Program Autonoleggio", cat: "Noleggio", tag: "tag-noleggio", dept: "Direzione", email: "info@programautonoleggio.com", city: "Firenze" },
   { name: "Athlon Car Lease Italy", cat: "Noleggio", tag: "tag-noleggio", dept: "Direzione", email: "info.italy@athlon.com", city: "Roma" },
-  { name: "Leasys S.p.A.", cat: "Noleggio", tag: "tag-noleggio", dept: "Comunicazione Istituzionale", email: "comunicazione@leasys.com", city: "Torino" },
+  { name: "Leasys S.p.A.", cat: "Noleggio", tag: "tag-noleggio", dept: "Comunicazione", email: "comunicazione@leasys.com", city: "Torino" },
 
   // Costruttori (CSR)
-  { name: "Toyota Motor Italia (CSR)", cat: "Costruttori", tag: "tag-costruttori", dept: "Responsabilità Sociale (CSR)", email: "csr@toyota.it", city: "Roma" },
+  { name: "Toyota Motor Italia (CSR)", cat: "Costruttori", tag: "tag-costruttori", dept: "CSR", email: "csr@toyota.it", city: "Roma" },
   { name: "Toyota Motor Italia (Stampa)", cat: "Costruttori", tag: "tag-costruttori", dept: "Ufficio Stampa", email: "ufficiostampa@toyota.it", city: "Roma" },
   { name: "Stellantis Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Comunicazione Italia", email: "comunicazione.italia@stellantis.com", city: "Torino" },
   { name: "Volkswagen Group Italia (CSR)", cat: "Costruttori", tag: "tag-costruttori", dept: "CSR & Sostenibilità", email: "corporate.social.responsibility@volkswagen.it", city: "Verona" },
@@ -384,10 +405,10 @@ const LISTA_DESTINATARI = [
   { name: "Renault Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Comunicazione", email: "comunicazione@renault.it", city: "Roma" },
   { name: "Hyundai Motor Company Italy", cat: "Costruttori", tag: "tag-costruttori", dept: "Ufficio CSR", email: "csr.italy@hyundai.it", city: "Milano" },
   { name: "Kia Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Ufficio Stampa", email: "ufficiostampa@kia.it", city: "Milano" },
-  { name: "Mercedes-Benz Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "CSR & Iniziative Sociali", email: "csr_mbi@mercedes-benz.com", city: "Roma" },
-  { name: "BMW Group Italia (SpecialMente)", cat: "Costruttori", tag: "tag-costruttori", dept: "Progetto SpecialMente", email: "specialmente@bmw.it", city: "Milano" },
+  { name: "Mercedes-Benz Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "CSR", email: "csr_mbi@mercedes-benz.com", city: "Roma" },
+  { name: "BMW Group Italia (SpecialMente)", cat: "Costruttori", tag: "tag-costruttori", dept: "SpecialMente", email: "specialmente@bmw.it", city: "Milano" },
   { name: "Nissan Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Comunicazione", email: "comunicazione@nissan.it", city: "Capena (RM)" },
-  { name: "DR Automobiles Groupe", cat: "Costruttori", tag: "tag-costruttori", dept: "Comunicazione & Sociale", email: "comunicazione@drautomobiles.com", city: "Isernia" },
+  { name: "DR Automobiles Groupe", cat: "Costruttori", tag: "tag-costruttori", dept: "Comunicazione", email: "comunicazione@drautomobiles.com", city: "Isernia" },
   { name: "Suzuki Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Ufficio Stampa", email: "stampa@suzuki.it", city: "Torino" },
   { name: "Mazda Motor Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Relazioni Esterne", email: "relazioniesterne@mazda.it", city: "Roma" },
 
@@ -428,15 +449,16 @@ const LISTA_DESTINATARI = [
   { name: "Rotary Club Bari", cat: "Club", tag: "tag-club", dept: "Segreteria", email: "segreteria@rotarybari.it", city: "Bari" },
   { name: "Rotary Club Putignano", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "segreteria@rotaryputignano.it", city: "Putignano (BA)" },
   { name: "Rotary Club Fasano", cat: "Club", tag: "tag-club", dept: "Segreteria", email: "segreteria@rotaryfasano.it", city: "Fasano (BR)" },
-  { name: "UICI Taranto (Unione Ciechi)", cat: "Club", tag: "tag-club", dept: "Presidenza Sezione", email: "uicta@uici.it", city: "Taranto" }
+  { name: "UICI Taranto (Unione Ciechi)", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "uicta@uici.it", city: "Taranto" }
 ];
 
 let sentSet = new Set(JSON.parse(localStorage.getItem('perniola_sent_set') || '[]'));
 
-function creaMailto(dest) {
-  const intro = `Gentile ${dest.name},\n\n`;
+// Crea il link mailto personalizzato specificando l'indirizzo destinatario
+function creaMailto(destinatarioEmail, nomeAzienda) {
+  const intro = `Gentile ${nomeAzienda},\n\n`;
   const testo = intro + CORPO_BASE;
-  return `mailto:${dest.email}?subject=${encodeURIComponent(OGGETTO_EMAIL)}&body=${encodeURIComponent(testo)}`;
+  return `mailto:${destinatarioEmail}?subject=${encodeURIComponent(OGGETTO_EMAIL)}&body=${encodeURIComponent(testo)}`;
 }
 
 function render(lista) {
@@ -449,7 +471,8 @@ function render(lista) {
     tr.id = `row-${idx}`;
     if (isSent) tr.classList.add('is-sent');
 
-    const mailto = creaMailto(item);
+    const mailtoAzienda = creaMailto(item.email, item.name);
+    const mailtoNino = creaMailto(EMAIL_NINO, item.name);
 
     tr.innerHTML = `
       <td>${idx + 1}</td>
@@ -462,12 +485,17 @@ function render(lista) {
       <td>${item.city}</td>
       <td>
         <div class="actions">
-          <a href="${mailto}" 
+          <a href="${mailtoAzienda}" 
              class="btn-send ${isSent ? 'sent-state' : ''}" 
              onclick="segnaInviato('${item.email}', this, 'row-${idx}')">
              ${isSent ? '✅ Inviata' : '✉️ Invia Email'}
           </a>
-          <button class="btn-copy" title="Copia testo negli appunti" onclick="copiaEmail('${item.name}')">📋 Copia</button>
+          <a href="${mailtoNino}" 
+             class="btn-nino" 
+             title="Invia la bozza per questa azienda a Nino">
+             🟠 Email Nino
+          </a>
+          <button class="btn-copy" title="Copia testo negli appunti" onclick="copiaEmail('${item.name}')">📋</button>
         </div>
       </td>
     `;
