@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appello Famiglia Perniola - Invio Email</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #172554;
+      --secondary: #0284c7;
+      --success: #15803d;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 16px;
+    }
+
+    .wrapper { max-width: 1200px; margin: 0 auto; }
+
+    header {
+      background: var(--card);
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      color: var(--primary);
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+    }
+
+    .instructions {
+      font-size: 0.95rem;
+      color: #334155;
+      margin-bottom: 16px;
+      background: #eff6ff;
+      padding: 12px 16px;
+      border-left: 4px solid var(--secondary);
+      border-radius: 6px;
+    }
+
+    .stats-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .badge-info { background: #e0f2fe; color: #0369a1; }
+    .badge-sent { background: #dcfce7; color: #166534; }
+
+    .btn-top {
+      background: #475569;
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .btn-top:hover { background: #334155; }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 250px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    .category-select {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 0.95rem;
+    }
+
+    .table-box {
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow-x: auto;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: #f1f5f9;
+      padding: 12px 14px;
+      color: #475569;
+      font-weight: 600;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:hover td { background: #fafafa; }
+    tr.is-sent td {
+      background: #f0fdf4;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .tag-concessionarie { background: #dbeafe; color: #1e40af; }
+    .tag-noleggio { background: #fef3c7; color: #92400e; }
+    .tag-costruttori { background: #e0e7ff; color: #3730a3; }
+    .tag-fondazioni { background: #dcfce7; color: #166534; }
+    .tag-club { background: #fae8ff; color: #86198f; }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn-send {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: var(--primary);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-send:hover { background: var(--primary-hover); }
+    .btn-send.sent-state { background: var(--success); }
+
+    .btn-copy {
+      background: #e2e8f0;
+      border: none;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #334155;
+    }
+    .btn-copy:hover { background: #cbd5e1; }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+    .modal.active { display: flex; }
+    .modal-box {
+      background: #fff;
+      max-width: 700px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 24px;
+      border-radius: 12px;
+      position: relative;
+    }
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    pre {
+      white-space: pre-wrap;
+      font-family: inherit;
+      background: #f8fafc;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <header>
+    <h1>Campagna Solidale Famiglia Perniola - Elenco Invio</h1>
+    <div class="instructions">
+      👉 <strong>Come funziona:</strong> Clicca su <strong>"✉️ Invia Email"</strong> per aprire direttamente il tuo programma di posta (Gmail, Outlook, Mail, ecc.) con l'indirizzo, l'oggetto e il testo dell'appello già compilati. Ti basterà solo verificare e premere <em>Invia</em> nel tuo programma di posta.
+    </div>
+
+    <div class="stats-container">
+      <span class="badge badge-info" id="countVisualizzati">Destinatari: 105</span>
+      <span class="badge badge-sent" id="countInviati">Inviati: 0 / 105</span>
+      <button class="btn-top" onclick="apriModal(true)">👁️ Leggi testo lettera</button>
+      <button class="btn-top" onclick="resetInviati()">🔄 Ripristina avanzamento</button>
+    </div>
+
+    <div class="filters">
+      <input type="text" id="filtroTesto" class="search-box" placeholder="Cerca azienda, città o email..." oninput="applicaFiltri()">
+      <select id="filtroCategoria" class="category-select" onchange="applicaFiltri()">
+        <option value="ALL">Tutte le tipologie</option>
+        <option value="Concessionarie">Concessionarie Puglia / Sud</option>
+        <option value="Noleggio">Noleggio Flotte / Lungo Termine</option>
+        <option value="Costruttori">Case Automobilistiche (CSR)</option>
+        <option value="Fondazioni">Fondazioni & Banche</option>
+        <option value="Club">Lions & Rotary Clubs</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="table-box">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Destinatario</th>
+          <th>Tipologia</th>
+          <th>Reparto / Rif.</th>
+          <th>Città</th>
+          <th>Azione</th>
+        </tr>
+      </thead>
+      <tbody id="tabellaDestinatari"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal" id="modalAnteprima">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Testo dell'appello preimpostato</h3>
+      <button style="border:none; background:none; font-size:1.4rem; cursor:pointer;" onclick="apriModal(false)">&times;</button>
+    </div>
+    <pre id="testoAppelloPre"></pre>
+  </div>
+</div>
+
+<script>
+const OGGETTO_EMAIL = "Un appello dal cuore: richiesta di aiuto per i viaggi sanitari della famiglia Perniola (ricerca di un van/auto a 7 posti, anche usato)";
+
+const CORPO_BASE = `Mi chiamo Michele Perniola, ho 64 anni e vi scrivo insieme a mia moglie Anna da un piccolo paese in provincia di Taranto. Vi raggiungiamo con questo messaggio con la massima umiltà e trasparenza, per raccontarvi la storia della nostra famiglia e chiedervi un aiuto concreto che per noi rappresenterebbe una vera e propria svolta di vita.
+
+Io sono affetto fin dalla nascita da una patologia genetica nota come sindrome di Axenfeld-Rieger, che mi ha causato un grave glaucoma congenito e portato alla cecità assoluta. Ma la prova più grande è che questa patologia e altre gravi malattie hanno colpito i nostri figli e nipotini su tre generazioni:
+
+- Francesco (secondogenito): glaucoma congenito, asportazione dell'occhio destro; dal 2011 combatte contro un seminoma (operato alle Molinette di Torino) e ha affrontato un tumore maligno alla tiroide con asportazione di 23 linfonodi a Pisa.
+- Nicola (primogenito): colpito da sarcoma al muscolo della gamba sinistra, operato all'Istituto Ortopedico Rizzoli di Bologna, dove esegue follow-up periodici.
+- Mattia (terzogenito): affetto da glaucoma congenito in terapia continua.
+- Il piccolo Michele (4 anni): glaucoma congenito ereditario, controlli semestrali in narcosi all'Ospedale Borgo Roma di Verona.
+- Il piccolo Samuel (6 anni): operato per malformazione collegata alla sindrome di Axenfeld.
+
+Per garantire le cure, viaggiamo continuamente da Taranto verso Verona, Bologna, Torino, Pisa e Bari (1.500-2.000 km a tratta). Mia moglie Anna è l'unica a poter guidare.
+
+Attualmente viaggiamo con una vecchia utilitaria usurata, che rischia di lasciarci in panne di notte e non ha posti sufficienti quando le visite coincidono.
+
+IL NOSTRO BISOGNO:
+Non cerchiamo un veicolo nuovo o di lusso: chiediamo il vostro aiuto per reperire o donare un veicolo a 7 posti (un van o monovolume, ANCHE USATO), sicuro e affidabile, che consenta alla famiglia di viaggiare unita, tutelando la sicurezza e il comfort dei piccoli e dei convalescenti.
+
+Siamo a completa disposizione per conoscervi e documentare con la massima trasparenza tutta la situazione medica descritta.
+
+Vi ringraziamo di cuore per il vostro tempo e per la vostra vicinanza.
+
+Con profonda gratitudine,
+Michele Perniola, sua moglie Anna e tutta la famiglia Perniola
+Provincia di Taranto (Puglia)
+Sito Campagna: https://perniola-m.github.io/`;
+
+const LISTA_DESTINATARI = [
+  // Concessionarie Puglia e Sud
+  { name: "Gruppo Marino", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione Generale", email: "info@gruppomarino.it", city: "Bari / Taranto / Matera" },
+  { name: "Autosat S.p.A.", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Servizio Clienti / Direzione", email: "info@gruppoautosat.com", city: "Taranto / Brindisi" },
+  { name: "Five Motors Srl", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione", email: "info@fivemotors.it", city: "Taranto / Brindisi" },
+  { name: "Semeraro & Miccoli Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Titolare / Ufficio Vendite", email: "info@semeraromiccoliauto.it", city: "Martina Franca (TA)" },
+  { name: "Autotrend", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione", email: "direzione@autotrend.biz", city: "Bari / Barletta" },
+  { name: "Maldarizzi Automotive Group", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Relazioni Esterne / CSR", email: "relazioniclienti@maldarizzi.com", city: "Bari / Trani / Matera" },
+  { name: "Deval Automotive", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Amministrazione", email: "devalautomotivesrl@gmail.com", city: "Bari" },
+  { name: "Millenia Srl", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione Commerciale", email: "info@millenia.it", city: "Bari" },
+  { name: "Motus Srl", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Servizio Clienti", email: "info@motus.it", city: "Bari" },
+  { name: "Autoclub Group", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione", email: "info@autoclubgroup.it", city: "Massafra (TA) / Bari" },
+  { name: "Auto Uno", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Info & Relazioni", email: "info@autouno.it", city: "Bari / Taranto" },
+  { name: "Gruppo De Mari", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione", email: "info@gruppodemari.it", city: "Bari" },
+  { name: "Emmeauto Group", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Relazioni Esterne", email: "info@emmeautogroup.com", city: "Taranto / Lecce" },
+  { name: "Carraro Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio Flotte", email: "info@carrarospa.it", city: "Puglia" },
+  { name: "Adesso Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Amministrazione", email: "info@adessoauto.it", city: "Taranto" },
+  { name: "Taranto Auto Srl", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione Vendite", email: "info@tarantoauto.it", city: "Taranto" },
+  { name: "Jonica Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Titolare", email: "info@jonica-auto.it", city: "Taranto" },
+  { name: "AutoVillage", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione", email: "info@autovillage.it", city: "Grottaglie (TA)" },
+  { name: "Sarauto Group", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Servizio Clienti", email: "info@sarauto.it", city: "Taranto" },
+  { name: "Starauto Srl", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione", email: "info@starauto.it", city: "Fasano / Taranto" },
+  { name: "Gruppo Picca", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Relazioni Esterne", email: "info@gruppopicca.it", city: "Modugno / Molfetta" },
+  { name: "Barbuscia Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione", email: "info@barbuscia.it", city: "Sud Italia" },
+  { name: "Gruppo Farina", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Relazioni Esterne", email: "info@gruppofarina.it", city: "Sud Italia" },
+  { name: "De Finis Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Amministrazione", email: "info@definisauto.it", city: "Foggia" },
+  { name: "Giolì Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Vendite & Flotte", email: "info@gioliauto.it", city: "Lecce / Brindisi" },
+  { name: "Lupò Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Titolare", email: "info@lupoauto.it", city: "Lecce / Taranto" },
+  { name: "Magno Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione", email: "info@magnoauto.it", city: "Bitonto (BA)" },
+  { name: "Pugliauto Srl", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Info", email: "info@pugliauto.it", city: "Bari" },
+  { name: "Top Car Srl", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione", email: "info@topcartaranto.it", city: "Taranto" },
+  { name: "Centro Auto Taranto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Vendite", email: "info@centroautotaranto.it", city: "Taranto" },
+  { name: "Autolandia", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Amministrazione", email: "info@autolandia.it", city: "Brindisi / Taranto" },
+  { name: "SupermAuto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Info", email: "info@supermauto.it", city: "Bari" },
+  { name: "City Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Vendite", email: "info@cityautomartina.it", city: "Martina Franca (TA)" },
+  { name: "Punto Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Titolare", email: "info@puntoauto.it", city: "Manduria (TA)" },
+  { name: "Massafra Motori", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione", email: "info@massaframotori.it", city: "Massafra (TA)" },
+  { name: "Giotto Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Titolare", email: "info@giottoauto.it", city: "Castellaneta (TA)" },
+  { name: "Maggiore Rent / Avis Hub", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Customer Care", email: "relazioni.clienti@avis-europe.com", city: "Bari / Brindisi" },
+  { name: "Sicily by Car", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Servizio Clienti", email: "servizioclienti@sbc.it", city: "Bari" },
+  { name: "Locauto Rent", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Info", email: "info@locautorent.it", city: "Bari / Brindisi" },
+  { name: "Drivalia Mobility Store", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Customer Care", email: "customercare@drivalia.com", city: "Bari / Taranto" },
+
+  // Noleggio Flotte
+  { name: "Arval Italia (CSR)", cat: "Noleggio", tag: "tag-noleggio", dept: "Corporate Social Responsibility", email: "csr@arval.it", city: "Milano / Roma" },
+  { name: "Arval Italia (Comunicazione)", cat: "Noleggio", tag: "tag-noleggio", dept: "Ufficio Comunicazione", email: "comunicazione@arval.it", city: "Milano" },
+  { name: "LeasePlan / ALD Automotive", cat: "Noleggio", tag: "tag-noleggio", dept: "CSR & Comunicazione", email: "csr@leaseplan.it", city: "Roma" },
+  { name: "Ayvens Italia", cat: "Noleggio", tag: "tag-noleggio", dept: "Ufficio Stampa & CSR", email: "comunicazione.it@ayvens.com", city: "Roma / Milano" },
+  { name: "Drivalia Corporate", cat: "Noleggio", tag: "tag-noleggio", dept: "Direzione Generale", email: "info@drivalia.com", city: "Torino" },
+  { name: "UnipolRental", cat: "Noleggio", tag: "tag-noleggio", dept: "Relazioni Esterne", email: "relazioniesterne@unipolrental.it", city: "Reggio Emilia" },
+  { name: "Alphabet Italia (BMW Group)", cat: "Noleggio", tag: "tag-noleggio", dept: "Corporate Fleet", email: "alphabet.italia@alphabet.com", city: "Milano" },
+  { name: "SIXT Italia", cat: "Noleggio", tag: "tag-noleggio", dept: "CSR Italia", email: "csr-italia@sixt.com", city: "Milano" },
+  { name: "Hertz Italiana", cat: "Noleggio", tag: "tag-noleggio", dept: "Relazioni Clienti", email: "relazioniclienti@hertz.com", city: "Roma" },
+  { name: "Europcar Mobility Group", cat: "Noleggio", tag: "tag-noleggio", dept: "Relazioni Istituzionali", email: "relazioni.istituzionali@europcar.com", city: "Roma" },
+  { name: "Horizon Automotive", cat: "Noleggio", tag: "tag-noleggio", dept: "Ufficio Stampa", email: "info@horizonautomotive.it", city: "Milano" },
+  { name: "Kinto Italia (Toyota)", cat: "Noleggio", tag: "tag-noleggio", dept: "Inclusive Mobility", email: "kinto.italia@toyota-europe.com", city: "Roma" },
+  { name: "Program Autonoleggio", cat: "Noleggio", tag: "tag-noleggio", dept: "Direzione", email: "info@programautonoleggio.com", city: "Firenze" },
+  { name: "Athlon Car Lease Italy", cat: "Noleggio", tag: "tag-noleggio", dept: "Direzione", email: "info.italy@athlon.com", city: "Roma" },
+  { name: "Leasys S.p.A.", cat: "Noleggio", tag: "tag-noleggio", dept: "Comunicazione Istituzionale", email: "comunicazione@leasys.com", city: "Torino" },
+
+  // Costruttori (CSR)
+  { name: "Toyota Motor Italia (CSR)", cat: "Costruttori", tag: "tag-costruttori", dept: "Responsabilità Sociale (CSR)", email: "csr@toyota.it", city: "Roma" },
+  { name: "Toyota Motor Italia (Stampa)", cat: "Costruttori", tag: "tag-costruttori", dept: "Ufficio Stampa", email: "ufficiostampa@toyota.it", city: "Roma" },
+  { name: "Stellantis Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Comunicazione Italia", email: "comunicazione.italia@stellantis.com", city: "Torino" },
+  { name: "Volkswagen Group Italia (CSR)", cat: "Costruttori", tag: "tag-costruttori", dept: "CSR & Sostenibilità", email: "corporate.social.responsibility@volkswagen.it", city: "Verona" },
+  { name: "Volkswagen Group Italia (Relazioni)", cat: "Costruttori", tag: "tag-costruttori", dept: "Relazioni Esterne", email: "relazioni.esterne@volkswagen.it", city: "Verona" },
+  { name: "Ford Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Relazioni Pubbliche", email: "ufficiostampa@ford.com", city: "Roma" },
+  { name: "Renault Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Comunicazione", email: "comunicazione@renault.it", city: "Roma" },
+  { name: "Hyundai Motor Company Italy", cat: "Costruttori", tag: "tag-costruttori", dept: "Ufficio CSR", email: "csr.italy@hyundai.it", city: "Milano" },
+  { name: "Kia Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Ufficio Stampa", email: "ufficiostampa@kia.it", city: "Milano" },
+  { name: "Mercedes-Benz Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "CSR & Iniziative Sociali", email: "csr_mbi@mercedes-benz.com", city: "Roma" },
+  { name: "BMW Group Italia (SpecialMente)", cat: "Costruttori", tag: "tag-costruttori", dept: "Progetto SpecialMente", email: "specialmente@bmw.it", city: "Milano" },
+  { name: "Nissan Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Comunicazione", email: "comunicazione@nissan.it", city: "Capena (RM)" },
+  { name: "DR Automobiles Groupe", cat: "Costruttori", tag: "tag-costruttori", dept: "Comunicazione & Sociale", email: "comunicazione@drautomobiles.com", city: "Isernia" },
+  { name: "Suzuki Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Ufficio Stampa", email: "stampa@suzuki.it", city: "Torino" },
+  { name: "Mazda Motor Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Relazioni Esterne", email: "relazioniesterne@mazda.it", city: "Roma" },
+
+  // Fondazioni & Banche
+  { name: "Fondazione Puglia", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Segreteria Erogazioni", email: "segreteria@fondazionepuglia.it", city: "Bari" },
+  { name: "Fondazione BPPB ETS", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Consiglio Direttivo", email: "fondazionebppbets@bppb.it", city: "Altamura (BA)" },
+  { name: "Fondazione Banca Popolare Pugliese", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Segreteria", email: "info.fondazione@bpp.it", city: "Matino (LE)" },
+  { name: "BCC San Marzano di San Giuseppe", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Segreteria Generale", email: "segreteria@bccsmarzano.it", city: "San Marzano (TA)" },
+  { name: "BCC di Locorotondo", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Direzione", email: "info@bcc-locorotondo.it", city: "Locorotondo (BA)" },
+  { name: "BCC di Martina Franca", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Segreteria Generale", email: "segreteria@bccmartinafranca.it", city: "Martina Franca (TA)" },
+  { name: "BCC Alberobello e Sammichele", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Segreteria", email: "segreteria@bccalberobello.it", city: "Alberobello (BA)" },
+  { name: "Fondazione Enel Cuore Onlus", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Progetti Territoriali", email: "enelcuore.fondazione@enel.com", city: "Roma" },
+  { name: "Fondazione TIM", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Direzione", email: "fondazione.tim@telecomitalia.it", city: "Roma" },
+  { name: "Fondazione Vodafone Italia", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Iniziative Sociali", email: "fondazionevodafoneitalia@vodafone.com", city: "Milano" },
+  { name: "Fondazione Mediolanum", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Progetti Infanzia", email: "info@fondazionemediolanum.it", city: "Milano" },
+  { name: "Fondazione Allianz UMANA MENTE", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Segreteria Operativa", email: "umanamente@allianz.it", city: "Milano" },
+  { name: "Fondazione De Agostini", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Segreteria", email: "fondazione.deagostini@deagostini.it", city: "Milano" },
+  { name: "Fondazione Conad ETS", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Progetti Territoriali", email: "fondazione@conad.it", city: "Bologna" },
+  { name: "Fondazione Lavazza", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Segreteria Progetti", email: "fondazionelavazza@lavazza.com", city: "Torino" },
+
+  // Club di Servizio (Lions e Rotary)
+  { name: "Lions Club Distretto 108 AB Puglia", cat: "Club", tag: "tag-club", dept: "Segreteria Distrettuale", email: "segreteria@lions108ab.it", city: "Puglia" },
+  { name: "Lions Club Taranto Host", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "tarantohost@lions108ab.it", city: "Taranto" },
+  { name: "Lions Club Taranto Poseidon", cat: "Club", tag: "tag-club", dept: "Segreteria", email: "tarantoposeidon@lions108ab.it", city: "Taranto" },
+  { name: "Lions Club Taranto Città dei Due Mari", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "tarantodue-mari@lions108ab.it", city: "Taranto" },
+  { name: "Lions Club Martina Franca Host", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "martinafrancahost@lions108ab.it", city: "Martina Franca (TA)" },
+  { name: "Lions Club Massafra Mottola Le Cripte", cat: "Club", tag: "tag-club", dept: "Segreteria", email: "massaframottola@lions108ab.it", city: "Massafra (TA)" },
+  { name: "Lions Club Castellaneta Riva dei Tessali", cat: "Club", tag: "tag-club", dept: "Segreteria", email: "castellaneta@lions108ab.it", city: "Castellaneta (TA)" },
+  { name: "Lions Club Manduria", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "manduria@lions108ab.it", city: "Manduria (TA)" },
+  { name: "Lions Club Grottaglie", cat: "Club", tag: "tag-club", dept: "Segreteria", email: "grottaglie@lions108ab.it", city: "Grottaglie (TA)" },
+  { name: "Lions Club Bari Host", cat: "Club", tag: "tag-club", dept: "Segreteria", email: "barihost@lions108ab.it", city: "Bari" },
+  { name: "Rotary Distretto 2120", cat: "Club", tag: "tag-club", dept: "Segreteria Distrettuale", email: "segreteria@rotary2120.org", city: "Puglia" },
+  { name: "Rotary Club Taranto", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "segreteria@rotarytaranto.it", city: "Taranto" },
+  { name: "Rotary Club Taranto Magna Grecia", cat: "Club", tag: "tag-club", dept: "Segreteria", email: "info@rotarytarantomagnagrecia.org", city: "Taranto" },
+  { name: "Rotary Club Martina Franca", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "info@rotarymartinafranca.it", city: "Martina Franca (TA)" },
+  { name: "Rotary Club Manduria", cat: "Club", tag: "tag-club", dept: "Segreteria", email: "segreteria@rotarymanduria.it", city: "Manduria (TA)" },
+  { name: "Rotary Club Massafra", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "segreteria@rotarymassafra.it", city: "Massafra (TA)" },
+  { name: "Rotary Club Bari", cat: "Club", tag: "tag-club", dept: "Segreteria", email: "segreteria@rotarybari.it", city: "Bari" },
+  { name: "Rotary Club Putignano", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "segreteria@rotaryputignano.it", city: "Putignano (BA)" },
+  { name: "Rotary Club Fasano", cat: "Club", tag: "tag-club", dept: "Segreteria", email: "segreteria@rotaryfasano.it", city: "Fasano (BR)" },
+  { name: "UICI Taranto (Unione Ciechi)", cat: "Club", tag: "tag-club", dept: "Presidenza Sezione", email: "uicta@uici.it", city: "Taranto" }
+];
+
+let sentSet = new Set(JSON.parse(localStorage.getItem('perniola_sent_set') || '[]'));
+
+function creaMailto(dest) {
+  const intro = `Gentile ${dest.name},\n\n`;
+  const testo = intro + CORPO_BASE;
+  return `mailto:${dest.email}?subject=${encodeURIComponent(OGGETTO_EMAIL)}&body=${encodeURIComponent(testo)}`;
+}
+
+function render(lista) {
+  const tbody = document.getElementById('tabellaDestinatari');
+  tbody.innerHTML = '';
+
+  lista.forEach((item, idx) => {
+    const isSent = sentSet.has(item.email);
+    const tr = document.createElement('tr');
+    tr.id = `row-${idx}`;
+    if (isSent) tr.classList.add('is-sent');
+
+    const mailto = creaMailto(item);
+
+    tr.innerHTML = `
+      <td>${idx + 1}</td>
+      <td>
+        <strong>${item.name}</strong><br>
+        <small style="color:var(--muted)">${item.email}</small>
+      </td>
+      <td><span class="tag ${item.tag}">${item.cat}</span></td>
+      <td>${item.dept}</td>
+      <td>${item.city}</td>
+      <td>
+        <div class="actions">
+          <a href="${mailto}" 
+             class="btn-send ${isSent ? 'sent-state' : ''}" 
+             onclick="segnaInviato('${item.email}', this, 'row-${idx}')">
+             ${isSent ? '✅ Inviata' : '✉️ Invia Email'}
+          </a>
+          <button class="btn-copy" title="Copia testo negli appunti" onclick="copiaEmail('${item.name}')">📋 Copia</button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  aggiornaContatori(lista.length);
+}
+
+function segnaInviato(email, btn, rowId) {
+  sentSet.add(email);
+  localStorage.setItem('perniola_sent_set', JSON.stringify(Array.from(sentSet)));
+  btn.classList.add('sent-state');
+  btn.innerHTML = '✅ Inviata';
+  const r = document.getElementById(rowId);
+  if (r) r.classList.add('is-sent');
+  aggiornaContatori();
+}
+
+function aggiornaContatori(visibili = null) {
+  if (visibili !== null) {
+    document.getElementById('countVisualizzati').textContent = `Destinatari: ${visibili}`;
+  }
+  document.getElementById('countInviati').textContent = `Inviati: ${sentSet.size} / ${LISTA_DESTINATARI.length}`;
+}
+
+function copiaEmail(nomeAzienda) {
+  const fullText = `OGGETTO: ${OGGETTO_EMAIL}\n\nGentile ${nomeAzienda},\n\n${CORPO_BASE}`;
+  navigator.clipboard.writeText(fullText).then(() => {
+    alert(`Testo personalizzato per ${nomeAzienda} copiato negli appunti!`);
+  });
+}
+
+function applicaFiltri() {
+  const testo = document.getElementById('filtroTesto').value.toLowerCase().trim();
+  const cat = document.getElementById('filtroCategoria').value;
+
+  const filtrate = LISTA_DESTINATARI.filter(d => {
+    const okCat = (cat === 'ALL' || d.cat === cat);
+    const okTesto = d.name.toLowerCase().includes(testo) ||
+                    d.email.toLowerCase().includes(testo) ||
+                    d.city.toLowerCase().includes(testo) ||
+                    d.dept.toLowerCase().includes(testo);
+    return okCat && okTesto;
+  });
+
+  render(filtrate);
+}
+
+function resetInviati() {
+  if (confirm("Vuoi davvero azzerare lo storico delle email già inviate?")) {
+    sentSet.clear();
+    localStorage.removeItem('perniola_sent_set');
+    render(LISTA_DESTINATARI);
+  }
+}
+
+function apriModal(show) {
+  const m = document.getElementById('modalAnteprima');
+  if (show) {
+    document.getElementById('testoAppelloPre').textContent = `OGGETTO:\n${OGGETTO_EMAIL}\n\nTESTO:\nGentile [Nome Azienda],\n\n${CORPO_BASE}`;
+    m.classList.add('active');
+  } else {
+    m.classList.remove('active');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  render(LISTA_DESTINATARI);
+});
+</script>
+</body>
+</html>
