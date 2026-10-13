@@ -101,6 +101,18 @@
             .zone { padding-top: 3.5rem !important; padding-bottom: 3.5rem !important; }
             .zone-card { border-radius: 1.25rem !important; padding: 1.1rem !important; }
         }
+        dialog#dona-dialog { border: 0; padding: 0; background: transparent; width: min(32rem, calc(100vw - 32px)); max-height: calc(100vh - 32px); }
+        dialog#dona-dialog::backdrop { background: rgba(15, 23, 42, .65); }
+        .dona-box { position: relative; background: #fffdf7; border-radius: 1.25rem; padding: 1.5rem; box-shadow: 0 30px 80px rgba(15, 23, 42, .4); }
+        .dona-close { position: absolute; top: .75rem; right: .75rem; width: 2.75rem; height: 2.75rem; border-radius: 999px; background: #f1f5f9; font-size: 1.25rem; }
+        .dona-esempio { margin-top: 1rem; padding: .75rem 1rem; border-radius: .75rem; background: #fee2e2; color: #991b1b; font-weight: 900; font-size: .9rem; }
+        .dona-campo { margin-top: .9rem; display: grid; grid-template-columns: 1fr auto; gap: .25rem .75rem; align-items: center; padding: .9rem 1rem; border-radius: .9rem; background: white; border: 1px solid #fde68a; }
+        .dona-etichetta { grid-column: 1 / -1; font-size: .75rem; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; color: #92400e; }
+        .dona-valore { font-weight: 800; font-size: 1.05rem; word-break: break-word; }
+        .dona-iban { font-family: ui-monospace, Consolas, monospace; letter-spacing: .02em; }
+        .dona-copia { background: #f59e0b; color: #0f172a; font-weight: 900; border-radius: .6rem; padding: .55rem .9rem; }
+        .dona-copia.is-copiato { background: #22c55e; color: white; }
+        .dona-avviso { min-height: 1.25rem; margin-top: .5rem; font-weight: 800; color: #15803d; text-align: center; }
     </style>
 </head>
 <body class="pt-[76px] text-ink font-sans antialiased selection:bg-amber-500 selection:text-white">
@@ -115,11 +127,11 @@
                     <span class="block text-xs font-bold uppercase tracking-wide text-amber-700">Un van per la speranza</span>
                 </span>
             </a>
-            <span class="hidden md:block absolute left-1/2 -translate-x-1/2 text-xs font-black text-slate-500 tabular-nums" aria-label="Versione del sito">13-10-26 12:30</span>
-            <a href="#aiuto" class="inline-flex items-center justify-center gap-2 bg-amberAction hover:bg-amber-600 text-ink px-4 sm:px-5 py-3 rounded-full font-black text-sm shadow-md">
+            <span class="hidden md:block absolute left-1/2 -translate-x-1/2 text-xs font-black text-slate-500 tabular-nums" aria-label="Versione del sito">13-10-26 13:55</span>
+            <button type="button" data-open-dona class="inline-flex items-center justify-center gap-2 bg-amberAction hover:bg-amber-600 text-ink px-4 sm:px-5 py-3 rounded-full font-black text-sm shadow-md">
                 <i class="fa-solid fa-heart text-rose-600"></i>
                 <span>Sostieni</span>
-            </a>
+            </button>
         </div>
     </nav>
 
@@ -255,7 +267,7 @@
                     </div>
                     <div class="rounded-2xl bg-white border border-slate-200 p-5">
                         <h3 class="font-black text-xl">Come si naviga?</h3>
-                        <p class="mt-2 text-slate-700 leading-relaxed">Il sito è tutto in verticale. Si scorre dall'alto verso il basso, come una pagina da smartphone. In alto resta disponibile il pulsante “Sostieni”, che porta alla parte dedicata all'aiuto concreto.</p>
+                        <p class="mt-2 text-slate-700 leading-relaxed">Il sito è tutto in verticale. Si scorre dall'alto verso il basso, come una pagina da smartphone. In alto resta disponibile il pulsante “Sostieni”, che apre una finestra con i dati per fare un bonifico.</p>
                     </div>
                     <div class="rounded-2xl bg-white border border-slate-200 p-5">
                         <h3 class="font-black text-xl">A cosa servono le linguette?</h3>
@@ -368,9 +380,50 @@
                         </p>
                     </div>
                 </div>
+
+                <div class="mt-10 text-center">
+                    <button type="button" data-open-dona class="inline-flex items-center justify-center gap-3 bg-amberAction hover:bg-amber-600 text-ink px-8 py-5 rounded-2xl font-black text-xl shadow-lg w-full sm:w-auto">
+                        <i class="fa-solid fa-heart text-rose-600"></i>
+                        Sostieni la famiglia Perniola
+                    </button>
+                    <p class="mt-3 text-slate-600">Si apre una finestra con i dati per il bonifico.</p>
+                </div>
             </div>
         </section>
     </main>
+
+    <dialog id="dona-dialog" aria-labelledby="dona-title">
+        <div class="dona-box">
+            <button type="button" class="dona-close" data-close-dona aria-label="Chiudi la finestra"><i class="fa-solid fa-xmark"></i></button>
+            <p class="text-xs font-black uppercase tracking-[.16em] text-amber-700">Sostieni con un bonifico</p>
+            <h2 id="dona-title" class="mt-2 text-2xl font-black">Dati per la donazione</h2>
+            <p class="dona-esempio"><i class="fa-solid fa-triangle-exclamation mr-2"></i>DATI DI ESEMPIO: non effettuare bonifici su queste coordinate.</p>
+
+            <div class="dona-campo">
+                <span class="dona-etichetta">Intestatario</span>
+                <span class="dona-valore" id="dona-intestatario">Perniola Michele</span>
+                <button type="button" class="dona-copia" data-copia="dona-intestatario">Copia</button>
+            </div>
+            <div class="dona-campo">
+                <span class="dona-etichetta">IBAN</span>
+                <span class="dona-valore dona-iban" id="dona-iban">IT11 H333 3333 3333 3333 3333 333</span>
+                <button type="button" class="dona-copia" data-copia="dona-iban">Copia</button>
+            </div>
+            <div class="dona-campo">
+                <span class="dona-etichetta">Banca</span>
+                <span class="dona-valore" id="dona-banca">Banca Esempio S.p.A. (simulata)</span>
+            </div>
+            <div class="dona-campo">
+                <span class="dona-etichetta">Causale</span>
+                <span class="dona-valore" id="dona-causale">Un van per la famiglia Perniola</span>
+                <button type="button" class="dona-copia" data-copia="dona-causale">Copia</button>
+            </div>
+
+            <p class="mt-5 text-slate-700 leading-relaxed">Copia i dati con un tocco e incollali nell'app della tua banca. Ogni contributo, anche piccolo, è un pezzo di strada verso le cure.</p>
+            <p class="dona-avviso" id="dona-avviso" role="status" aria-live="polite"></p>
+            <button type="button" class="mt-4 w-full bg-ink text-white rounded-xl py-4 font-black" data-close-dona>Chiudi</button>
+        </div>
+    </dialog>
 
     <footer class="bg-ink text-slate-300 py-10 text-center text-sm">
         <div class="max-w-2xl mx-auto px-4">
@@ -534,6 +587,40 @@
         document.querySelectorAll('.trip-checkbox').forEach(checkbox => {
             checkbox.addEventListener('change', calculateTrips);
         });
+
+        const donaDialog = document.getElementById('dona-dialog');
+        function apriDona() {
+            pauseCurrentAudio();
+            if (typeof donaDialog.showModal === 'function') donaDialog.showModal(); else donaDialog.setAttribute('open', '');
+        }
+        function chiudiDona() {
+            if (typeof donaDialog.close === 'function') donaDialog.close(); else donaDialog.removeAttribute('open');
+        }
+        document.querySelectorAll('[data-open-dona]').forEach(b => b.addEventListener('click', apriDona));
+        document.querySelectorAll('[data-close-dona]').forEach(b => b.addEventListener('click', chiudiDona));
+        donaDialog.addEventListener('click', event => { if (event.target === donaDialog) chiudiDona(); });
+
+        async function copiaTesto(testo) {
+            try { await navigator.clipboard.writeText(testo); return true; } catch (e) {
+                const area = document.createElement('textarea');
+                area.value = testo; area.setAttribute('readonly', ''); area.style.position = 'fixed'; area.style.opacity = '0';
+                donaDialog.appendChild(area); area.select();
+                let ok = false; try { ok = document.execCommand('copy'); } catch (e2) {}
+                area.remove(); return ok;
+            }
+        }
+        document.querySelectorAll('[data-copia]').forEach(bottone => {
+            bottone.addEventListener('click', async () => {
+                const campo = document.getElementById(bottone.dataset.copia);
+                const testo = bottone.dataset.copia === 'dona-iban' ? campo.textContent.replace(/\s+/g, '') : campo.textContent.trim();
+                const ok = await copiaTesto(testo);
+                const avviso = document.getElementById('dona-avviso');
+                avviso.textContent = ok ? 'Copiato: ' + testo : 'Copia non riuscita: seleziona il testo e copialo a mano.';
+                if (ok) { bottone.textContent = 'Copiato'; bottone.classList.add('is-copiato');
+                    setTimeout(() => { bottone.textContent = 'Copia'; bottone.classList.remove('is-copiato'); }, 2000); }
+            });
+        });
+        if (location.hash === '#sostieni') apriDona();
 
         calculateTrips();
 
