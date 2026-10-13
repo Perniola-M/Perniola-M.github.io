@@ -113,6 +113,10 @@
         .dona-copia { background: #f59e0b; color: #0f172a; font-weight: 900; border-radius: .6rem; padding: .55rem .9rem; }
         .dona-copia.is-copiato { background: #22c55e; color: white; }
         .dona-avviso { min-height: 1.25rem; margin-top: .5rem; font-weight: 800; color: #15803d; text-align: center; }
+        .dona-titolare { background: #fff7df; border: 2px solid #f59e0b; }
+        .dona-nome { font-size: 1.6rem; font-weight: 900; line-height: 1.15; }
+        .dona-dettaglio { grid-column: 1 / -1; font-weight: 800; color: #334155; }
+        .dona-tel { color: #92400e; text-decoration: underline; text-underline-offset: 3px; }
     </style>
 </head>
 <body class="pt-[76px] text-ink font-sans antialiased selection:bg-amber-500 selection:text-white">
@@ -127,7 +131,7 @@
                     <span class="block text-xs font-bold uppercase tracking-wide text-amber-700">Un van per la speranza</span>
                 </span>
             </a>
-            <span class="hidden md:block absolute left-1/2 -translate-x-1/2 text-xs font-black text-slate-500 tabular-nums" aria-label="Versione del sito">13-10-26 13:55</span>
+            <span class="hidden md:block absolute left-1/2 -translate-x-1/2 text-xs font-black text-slate-500 tabular-nums" aria-label="Versione del sito">13-10-26 15:30</span>
             <button type="button" data-open-dona class="inline-flex items-center justify-center gap-2 bg-amberAction hover:bg-amber-600 text-ink px-4 sm:px-5 py-3 rounded-full font-black text-sm shadow-md">
                 <i class="fa-solid fa-heart text-rose-600"></i>
                 <span>Sostieni</span>
@@ -397,12 +401,14 @@
             <button type="button" class="dona-close" data-close-dona aria-label="Chiudi la finestra"><i class="fa-solid fa-xmark"></i></button>
             <p class="text-xs font-black uppercase tracking-[.16em] text-amber-700">Sostieni con un bonifico</p>
             <h2 id="dona-title" class="mt-2 text-2xl font-black">Dati per la donazione</h2>
-            <p class="dona-esempio"><i class="fa-solid fa-triangle-exclamation mr-2"></i>DATI DI ESEMPIO: non effettuare bonifici su queste coordinate.</p>
+            <p class="dona-esempio"><i class="fa-solid fa-triangle-exclamation mr-2"></i>IBAN E BANCA DI ESEMPIO: non effettuare bonifici su queste coordinate.</p>
 
-            <div class="dona-campo">
+            <div class="dona-campo dona-titolare">
                 <span class="dona-etichetta">Intestatario</span>
-                <span class="dona-valore" id="dona-intestatario">Perniola Michele</span>
+                <span class="dona-valore dona-nome" id="dona-intestatario">Perniola Michele</span>
                 <button type="button" class="dona-copia" data-copia="dona-intestatario">Copia</button>
+                <span class="dona-dettaglio"><i class="fa-solid fa-location-dot mr-2"></i>Statte (TA)</span>
+                <a class="dona-dettaglio dona-tel" href="tel:+393396118486"><i class="fa-solid fa-phone mr-2"></i>+39 339-61.18.486</a>
             </div>
             <div class="dona-campo">
                 <span class="dona-etichetta">IBAN</span>
@@ -434,9 +440,9 @@
 
     <script>
         const sectionAudio = {
-            storia: new Audio('Pagina1.mp3'),
-            guida: new Audio('Pagina2.mp3'),
-            aiuto: new Audio('Pagina3.mp3')
+            storia: new Audio('Audio1.mp3'),
+            guida: new Audio('Audio2.mp3'),
+            aiuto: new Audio('Audio3.mp3')
         };
         let currentAudioKey = null;
 
