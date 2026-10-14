@@ -8,6 +8,11 @@
     .footer-sito { margin-top: 20px; padding: 16px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; text-align: center; font-size: 1.05rem; font-weight: 600; }
     .footer-sito a { color: var(--secondary); font-weight: 800; word-break: break-all; }
     #testoAppelloPre a { color: var(--secondary); font-weight: 700; }
+    #testoAppelloPre { white-space: normal; }
+    .avviso-copia { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 150%); max-width: min(560px, calc(100vw - 32px)); padding: 14px 18px; border-radius: 12px; color: #fff; font-size: 1rem; line-height: 1.45; box-shadow: 0 12px 30px rgba(0,0,0,.25); transition: transform .25s ease; z-index: 2000; }
+    .avviso-copia.attivo { transform: translate(-50%, 0); }
+    .avviso-copia.ok { background: var(--success); }
+    .avviso-copia.errore { background: var(--orange-btn); }
     :root {
       --primary: #1e3a8a;
       --primary-hover: #172554;
@@ -258,7 +263,8 @@
   <header>
     <h1>Campagna Solidale Famiglia Perniola - Elenco Invio</h1>
     <div class="instructions">
-      👉 Clicca su <strong>"✉️ Invia Email"</strong> per inviare direttamente all'azienda, oppure su <strong>"🟠 Email Nino"</strong> per inviare la bozza personalizzata per quella specifica azienda a <em>s.mazzarisi@mazzarisi.it</em>.
+      👉 Clicca su <strong>"✉️ Invia Email"</strong> per scrivere all'azienda, oppure su <strong>"🟠 Email Nino"</strong> per ricevere la bozza per quella azienda a <em>s.mazzarisi@mazzarisi.it</em>.<br>
+      Si apre la mail con destinatario e oggetto già pronti e la lettera, con le parole chiave in <strong>grassetto</strong>, viene copiata: clicca nel testo della mail e premi <strong>Ctrl+V</strong>.
     </div>
 
     <div class="stats-container">
@@ -303,6 +309,8 @@
   </footer>
 </div>
 
+<div id="avvisoCopia" class="avviso-copia" role="status" aria-live="polite"></div>
+
 <div class="modal" id="modalAnteprima">
   <div class="modal-box">
     <div class="modal-head">
@@ -319,29 +327,29 @@ const OGGETTO_EMAIL = "Un appello dal cuore: richiesta di aiuto per i viaggi san
 
 const CORPO_BASE = `Mi chiamo Michele Perniola, ho 64 anni e vi scrivo insieme a mia moglie Anna da un piccolo paese in provincia di Taranto. Vi raggiungiamo con questo messaggio con la massima umiltà e trasparenza, per raccontarvi la storia della nostra famiglia e chiedervi un aiuto concreto che per noi rappresenterebbe una vera e propria svolta di vita.
 
-Io sono affetto fin dalla nascita da una patologia genetica nota come sindrome di Axenfeld-Rieger, che mi ha causato un grave glaucoma congenito e portato alla cecità assoluta. Ma la prova più grande è che questa patologia e altre gravi malattie hanno colpito i nostri figli e nipotini su tre generazioni:
+Io sono affetto fin dalla nascita da una patologia genetica nota come **sindrome di Axenfeld-Rieger**, che mi ha causato un grave glaucoma congenito e portato alla **cecità assoluta**. Ma la prova più grande è che questa patologia e altre gravi malattie hanno colpito i nostri figli e nipotini su **tre generazioni**:
 
-- Francesco (secondogenito): glaucoma congenito, asportazione dell'occhio destro; dal 2011 combatte contro un seminoma (operato alle Molinette di Torino) e ha affrontato un tumore maligno alla tiroide con asportazione di 23 linfonodi a Pisa.
-- Nicola (primogenito): colpito da sarcoma al muscolo della gamba sinistra, operato all'Istituto Ortopedico Rizzoli di Bologna, dove esegue follow-up periodici.
-- Mattia (terzogenito): affetto da glaucoma congenito in terapia continua.
-- Il piccolo Michele (4 anni): glaucoma congenito ereditario, controlli semestrali in narcosi all'Ospedale Borgo Roma di Verona.
-- Il piccolo Samuel (6 anni): operato per malformazione collegata alla sindrome di Axenfeld.
+- **Francesco** (secondogenito): glaucoma congenito, asportazione dell'occhio destro; dal 2011 combatte contro un seminoma (operato alle Molinette di Torino) e ha affrontato un tumore maligno alla tiroide con asportazione di 23 linfonodi a Pisa.
+- **Nicola** (primogenito): colpito da sarcoma al muscolo della gamba sinistra, operato all'Istituto Ortopedico Rizzoli di Bologna, dove esegue follow-up periodici.
+- **Mattia** (terzogenito): affetto da glaucoma congenito in terapia continua.
+- **Il piccolo Michele (4 anni)**: glaucoma congenito ereditario, controlli semestrali in narcosi all'Ospedale Borgo Roma di Verona.
+- **Il piccolo Samuel (6 anni)**: operato per malformazione collegata alla sindrome di Axenfeld.
 
-Per garantire le cure, viaggiamo continuamente da Taranto verso Verona, Bologna, Torino, Pisa e Bari (1.500-2.000 km a tratta). Mia moglie Anna è l'unica a poter guidare.
+Per garantire le cure, viaggiamo continuamente da Taranto verso Verona, Bologna, Torino, Pisa e Bari (**1.500-2.000 km a tratta**). **Mia moglie Anna è l'unica a poter guidare.**
 
 Attualmente viaggiamo con una vecchia utilitaria usurata, che rischia di lasciarci in panne di notte e non ha posti sufficienti quando le visite coincidono.
 
-IL NOSTRO BISOGNO:
-Non cerchiamo un veicolo nuovo o di lusso: chiediamo il vostro aiuto per reperire o donare un veicolo a 7 posti (un van o monovolume, ANCHE USATO), sicuro e affidabile, che consenta alla famiglia di viaggiare unita, tutelando la sicurezza e il comfort dei piccoli e dei convalescenti.
+**IL NOSTRO BISOGNO:**
+Non cerchiamo un veicolo nuovo o di lusso: chiediamo il vostro aiuto per reperire o donare un **veicolo a 7 posti** (un van o monovolume, **ANCHE USATO**), **sicuro e affidabile**, che consenta alla famiglia di viaggiare unita, tutelando la sicurezza e il comfort dei piccoli e dei convalescenti.
 
-COME POTETE AIUTARCI:
+**COME POTETE AIUTARCI:**
 - donando o aiutandoci a reperire un veicolo a 7 posti, anche usato;
 - oppure con un contributo economico tramite bonifico:
 
-  Intestatario: Perniola Michele
-  IBAN: IT11 P030 6915 8121 0000 0075 334
+  Intestatario: **Perniola Michele**
+  IBAN: **IT11 P030 6915 8121 0000 0075 334**
   Banca: Intesa Sanpaolo - Filiale di Taranto
-  Causale: Un van per la famiglia Perniola
+  Causale: **Un van per la famiglia Perniola**
 
 Anche una semplice condivisione di questo messaggio può fare la differenza.
 
@@ -354,7 +362,7 @@ Michele Perniola, sua moglie Anna e tutta la famiglia Perniola
 
 Via Michael 10 - Statte (TA)
 Puglia - Italia
-Cellulare: +39 339-61.18.486
+Cellulare: **+39 339-61.18.486**
 Sito della campagna: https://perniola-m.github.io/`;
 
 const LISTA_DESTINATARI = [
@@ -476,11 +484,66 @@ const LISTA_DESTINATARI = [
 
 let sentSet = new Set(JSON.parse(localStorage.getItem('perniola_sent_set') || '[]'));
 
-// Crea il link mailto personalizzato specificando l'indirizzo destinatario
+// Le parole tra **...** nella lettera vanno in grassetto.
+// testoSemplice(): lettera senza segni (per il vecchio metodo e per i programmi che non accettano formattazione)
+// testoHtml():     lettera formattata (grassetto, a capo, link cliccabile) da incollare nella mail
+function letteraPer(nomeAzienda) {
+  return `Gentile ${nomeAzienda},\n\n${CORPO_BASE}`;
+}
+function testoSemplice(t) {
+  return t.replace(/\*\*/g, '');
+}
+function testoHtml(t) {
+  const sicuro = t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const conLink = sicuro.replace(/https?:\/\/[^\s*]+/g, url => `<a href="${url}">${url}</a>`);
+  const grassetto = conLink.replace(/\*\*([\s\S]+?)\*\*/g, '<b>$1</b>');
+  return '<div style="font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.45">' +
+         grassetto.split('\n').map(r => r.replace(/^ {2}/, '&nbsp;&nbsp;&nbsp;&nbsp;') || '&nbsp;').join('<br>') + '</div>';
+}
+
+// Link che apre la mail con destinatario e oggetto (corpo vuoto: la lettera si incolla con Ctrl+V)
+function creaMailtoBreve(destinatarioEmail) {
+  return `mailto:${destinatarioEmail}?subject=${encodeURIComponent(OGGETTO_EMAIL)}`;
+}
+// Vecchio metodo, usato solo se la copia negli appunti non riesce: lettera intera in testo semplice
 function creaMailto(destinatarioEmail, nomeAzienda) {
-  const intro = `Gentile ${nomeAzienda},\n\n`;
-  const testo = intro + CORPO_BASE;
-  return `mailto:${destinatarioEmail}?subject=${encodeURIComponent(OGGETTO_EMAIL)}&body=${encodeURIComponent(testo)}`;
+  return `${creaMailtoBreve(destinatarioEmail)}&body=${encodeURIComponent(testoSemplice(letteraPer(nomeAzienda)))}`;
+}
+
+async function copiaLetteraFormattata(nomeAzienda) {
+  const t = letteraPer(nomeAzienda);
+  const html = testoHtml(t), plain = testoSemplice(t);
+  if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+    await navigator.clipboard.write([new ClipboardItem({
+      'text/html': new Blob([html], { type: 'text/html' }),
+      'text/plain': new Blob([plain], { type: 'text/plain' })
+    })]);
+    return true;
+  }
+  return false;
+}
+
+function avviso(msg, ok = true) {
+  const box = document.getElementById('avvisoCopia');
+  box.innerHTML = msg;
+  box.className = 'avviso-copia attivo ' + (ok ? 'ok' : 'errore');
+  clearTimeout(avviso._t);
+  avviso._t = setTimeout(() => { box.className = 'avviso-copia'; }, 9000);
+}
+
+// Clic su "Invia Email" o "Email Nino": copia la lettera formattata e apre la mail
+async function inviaLettera(event, indirizzo, nomeAzienda, segnaRiga) {
+  event.preventDefault();
+  let copiata = false;
+  try { copiata = await copiaLetteraFormattata(nomeAzienda); } catch (e) { copiata = false; }
+  if (copiata) {
+    avviso(`📋 Lettera per <b>${nomeAzienda}</b> copiata con il grassetto.<br>Nella mail che si apre, clicca nel testo e premi <b>Ctrl+V</b>.`);
+    window.location.href = creaMailtoBreve(indirizzo);
+  } else {
+    avviso('Copia formattata non riuscita: la mail si apre con la lettera in testo semplice (senza grassetto).', false);
+    window.location.href = creaMailto(indirizzo, nomeAzienda);
+  }
+  if (segnaRiga) segnaRiga();
 }
 
 function render(lista) {
@@ -495,6 +558,7 @@ function render(lista) {
 
     const mailtoAzienda = creaMailto(item.email, item.name);
     const mailtoNino = creaMailto(EMAIL_NINO, item.name);
+    const nomeJs = item.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
     tr.innerHTML = `
       <td>${idx + 1}</td>
@@ -509,15 +573,16 @@ function render(lista) {
         <div class="actions">
           <a href="${mailtoAzienda}" 
              class="btn-send ${isSent ? 'sent-state' : ''}" 
-             onclick="segnaInviato('${item.email}', this, 'row-${idx}')">
+             onclick="inviaLettera(event, '${item.email}', '${nomeJs}', () => segnaInviato('${item.email}', this, 'row-${idx}'))">
              ${isSent ? '✅ Inviata' : '✉️ Invia Email'}
           </a>
           <a href="${mailtoNino}" 
              class="btn-nino" 
+             onclick="inviaLettera(event, EMAIL_NINO, '${nomeJs}')"
              title="Invia la bozza per questa azienda a Nino">
              🟠 Email Nino
           </a>
-          <button class="btn-copy" title="Copia testo negli appunti" onclick="copiaEmail('${item.name}')">📋</button>
+          <button class="btn-copy" title="Copia testo negli appunti" onclick="copiaEmail('${nomeJs}')">📋</button>
         </div>
       </td>
     `;
@@ -544,11 +609,15 @@ function aggiornaContatori(visibili = null) {
   document.getElementById('countInviati').textContent = `Inviati: ${sentSet.size} / ${LISTA_DESTINATARI.length}`;
 }
 
-function copiaEmail(nomeAzienda) {
-  const fullText = `OGGETTO: ${OGGETTO_EMAIL}\n\nGentile ${nomeAzienda},\n\n${CORPO_BASE}`;
-  navigator.clipboard.writeText(fullText).then(() => {
-    alert(`Testo personalizzato per ${nomeAzienda} copiato negli appunti!`);
-  });
+async function copiaEmail(nomeAzienda) {
+  try {
+    if (await copiaLetteraFormattata(nomeAzienda)) {
+      avviso(`📋 Lettera per <b>${nomeAzienda}</b> copiata con il grassetto: incollala con <b>Ctrl+V</b>.<br>Oggetto da usare: <i>${OGGETTO_EMAIL}</i>`);
+      return;
+    }
+  } catch (e) {}
+  await navigator.clipboard.writeText(`OGGETTO: ${OGGETTO_EMAIL}\n\n${testoSemplice(letteraPer(nomeAzienda))}`);
+  avviso(`Lettera per <b>${nomeAzienda}</b> copiata in testo semplice.`, false);
 }
 
 function applicaFiltri() {
@@ -578,9 +647,8 @@ function resetInviati() {
 function apriModal(show) {
   const m = document.getElementById('modalAnteprima');
   if (show) {
-    const testoAnteprima = `OGGETTO:\n${OGGETTO_EMAIL}\n\nTESTO:\nGentile [Nome Azienda],\n\n${CORPO_BASE}`;
-    const sicuro = testoAnteprima.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    document.getElementById('testoAppelloPre').innerHTML = sicuro.replace(/https?:\/\/[^\s]+/g, url => `<a href="${url}" target="_blank" rel="noopener">${url}</a>`);
+    document.getElementById('testoAppelloPre').innerHTML =
+      `<b>OGGETTO:</b><br>${OGGETTO_EMAIL}<br><br><b>TESTO:</b><br>` + testoHtml(letteraPer('[Nome Azienda]'));
     m.classList.add('active');
   } else {
     m.classList.remove('active');
