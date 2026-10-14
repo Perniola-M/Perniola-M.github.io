@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Appello Famiglia Perniola - Invio Email</title>
   <style>
+    .caselle-posta { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 14px; }
+    .btn-posta { flex: 1 1 180px; display: inline-flex; justify-content: center; align-items: center; gap: 8px; padding: 12px 16px; background: var(--success); color: #fff; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 1rem; }
+    .btn-posta:hover { background: #166534; }
     .footer-sito { margin-top: 20px; padding: 16px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; text-align: center; font-size: 1.05rem; font-weight: 600; }
     .footer-sito a { color: var(--secondary); font-weight: 800; word-break: break-all; }
     #testoAppelloPre a { color: var(--secondary); font-weight: 700; }
@@ -287,6 +290,10 @@
 <div class="wrapper">
   <header>
     <h1>Campagna Solidale Famiglia Perniola - Elenco Invio</h1>
+    <div class="caselle-posta">
+      <a class="btn-posta" href="https://mail.google.com/mail/u/?authuser=s.mazzarisi%40mazzarisi.it#sent" target="_blank" rel="noopener">📤 Posta inviata</a>
+      <a class="btn-posta" href="https://mail.google.com/mail/u/?authuser=s.mazzarisi%40mazzarisi.it#inbox" target="_blank" rel="noopener">📥 Posta arrivata</a>
+    </div>
     <div class="instructions">
       👉 Clicca su <strong>"✉️ Invia Email"</strong> per scrivere all'azienda, oppure su <strong>"🟠 Email Nino"</strong> per ricevere la bozza per quella azienda a <em>s.mazzarisi@mazzarisi.it</em>.<br>
       <span class="solo-computer">Si apre la mail con destinatario e oggetto già pronti e la lettera, con le parole chiave in <strong>grassetto</strong>, viene copiata: clicca nel testo della mail e premi <strong>Ctrl+V</strong>.</span>
