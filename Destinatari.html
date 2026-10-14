@@ -290,7 +290,8 @@
     <div class="instructions">
       👉 Clicca su <strong>"✉️ Invia Email"</strong> per scrivere all'azienda, oppure su <strong>"🟠 Email Nino"</strong> per ricevere la bozza per quella azienda a <em>s.mazzarisi@mazzarisi.it</em>.<br>
       <span class="solo-computer">Si apre la mail con destinatario e oggetto già pronti e la lettera, con le parole chiave in <strong>grassetto</strong>, viene copiata: clicca nel testo della mail e premi <strong>Ctrl+V</strong>.</span>
-      <span class="solo-telefono">Si apre l'app di posta con destinatario, oggetto e lettera <strong>già scritti</strong>: controlla e premi Invia.</span>
+      <span class="solo-telefono">Si apre l'app di posta con destinatario, oggetto e lettera <strong>già scritti</strong>: controlla e premi Invia.</span><br>
+      🔒 Ogni mail all'azienda parte anche in <strong>copia nascosta (Ccn)</strong> a <em>s.mazzarisi@mazzarisi.it</em>, per controllare l'invio: il destinatario non lo vede.
     </div>
 
     <div class="stats-container">
@@ -530,8 +531,11 @@ function testoHtml(t) {
 }
 
 // Link che apre la mail con destinatario e oggetto (corpo vuoto: la lettera si incolla con Ctrl+V)
+// Le mail ai destinatari (pulsante blu) partono anche in copia nascosta (Ccn) a Nino, per
+// controllare l'avvenuto invio: il destinatario non lo vede. "Email Nino" va già a Nino.
 function creaMailtoBreve(destinatarioEmail) {
-  return `mailto:${destinatarioEmail}?subject=${encodeURIComponent(OGGETTO_EMAIL)}`;
+  const ccn = destinatarioEmail.toLowerCase() !== EMAIL_NINO.toLowerCase() ? `&bcc=${encodeURIComponent(EMAIL_NINO)}` : '';
+  return `mailto:${destinatarioEmail}?subject=${encodeURIComponent(OGGETTO_EMAIL)}${ccn}`;
 }
 // Vecchio metodo, usato solo se la copia negli appunti non riesce: lettera intera in testo semplice
 function creaMailto(destinatarioEmail, nomeAzienda) {
