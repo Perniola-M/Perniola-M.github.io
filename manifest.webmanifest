@@ -1,0 +1,15 @@
+{
+  "name": "Un van per la speranza",
+  "short_name": "Un van per la speranza",
+  "description": "Famiglia Perniola: un van a 7 posti per i viaggi sanitari",
+  "lang": "it",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fffdf7",
+  "theme_color": "#f59e0b",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

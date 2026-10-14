@@ -11,6 +11,7 @@
     #testoAppelloPre { white-space: normal; }
     .avviso-copia { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 150%); max-width: min(560px, calc(100vw - 32px)); padding: 14px 18px; border-radius: 12px; color: #fff; font-size: 1rem; line-height: 1.45; box-shadow: 0 12px 30px rgba(0,0,0,.25); transition: transform .25s ease; z-index: 2000; }
     .avviso-copia.attivo { transform: translate(-50%, 0); }
+    .avviso-copia:not(.attivo) { visibility: hidden; transition: transform .25s ease, visibility 0s .25s; }
     .avviso-copia.ok { background: var(--success); }
     .avviso-copia.errore { background: var(--orange-btn); }
     :root {
@@ -255,6 +256,30 @@
       border: 1px solid var(--border);
       font-size: 0.9rem;
     }
+    html.telefono .solo-computer, html.computer .solo-telefono { display: none; }
+    @media (max-width: 760px) {
+      body { padding: 10px; }
+      header { padding: 16px; }
+      h1 { font-size: 1.3rem; }
+      .search-box { min-width: 0; width: 100%; font-size: 1rem; }
+      .category-select { width: 100%; font-size: 1rem; }
+      .btn-top { padding: 10px 14px; font-size: 0.95rem; }
+      .table-box { background: transparent; border: 0; box-shadow: none; overflow: visible; }
+      table, tbody { display: block; }
+      thead { display: none; }
+      tr { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+      tr.is-sent { background: #f0fdf4; border-color: #86efac; }
+      td { display: block; padding: 0; border: 0; background: transparent !important; }
+      .c-num { color: var(--muted); font-weight: 700; }
+      .c-tag, .c-info, .c-azioni { grid-column: 1 / -1; }
+      .c-info { font-size: 0.85rem; color: #334155; }
+      .c-info::before { content: attr(data-etichetta) ": "; font-weight: 700; color: var(--muted); }
+      .c-nome small { word-break: break-all; }
+      .actions { margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; }
+      .btn-send, .btn-nino { justify-content: center; padding: 12px 10px; font-size: 0.95rem; }
+      .btn-copy { padding: 12px 14px; font-size: 1rem; }
+      .modal-box { padding: 16px; max-height: 90vh; }
+    }
   </style>
 </head>
 <body>
@@ -264,7 +289,8 @@
     <h1>Campagna Solidale Famiglia Perniola - Elenco Invio</h1>
     <div class="instructions">
       👉 Clicca su <strong>"✉️ Invia Email"</strong> per scrivere all'azienda, oppure su <strong>"🟠 Email Nino"</strong> per ricevere la bozza per quella azienda a <em>s.mazzarisi@mazzarisi.it</em>.<br>
-      Si apre la mail con destinatario e oggetto già pronti e la lettera, con le parole chiave in <strong>grassetto</strong>, viene copiata: clicca nel testo della mail e premi <strong>Ctrl+V</strong>.
+      <span class="solo-computer">Si apre la mail con destinatario e oggetto già pronti e la lettera, con le parole chiave in <strong>grassetto</strong>, viene copiata: clicca nel testo della mail e premi <strong>Ctrl+V</strong>.</span>
+      <span class="solo-telefono">Si apre l'app di posta con destinatario, oggetto e lettera <strong>già scritti</strong>: controlla e premi Invia.</span>
     </div>
 
     <div class="stats-container">
@@ -360,9 +386,10 @@ Vi ringraziamo di cuore per il vostro tempo e per la vostra vicinanza.
 Con profonda gratitudine,
 Michele Perniola, sua moglie Anna e tutta la famiglia Perniola
 
-Via Michael 10 - Statte (TA)
+Viale Michael 10 - Statte (TA)
 Puglia - Italia
 Cellulare: **+39 339-61.18.486**
+Email: **perniola.michele1961@gmail.com**
 Sito della campagna: https://perniola-m.github.io/`;
 
 const LISTA_DESTINATARI = [
@@ -495,7 +522,8 @@ function testoSemplice(t) {
 }
 function testoHtml(t) {
   const sicuro = t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const conLink = sicuro.replace(/https?:\/\/[^\s*]+/g, url => `<a href="${url}">${url}</a>`);
+  const conLink = sicuro.replace(/https?:\/\/[^\s*]+/g, url => `<a href="${url}">${url}</a>`)
+                       .replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, m => `<a href="mailto:${m}">${m}</a>`);
   const grassetto = conLink.replace(/\*\*([\s\S]+?)\*\*/g, '<b>$1</b>');
   return '<div style="font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.45">' +
          grassetto.split('\n').map(r => r.replace(/^ {2}/, '&nbsp;&nbsp;&nbsp;&nbsp;') || '&nbsp;').join('<br>') + '</div>';
@@ -531,9 +559,19 @@ function avviso(msg, ok = true) {
   avviso._t = setTimeout(() => { box.className = 'avviso-copia'; }, 9000);
 }
 
+// Telefono o tablet: le app di posta ricevono la lettera già scritta nella mail (senza incollare)
+const SU_TELEFONO = window.matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+document.documentElement.classList.add(SU_TELEFONO ? 'telefono' : 'computer');
+
 // Clic su "Invia Email" o "Email Nino": copia la lettera formattata e apre la mail
 async function inviaLettera(event, indirizzo, nomeAzienda, segnaRiga) {
   event.preventDefault();
+  if (SU_TELEFONO) {
+    avviso(`✉️ Si apre la mail per <b>${nomeAzienda}</b> con la lettera già scritta: controlla e premi Invia.`);
+    if (segnaRiga) segnaRiga();
+    window.location.href = creaMailto(indirizzo, nomeAzienda);
+    return;
+  }
   let copiata = false;
   try { copiata = await copiaLetteraFormattata(nomeAzienda); } catch (e) { copiata = false; }
   if (copiata) {
@@ -561,15 +599,15 @@ function render(lista) {
     const nomeJs = item.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
     tr.innerHTML = `
-      <td>${idx + 1}</td>
-      <td>
+      <td class="c-num">${idx + 1}</td>
+      <td class="c-nome">
         <strong>${item.name}</strong><br>
         <small style="color:var(--muted)">${item.email}</small>
       </td>
-      <td><span class="tag ${item.tag}">${item.cat}</span></td>
-      <td>${item.dept}</td>
-      <td>${item.city}</td>
-      <td>
+      <td class="c-tag"><span class="tag ${item.tag}">${item.cat}</span></td>
+      <td class="c-info" data-etichetta="Reparto">${item.dept}</td>
+      <td class="c-info" data-etichetta="Città">${item.city}</td>
+      <td class="c-azioni">
         <div class="actions">
           <a href="${mailtoAzienda}" 
              class="btn-send ${isSent ? 'sent-state' : ''}" 
@@ -612,7 +650,7 @@ function aggiornaContatori(visibili = null) {
 async function copiaEmail(nomeAzienda) {
   try {
     if (await copiaLetteraFormattata(nomeAzienda)) {
-      avviso(`📋 Lettera per <b>${nomeAzienda}</b> copiata con il grassetto: incollala con <b>Ctrl+V</b>.<br>Oggetto da usare: <i>${OGGETTO_EMAIL}</i>`);
+      avviso(`📋 Lettera per <b>${nomeAzienda}</b> copiata con il grassetto: incollala ${SU_TELEFONO ? 'tenendo premuto e scegliendo <b>Incolla</b>' : 'con <b>Ctrl+V</b>'}.<br>Oggetto da usare: <i>${OGGETTO_EMAIL}</i>`);
       return;
     }
   } catch (e) {}
