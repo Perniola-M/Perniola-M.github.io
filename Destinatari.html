@@ -8,6 +8,7 @@
     .caselle-posta { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 14px; }
     .btn-posta { flex: 1 1 180px; display: inline-flex; justify-content: center; align-items: center; gap: 8px; padding: 12px 16px; background: var(--success); color: #fff; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 1rem; }
     .btn-posta:hover { background: #166534; }
+    .stato-verifica { font-size: 0.85rem; color: var(--muted); }
     .footer-sito { margin-top: 20px; padding: 16px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; text-align: center; font-size: 1.05rem; font-weight: 600; }
     .footer-sito a { color: var(--secondary); font-weight: 800; word-break: break-all; }
     #testoAppelloPre a { color: var(--secondary); font-weight: 700; }
@@ -305,7 +306,8 @@
       <span class="badge badge-info" id="countVisualizzati">Destinatari: 105</span>
       <span class="badge badge-sent" id="countInviati">Inviati: 0 / 105</span>
       <button class="btn-top" onclick="apriModal(true)">👁️ Leggi testo lettera</button>
-      <button class="btn-top" onclick="resetInviati()">🔄 Ripristina avanzamento</button>
+      <button class="btn-top" onclick="verificaInvii(true)">🔄 Verifica invii</button>
+      <span class="stato-verifica" id="statoVerifica"></span>
     </div>
 
     <div class="filters">
@@ -517,7 +519,40 @@ const LISTA_DESTINATARI = [
   { name: "UICI Taranto (Unione Ciechi)", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "uicta@uici.it", city: "Taranto" }
 ];
 
-let sentSet = new Set(JSON.parse(localStorage.getItem('perniola_sent_set') || '[]'));
+// VERIFICA DEGLI INVII: un destinatario diventa verde SOLO se l'appello risulta nella posta inviata
+// di Michele (Gmail). Lo dice lo script Google "Verifica_invii.gs" installato sul suo account:
+// incollare qui l'indirizzo della sua "App web" (vedi LEGGIMI). Vuoto = verifica non attiva.
+const VERIFICA_URL = '';
+let sentSet = new Set();  // indirizzi risultati inviati (in minuscolo)
+try { sentSet = new Set(JSON.parse(localStorage.getItem('perniola_verificati') || '[]')); } catch (e) {}
+let verificaInCorso = false;
+async function verificaInvii(manuale = false) {
+  const stato = document.getElementById('statoVerifica');
+  if (!VERIFICA_URL) {
+    if (stato) stato.textContent = 'Verifica invii non ancora attiva';
+    if (manuale) avviso('La verifica degli invii non è ancora attiva: manca lo script Google sull\'account di Michele.', false);
+    return;
+  }
+  if (verificaInCorso) return;
+  verificaInCorso = true;
+  if (stato) stato.textContent = 'Verifico la posta inviata…';
+  try {
+    const dati = await fetch(VERIFICA_URL + (VERIFICA_URL.includes('?') ? '&' : '?') + 't=' + Date.now()).then(r => r.json());
+    sentSet = new Set((dati.inviati || []).map(x => String(x).toLowerCase()));
+    try { localStorage.setItem('perniola_verificati', JSON.stringify([...sentSet])); } catch (e) {}
+    const ora = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+    if (stato) stato.textContent = `Posta inviata verificata alle ${ora}`;
+    applicaFiltri();
+    if (manuale) avviso(`✅ Verifica fatta: ${LISTA_DESTINATARI.filter(d => sentSet.has(d.email.toLowerCase())).length} destinatari risultano già contattati.`);
+  } catch (e) {
+    if (stato) stato.textContent = 'Verifica non riuscita (riprova)';
+    if (manuale) avviso('Non riesco a leggere la posta inviata: riprova tra poco.', false);
+  } finally {
+    verificaInCorso = false;
+  }
+}
+// tornando alla pagina dopo aver inviato una mail, si ricontrolla da solo
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') verificaInvii(); });
 
 // Le parole tra **...** nella lettera vanno in grassetto.
 // testoSemplice(): lettera senza segni (per il vecchio metodo e per i programmi che non accettano formattazione)
@@ -578,7 +613,7 @@ document.documentElement.classList.add(SU_TELEFONO ? 'telefono' : 'computer');
 async function inviaLettera(event, indirizzo, nomeAzienda, segnaRiga) {
   event.preventDefault();
   if (SU_TELEFONO) {
-    avviso(`✉️ Si apre la mail per <b>${nomeAzienda}</b> con la lettera già scritta: controlla e premi Invia.`);
+    avviso(`✉️ Si apre la mail per <b>${nomeAzienda}</b> con la lettera già scritta: controlla e premi Invia.<br>Il pulsante diventa verde quando la mail risulta nella posta inviata.`);
     if (segnaRiga) segnaRiga();
     window.location.href = creaMailto(indirizzo, nomeAzienda);
     return;
@@ -600,7 +635,7 @@ function render(lista) {
   tbody.innerHTML = '';
 
   lista.forEach((item, idx) => {
-    const isSent = sentSet.has(item.email);
+    const isSent = sentSet.has(item.email.toLowerCase());  // verde solo se risulta nella posta inviata
     const tr = document.createElement('tr');
     tr.id = `row-${idx}`;
     if (isSent) tr.classList.add('is-sent');
@@ -622,7 +657,7 @@ function render(lista) {
         <div class="actions">
           <a href="${mailtoAzienda}" 
              class="btn-send ${isSent ? 'sent-state' : ''}" 
-             onclick="inviaLettera(event, '${item.email}', '${nomeJs}', () => segnaInviato('${item.email}', this, 'row-${idx}'))">
+             onclick="inviaLettera(event, '${item.email}', '${nomeJs}')">
              ${isSent ? '✅ Inviata' : '✉️ Invia Email'}
           </a>
           <a href="${mailtoNino}" 
@@ -641,21 +676,12 @@ function render(lista) {
   aggiornaContatori(lista.length);
 }
 
-function segnaInviato(email, btn, rowId) {
-  sentSet.add(email);
-  localStorage.setItem('perniola_sent_set', JSON.stringify(Array.from(sentSet)));
-  btn.classList.add('sent-state');
-  btn.innerHTML = '✅ Inviata';
-  const r = document.getElementById(rowId);
-  if (r) r.classList.add('is-sent');
-  aggiornaContatori();
-}
-
 function aggiornaContatori(visibili = null) {
   if (visibili !== null) {
     document.getElementById('countVisualizzati').textContent = `Destinatari: ${visibili}`;
   }
-  document.getElementById('countInviati').textContent = `Inviati: ${sentSet.size} / ${LISTA_DESTINATARI.length}`;
+  const inviati = LISTA_DESTINATARI.filter(d => sentSet.has(d.email.toLowerCase())).length;
+  document.getElementById('countInviati').textContent = `Inviati: ${inviati} / ${LISTA_DESTINATARI.length}`;
 }
 
 async function copiaEmail(nomeAzienda) {
@@ -685,13 +711,6 @@ function applicaFiltri() {
   render(filtrate);
 }
 
-function resetInviati() {
-  if (confirm("Vuoi davvero azzerare lo storico delle email già inviate?")) {
-    sentSet.clear();
-    localStorage.removeItem('perniola_sent_set');
-    render(LISTA_DESTINATARI);
-  }
-}
 
 function apriModal(show) {
   const m = document.getElementById('modalAnteprima');
@@ -737,6 +756,7 @@ function apriPosta(event, cartella) {
 
 document.addEventListener('DOMContentLoaded', () => {
   render(LISTA_DESTINATARI);
+  verificaInvii();  // all'apertura: quali appelli risultano già nella posta inviata di Michele
 });
 </script>
 </body>
