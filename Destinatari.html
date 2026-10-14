@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Appello Famiglia Perniola - Invio Email</title>
   <style>
+    .footer-sito { margin-top: 20px; padding: 16px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; text-align: center; font-size: 1.05rem; font-weight: 600; }
+    .footer-sito a { color: var(--secondary); font-weight: 800; word-break: break-all; }
+    #testoAppelloPre a { color: var(--secondary); font-weight: 700; }
     :root {
       --primary: #1e3a8a;
       --primary-hover: #172554;
@@ -293,6 +296,11 @@
       <tbody id="tabellaDestinatari"></tbody>
     </table>
   </div>
+
+  <footer class="footer-sito">
+    🌐 Mini sito della campagna:
+    <a href="https://perniola-m.github.io/" target="_blank" rel="noopener">https://perniola-m.github.io/</a>
+  </footer>
 </div>
 
 <div class="modal" id="modalAnteprima">
@@ -570,7 +578,9 @@ function resetInviati() {
 function apriModal(show) {
   const m = document.getElementById('modalAnteprima');
   if (show) {
-    document.getElementById('testoAppelloPre').textContent = `OGGETTO:\n${OGGETTO_EMAIL}\n\nTESTO:\nGentile [Nome Azienda],\n\n${CORPO_BASE}`;
+    const testoAnteprima = `OGGETTO:\n${OGGETTO_EMAIL}\n\nTESTO:\nGentile [Nome Azienda],\n\n${CORPO_BASE}`;
+    const sicuro = testoAnteprima.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    document.getElementById('testoAppelloPre').innerHTML = sicuro.replace(/https?:\/\/[^\s]+/g, url => `<a href="${url}" target="_blank" rel="noopener">${url}</a>`);
     m.classList.add('active');
   } else {
     m.classList.remove('active');
