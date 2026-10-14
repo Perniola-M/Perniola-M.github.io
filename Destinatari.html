@@ -194,22 +194,6 @@
     .btn-send:hover { background: var(--primary-hover); }
     .btn-send.sent-state { background: var(--success); }
 
-    /* Bottone Arancione per Nino */
-    .btn-nino {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 7px 12px;
-      background: var(--orange-btn);
-      color: #fff;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 0.82rem;
-      transition: background 0.2s;
-      white-space: nowrap;
-    }
-    .btn-nino:hover { background: var(--orange-btn-hover); }
 
     .btn-copy {
       background: #e2e8f0;
@@ -278,8 +262,8 @@
       .c-info { font-size: 0.85rem; color: #334155; }
       .c-info::before { content: attr(data-etichetta) ": "; font-weight: 700; color: var(--muted); }
       .c-nome small { word-break: break-all; }
-      .actions { margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; }
-      .btn-send, .btn-nino { justify-content: center; padding: 12px 10px; font-size: 0.95rem; }
+      .actions { margin-top: 8px; display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+      .btn-send { justify-content: center; padding: 12px 10px; font-size: 0.95rem; }
       .btn-copy { padding: 12px 14px; font-size: 1rem; }
       .modal-box { padding: 16px; max-height: 90vh; }
     }
@@ -295,7 +279,7 @@
       <a class="btn-posta" href="?posta=arrivata" onclick="return apriPosta(event, 'arrivata')">📥 Posta arrivata</a>
     </div>
     <div class="instructions">
-      👉 Clicca su <strong>"✉️ Invia Email"</strong> per scrivere all'azienda, oppure su <strong>"🟠 Email Nino"</strong> per ricevere la bozza per quella azienda a <em>s.mazzarisi@mazzarisi.it</em>.<br>
+      👉 Clicca su <strong>"✉️ Invia Email"</strong> per scrivere all'azienda.<br>
       <span class="solo-computer">Si apre la mail con destinatario e oggetto già pronti e la lettera, con le parole chiave in <strong>grassetto</strong>, viene copiata: clicca nel testo della mail e premi <strong>Ctrl+V</strong>.</span>
       <span class="solo-telefono">Si apre l'app di posta con destinatario, oggetto e lettera <strong>già scritti</strong>: controlla e premi Invia.</span><br>
       🔒 Ogni mail all'azienda parte anche in <strong>copia nascosta (Ccn)</strong> a <em>s.mazzarisi@mazzarisi.it</em>, per controllare l'invio: il destinatario non lo vede.
@@ -539,7 +523,7 @@ function testoHtml(t) {
 
 // Link che apre la mail con destinatario e oggetto (corpo vuoto: la lettera si incolla con Ctrl+V)
 // Le mail ai destinatari (pulsante blu) partono anche in copia nascosta (Ccn) a Nino, per
-// controllare l'avvenuto invio: il destinatario non lo vede. "Email Nino" va già a Nino.
+// controllare l'avvenuto invio: il destinatario non lo vede.
 function creaMailtoBreve(destinatarioEmail) {
   const ccn = destinatarioEmail.toLowerCase() !== EMAIL_NINO.toLowerCase() ? `&bcc=${encodeURIComponent(EMAIL_NINO)}` : '';
   return `mailto:${destinatarioEmail}?subject=${encodeURIComponent(OGGETTO_EMAIL)}${ccn}`;
@@ -574,7 +558,7 @@ function avviso(msg, ok = true) {
 const SU_TELEFONO = window.matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 document.documentElement.classList.add(SU_TELEFONO ? 'telefono' : 'computer');
 
-// Clic su "Invia Email" o "Email Nino": copia la lettera formattata e apre la mail
+// Clic su "Invia Email": copia la lettera formattata e apre la mail
 async function inviaLettera(event, indirizzo, nomeAzienda, segnaRiga) {
   event.preventDefault();
   if (SU_TELEFONO) {
@@ -606,7 +590,6 @@ function render(lista) {
     if (isSent) tr.classList.add('is-sent');
 
     const mailtoAzienda = creaMailto(item.email, item.name);
-    const mailtoNino = creaMailto(EMAIL_NINO, item.name);
     const nomeJs = item.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
     tr.innerHTML = `
@@ -624,12 +607,6 @@ function render(lista) {
              class="btn-send ${isSent ? 'sent-state' : ''}" 
              onclick="inviaLettera(event, '${item.email}', '${nomeJs}', () => segnaInviato('${item.email}', this, 'row-${idx}'))">
              ${isSent ? '✅ Inviata' : '✉️ Invia Email'}
-          </a>
-          <a href="${mailtoNino}" 
-             class="btn-nino" 
-             onclick="inviaLettera(event, EMAIL_NINO, '${nomeJs}')"
-             title="Invia la bozza per questa azienda a Nino">
-             🟠 Email Nino
           </a>
           <button class="btn-copy" title="Copia testo negli appunti" onclick="copiaEmail('${nomeJs}')">📋</button>
         </div>
