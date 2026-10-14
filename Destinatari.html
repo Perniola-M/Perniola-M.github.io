@@ -291,8 +291,8 @@
   <header>
     <h1>Campagna Solidale Famiglia Perniola - Elenco Invio</h1>
     <div class="caselle-posta">
-      <a class="btn-posta" href="https://mail.google.com/mail/u/?authuser=perniola.michele1961%40gmail.com#sent" target="_blank" rel="noopener">📤 Posta inviata</a>
-      <a class="btn-posta" href="https://mail.google.com/mail/u/?authuser=perniola.michele1961%40gmail.com#inbox" target="_blank" rel="noopener">📥 Posta arrivata</a>
+      <a class="btn-posta" href="?posta=inviata" onclick="return apriPosta(event, 'inviata')">📤 Posta inviata</a>
+      <a class="btn-posta" href="?posta=arrivata" onclick="return apriPosta(event, 'arrivata')">📥 Posta arrivata</a>
     </div>
     <div class="instructions">
       👉 Clicca su <strong>"✉️ Invia Email"</strong> per scrivere all'azienda, oppure su <strong>"🟠 Email Nino"</strong> per ricevere la bozza per quella azienda a <em>s.mazzarisi@mazzarisi.it</em>.<br>
@@ -703,6 +703,37 @@ function apriModal(show) {
     m.classList.remove('active');
   }
 }
+
+// Pulsanti "Posta inviata" / "Posta arrivata": Gmail di Michele.
+// Su Android un tocco su un link mail.google.com viene passato all'app Gmail, che apre SEMPRE la
+// posta in arrivo (ignora la cartella). Per questo il pulsante riapre questa pagina con ?posta=...
+// e il passaggio a Gmail avviene subito dopo, senza tocco: così resta nel browser, dove la cartella
+// richiesta si apre davvero.
+const ACCOUNT_POSTA = 'perniola.michele1961@gmail.com';
+function indirizzoPosta(cartella) {
+  const utente = encodeURIComponent(ACCOUNT_POSTA);
+  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    // Gmail per telefono nel browser: ^f = posta inviata, ^i = posta in arrivo
+    return `https://mail.google.com/mail/mu/mp/?authuser=${utente}#tl/${cartella === 'inviata' ? '%5Ef' : '%5Ei'}`;
+  }
+  return `https://mail.google.com/mail/u/?authuser=${utente}#${cartella === 'inviata' ? 'sent' : 'inbox'}`;
+}
+function apriPosta(event, cartella) {
+  if (!SU_TELEFONO) {  // computer: si apre Gmail in una nuova scheda, nella cartella giusta
+    window.open(indirizzoPosta(cartella), '_blank', 'noopener');
+    return false;
+  }
+  return true;  // telefono: segue il link ?posta=... (stessa pagina) e prosegue da lì
+}
+(function prosegui() {
+  const cartella = new URLSearchParams(location.search).get('posta');
+  if (cartella !== 'inviata' && cartella !== 'arrivata') return;
+  document.addEventListener('DOMContentLoaded', () => {
+    const box = document.getElementById('avvisoCopia');
+    if (box) { box.innerHTML = `Apro la posta ${cartella} di Michele…`; box.className = 'avviso-copia attivo ok'; }
+  });
+  setTimeout(() => location.replace(indirizzoPosta(cartella)), 400);
+})();
 
 document.addEventListener('DOMContentLoaded', () => {
   render(LISTA_DESTINATARI);
