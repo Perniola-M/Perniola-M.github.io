@@ -29,6 +29,7 @@
     .caselle-posta { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 14px; }
     .btn-posta { flex: 1 1 180px; display: inline-flex; justify-content: center; align-items: center; gap: 8px; padding: 12px 16px; background: var(--success); color: #fff; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 1rem; }
     .btn-posta:hover { background: #166534; }
+    .foto-famiglia { display: block; width: 100%; max-width: 720px; height: auto; border-radius: 12px; margin: 6px auto 16px; box-shadow: 0 2px 10px rgba(0,0,0,.12); }
     .footer-sito { margin-top: 20px; padding: 16px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; text-align: center; font-size: 1.05rem; font-weight: 600; }
     .footer-sito a { color: var(--secondary); font-weight: 800; word-break: break-all; }
     #testoAppelloPre a { color: var(--secondary); font-weight: 700; }
@@ -295,6 +296,7 @@
 <div class="wrapper">
   <header>
     <h1>Campagna Solidale Famiglia Perniola - Elenco Invio</h1>
+    <img class="foto-famiglia" src="Foto1.jpg" width="1511" height="755" alt="Famiglia Perniola">
     <div class="caselle-posta">
       <a class="btn-posta" href="?posta=inviata" onclick="return apriPosta(event, 'inviata')">📤 Posta inviata</a>
       <a class="btn-posta" href="?posta=arrivata" onclick="return apriPosta(event, 'arrivata')">📥 Posta arrivata</a>
@@ -310,7 +312,6 @@
       <span class="badge badge-info" id="countVisualizzati">Destinatari: 105</span>
       <span class="badge badge-sent" id="countInviati">Inviati: 0 / 105</span>
       <button class="btn-top" onclick="apriModal(true)">👁️ Leggi testo lettera</button>
-      <button class="btn-top" onclick="resetInviati()">🔄 Ripristina avanzamento</button>
     </div>
 
     <div class="filters">
@@ -757,17 +758,6 @@ function applicaFiltri() {
   });
 
   render(filtrate);
-}
-
-function resetInviati() {
-  if (confirm("Vuoi davvero azzerare lo storico delle email già inviate?\n\nAttenzione: i segni verdi spariscono per tutti, anche sugli altri telefoni.")) {
-    sentSet.clear();
-    dataInvio = {};
-    localStorage.removeItem('perniola_sent_set');
-    localStorage.removeItem('perniola_in_attesa');
-    try { fetch(ARCHIVIO_INVII + '?azione=azzera', { mode: 'no-cors', keepalive: true, credentials: 'omit' }).catch(() => {}); } catch (e) {}
-    render(LISTA_DESTINATARI);
-  }
 }
 
 function apriModal(show) {

@@ -1,0 +1,201 @@
+﻿LEGGIMI - Mini sito "Un van per la famiglia Perniola"
+=====================================================
+Ultimo aggiornamento: 14 ottobre 2026
+
+
+1. COS'E'
+---------
+Un mini sito di una sola pagina che racconta la storia della famiglia
+Perniola e chiede aiuto per un veicolo a 7 posti (anche usato).
+C'e' anche una seconda pagina, di servizio, per inviare la lettera di
+appello via email ad aziende, fondazioni e club.
+
+  Sito pubblico ........ https://perniola-m.github.io/
+  Pagina invio email ... https://perniola-m.github.io/Destinatari.html
+  Archivio su GitHub ... https://github.com/Perniola-M/Perniola-M.github.io
+
+
+2. DOVE SONO I FILE
+-------------------
+Cartella sul PC:
+  C:\Dropbox\[7] Altri\Perniola Michele (1961)\
+
+  Auto per i Perniola\
+    index.html ............ la pagina del sito (unico file da modificare)
+    Foto1.jpg ............. foto 1: Anna e Michele
+    Foto2.jpg ............. foto 2: guida all'uso del sito
+    Foto3.jpg ............. foto 3: il van a 7 posti
+    Audio1.mp3 ............ racconto collegato alla foto 1 (la storia)
+    Audio2.mp3 ............ racconto collegato alla foto 2 (come usare il sito)
+    Audio3.mp3 ............ racconto collegato alla foto 3 (perche' il sito e come aiutare)
+    anteprima-van.png ..... immagine di anteprima quando si condivide il link
+                            (WhatsApp, Facebook): stesso disegno dell'icona Home
+    minivan-solo-1747.png . vecchia immagine di anteprima, non piu' usata
+    apple-touch-icon.png .. icona per "Aggiungi a Home" su iPhone (180x180)
+    icon-192.png, icon-512.png  icone per Android
+    manifest.webmanifest .. nome e icone dell'app per Android
+    index.html.bak-* ...... copie di sicurezza di versioni precedenti
+    Pagina1/2/3.mp3 ....... vecchi audio, non piu' usati dal sito
+
+  Lettera appello\
+    Destinatari.html ...... pagina per l'invio delle email (elenco di 105 destinatari)
+    lettera-appello-auto-perniola.docx ... la lettera in formato Word
+
+IMPORTANTE: la copia sul PC e quella su GitHub devono restare uguali.
+Il sito pubblico mostra SOLO quello che c'e' su GitHub.
+
+
+3. COME FUNZIONA IL SITO
+------------------------
+La pagina si scorre dall'alto in basso, sempre in una sola colonna
+(anche da computer). Ci sono tre sezioni, ognuna con una grande foto.
+
+Audio
+  - Toccando una foto parte il suo racconto audio.
+  - Toccando di nuovo la stessa foto, l'audio va in pausa;
+    toccandola ancora riprende da dove era rimasto.
+  - Toccando un'altra foto, l'audio precedente si ferma e parte il nuovo.
+  - Durante l'ascolto la cornice diventa verde e una barra gialla in basso
+    mostra l'avanzamento; toccando la barra si va avanti o indietro.
+  - SEQUENZA AUTOMATICA: quando un audio finisce, la pagina scorre alla foto
+    successiva, mostra "Il prossimo racconto parte tra 3... 2... 1 secondi"
+    e lo avvia. Dopo il terzo si ricomincia dal primo.
+    Un tocco su una foto durante l'attesa annulla il conto alla rovescia.
+  - Su iPhone, al primo tocco la pagina prepara in silenzio anche gli altri
+    audio, cosi' la sequenza puo' continuare da sola. Se un telefono la
+    blocca comunque, sotto la foto compare "Tocca la foto per continuare".
+
+Pulsante "Sostieni"
+  In alto a destra (sempre visibile) e in fondo alla sezione del van.
+  Apre una finestra con i dati per il bonifico, ognuno con il tasto "Copia":
+
+    Intestatario: Perniola Michele
+                  Viale Michael 10 - Statte (TA)
+                  Puglia - Italia
+                  Cellulare +39 339-61.18.486 (dal telefono si tocca e chiama)
+                  Email perniola.michele1961@gmail.com (si tocca e scrive)
+    IBAN ........ IT11 P030 6915 8121 0000 0075 334
+                  (il tasto Copia lo copia senza spazi)
+    Banca ....... Intesa Sanpaolo - Filiale di Taranto
+    Causale ..... Un van per la famiglia Perniola
+
+  L'IBAN e' stato verificato con il controllo internazionale e con il CIN
+  italiano; il codice banca 03069 corrisponde a Intesa Sanpaolo.
+
+Altre parti
+  - Schede "Michele e Anna / I figli / I nipoti / Sindrome di Axenfeld".
+  - Calcolatrice dei chilometri delle tratte sanitarie da Taranto.
+  - "Aggiungi a Home" dal telefono: compare l'icona arancione con il pulmino
+    e il cuore, con il nome "Van-Perniola".
+  - In alto al centro (solo da computer) la VERSIONE del sito, nel formato
+    gg-mm-aa hh:mm: serve a capire se si sta guardando l'ultima versione.
+
+
+4. PAGINA INVIO EMAIL (Destinatari.html)
+----------------------------------------
+  - "Aggiungi a Home" da questa pagina: icona blu con busta e cuore, nome
+    "Email-Perniola" (file posta-180/192/512.png e manifest-posta.webmanifest
+    nella cartella Lettera appello e sul sito).
+  - Anteprima nei messaggi (WhatsApp ecc.): anteprima-posta.png (1200x630,
+    busta blu con cuore), indicata nei tag og:image della pagina.
+  - Segni verdi condivisi: quando Perniola preme il bottone blu, la riga diventa
+    verde anche nell'archivio comune (Google Apps Script "Invii Perniola" sull'account
+    s.mazzarisi@gmail.com). Chiunque apra la pagina vede gli stessi verdi, con data e
+    ora dell'invio (tenendo il dito o il mouse sul bottone verde). Perniola non deve
+    fare nulla di diverso. La pagina si aggiorna da sola ogni minuto.
+    Gli invii segnati prima sul suo telefono passano nell'archivio da soli la prima
+    volta che riapre la pagina. Il pulsante "Ripristina avanzamento" e' stato tolto.
+  - Sotto il titolo c'e' la foto della famiglia (Foto1.jpg, la stessa del sito).
+  - Per ogni destinatario ci sono due pulsanti:
+      "Invia Email" ... apre la mail all'azienda con destinatario e oggetto
+                        (e s.mazzarisi@mazzarisi.it in copia nascosta);
+      icona appunti ... copia soltanto la lettera, senza aprire la mail.
+  - DAL TELEFONO: la pagina si mostra a schede con pulsanti grandi; il clic
+    apre l'app di posta con destinatario, oggetto e lettera GIA' SCRITTI
+    (senza grassetto, perche' le app di posta del telefono non lo accettano
+    da un link): basta controllare e premere Invia.
+  - DAL COMPUTER: al clic la lettera viene copiata negli appunti GIA'
+    FORMATTATA (parole chiave in grassetto, link al sito cliccabile).
+    Nella mail che si apre: clicca nel testo e premi Ctrl+V.
+    Un riquadro verde in basso conferma la copia.
+    Se la copia non riesce (riquadro arancione), la mail si apre con la
+    lettera gia' dentro ma in testo semplice, senza grassetto.
+  - "Invia Email" segna la riga come inviata; il conteggio "Inviati"
+    resta memorizzato nel browser. "Ripristina avanzamento" lo azzera.
+  - Ricerca per nome, citta' o email e filtro per tipologia.
+  - "Leggi testo lettera" mostra il testo completo con i grassetti.
+  - Le parole in grassetto sono quelle scritte tra **due asterischi** nel
+    testo della lettera (costante CORPO_BASE dentro Destinatari.html).
+  - La lettera termina con: come aiutare, dati del bonifico, indirizzo,
+    cellulare e link al sito. In fondo alla pagina c'e' il link al sito.
+
+  - PULSANTI VERDI "Posta inviata" / "Posta arrivata" (sotto il titolo):
+    aprono Gmail di Michele (perniola.michele1961@gmail.com) nella cartella
+    giusta. Sul telefono passano un attimo dalla pagina e poi aprono Gmail
+    nel browser (l'app Gmail aprirebbe sempre la posta in arrivo).
+  - Copia nascosta: ogni mail all'azienda (pulsante blu) parte anche in Ccn
+    a s.mazzarisi@mazzarisi.it.
+  - Il pulsante blu diventa verde ("Inviata") appena lo si clicca; il
+    conteggio "Inviati" resta nel browser. Per il controllo vero degli invii
+    fanno fede le copie nascoste che arrivano a s.mazzarisi@mazzarisi.it.
+
+5. COME AGGIORNARE IL SITO
+--------------------------
+A) Modifiche fatte da Claude
+   Claude modifica il file sul PC, lo prova e lo pubblica su GitHub dal
+   browser dell'app Claude (dove l'accesso a GitHub resta salvato).
+   Per i file di testo (index.html, Destinatari.html) non serve fare nulla.
+
+B) Caricare file nuovi o audio/foto (va fatto a mano)
+   1. Apri https://github.com/Perniola-M/Perniola-M.github.io/upload/main
+   2. Trascina i file dalla cartella "Auto per i Perniola"
+      (se cambi un audio, carica insieme anche index.html)
+   3. Clicca il pulsante verde "Commit changes"
+   4. Dopo circa 1-2 minuti il sito e' aggiornato.
+   I nomi dei file devono restare identici (es. Audio3.mp3, non Audi3.mp3).
+
+C) Vedere l'ultima versione
+   Se il sito mostra ancora la versione vecchia, ricarica con Ctrl+F5
+   (da telefono: chiudi e riapri la pagina). Controlla la versione in alto.
+
+Per non dover caricare a mano audio e foto: collegare GitHub a Claude
+dalle impostazioni (sezione Connettori).
+
+
+6. COSE DA RICORDARE
+--------------------
+  - Il riferimento a GoFundMe e' stato tolto dal sito (13/10/2026).
+  - Nelle "Precisazioni" e' scritto che Nicola riesce a guidare; sul sito e
+    nella lettera c'e' ancora "Anna e' l'unica che puo' guidare": da
+    correggere se lo si ritiene opportuno.
+  - Prima di diffondere il link, confrontare l'IBAN con un documento della
+    banca.
+
+
+7. STORIA DELLE MODIFICHE
+-------------------------
+13/10/2026  Tolto GoFundMe (riquadro "Regala un KM", schede e pulsanti).
+13/10/2026  Scritti i testi per i tre audio; finestra "Sostieni" per il bonifico.
+13/10/2026  Collegati i nuovi Audio1/2/3.mp3; intestatario in evidenza,
+            indirizzo e cellulare.
+13/10/2026  Audio in sequenza: 3 secondi di pausa, poi il successivo, in ciclo.
+14/10/2026  Dati reali del bonifico (IBAN Intesa Sanpaolo), tolte le scritte
+            provvisorie.
+14/10/2026  Lettera email completata con bonifico, indirizzo, cellulare e
+            link al sito; link cliccabile anche in fondo a Destinatari.html.
+14/10/2026  Lettera con parole chiave in grassetto: la mail si apre con
+            destinatario e oggetto, la lettera formattata si incolla con Ctrl+V.
+14/10/2026  Aggiunta email di Michele (sito e lettera); "Viale Michael";
+            nuova icona quadrata per "Aggiungi a Home" e nome "Un van per la
+            speranza"; pagina invio email adattata al telefono.
+14/10/2026  Nome sulla Home "Van-Perniola"; anteprima dei messaggi con il
+            disegno della Home (anteprima-van.png).
+14/10/2026  Pagina invio email: copia nascosta a s.mazzarisi@mazzarisi.it,
+            pulsanti Posta inviata / Posta arrivata (Gmail di Michele),
+            (provata e poi tolta la verifica automatica nella posta inviata:
+            troppo complicata da installare; Verifica_invii.gs non e' usato).
+14/10/2026  Tolto il pulsante "Email Nino" dalla pagina di invio email.
+14/10/2026  Icona Email-Perniola per "Aggiungi a Home" della pagina di invio email.
+14/10/2026  Anteprima WhatsApp della pagina email (anteprima-posta.png).
+15/10/2026  Segni verdi condivisi tra tutti i telefoni (archivio "Invii Perniola").
+15/10/2026  Foto della famiglia sotto il titolo; tolto "Ripristina avanzamento".
