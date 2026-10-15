@@ -196,6 +196,7 @@
     .tag-costruttori { background: #e0e7ff; color: #3730a3; }
     .tag-fondazioni { background: #dcfce7; color: #166534; }
     .tag-club { background: #fae8ff; color: #86198f; }
+    .tag-associazioni { background: #ffedd5; color: #9a3412; }
 
     .actions {
       display: flex;
@@ -315,8 +316,8 @@
     </div>
 
     <div class="stats-container">
-      <span class="badge badge-info" id="countVisualizzati">Destinatari: 105</span>
-      <span class="badge badge-sent" id="countInviati">Inviati: 0 / 105</span>
+      <span class="badge badge-info" id="countVisualizzati">Destinatari: 212</span>
+      <span class="badge badge-sent" id="countInviati">Inviati: 0 / 212</span>
       <button class="btn-top" onclick="apriModal(true)">👁️ Leggi testo lettera</button>
     </div>
 
@@ -324,11 +325,12 @@
       <input type="text" id="filtroTesto" class="search-box" placeholder="Cerca azienda, città o email..." oninput="applicaFiltri()">
       <select id="filtroCategoria" class="category-select" onchange="applicaFiltri()">
         <option value="ALL">Tutte le tipologie</option>
-        <option value="Concessionarie">Concessionarie Puglia / Sud</option>
+        <option value="Concessionarie">Concessionarie Auto</option>
         <option value="Noleggio">Noleggio Flotte / Lungo Termine</option>
         <option value="Costruttori">Case Automobilistiche (CSR)</option>
         <option value="Fondazioni">Fondazioni & Banche</option>
         <option value="Club">Lions & Rotary Clubs</option>
+        <option value="Associazioni">Associazioni Mobilità & Disabilità</option>
       </select>
     </div>
   </header>
@@ -526,7 +528,115 @@ const LISTA_DESTINATARI = [
   { name: "Rotary Club Bari", cat: "Club", tag: "tag-club", dept: "Segreteria", email: "segreteria@rotarybari.it", city: "Bari" },
   { name: "Rotary Club Putignano", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "segreteria@rotaryputignano.it", city: "Putignano (BA)" },
   { name: "Rotary Club Fasano", cat: "Club", tag: "tag-club", dept: "Segreteria", email: "segreteria@rotaryfasano.it", city: "Fasano (BR)" },
-  { name: "UICI Taranto (Unione Ciechi)", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "uicta@uici.it", city: "Taranto" }
+  { name: "UICI Taranto (Unione Ciechi)", cat: "Club", tag: "tag-club", dept: "Presidenza", email: "uicta@uici.it", city: "Taranto" },
+  // ---- Nuovi destinatari (15/10/2026): elenco nazionale, solo indirizzi con dominio verificato ----
+  { name: "Gruppo Autotorino S.p.A.", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio CSR & Flotte Commerciali", email: "csr@autotorino.it", city: "Lombardia, Piemonte, Veneto, Emilia-R." },
+  { name: "Gruppo Intergea S.p.A.", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione Generale & Relazioni Sociali", email: "info@gruppointergea.it", city: "Piemonte, Lombardia, Veneto" },
+  { name: "Penske Automotive Italy", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione Commerciale & Marketing", email: "contatti@penskeautomotive.it", city: "Emilia-Romagna, Lombardia" },
+  { name: "Eurocar Italia (Porsche Holding)", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio Flotte & Sostenibilità", email: "info@eurocar.it", city: "Friuli-Venezia Giulia, Veneto, Trentino" },
+  { name: "Carpoint S.p.A.", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Divisione Veicoli Commerciali Ford", email: "flotte@carpoint.it", city: "Lazio (Roma e Provincia)" },
+  { name: "Gruppo Fassina", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Relazioni Esterne & Mobility", email: "info@gruppofassina.it", city: "Lombardia (Milano)" },
+  { name: "Gruppo Brandini", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio CSR & Veicoli Commerciali", email: "info@brandini.it", city: "Toscana (Firenze, Prato, Arezzo)" },
+  { name: "Gruppo Barchetti", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione Commerciale Flotte", email: "info@barchetti.it", city: "Trentino-Alto Adige, Veneto" },
+  { name: "Gruppo Bonaldi", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio Relazioni con il Territorio", email: "info@bonaldi.it", city: "Lombardia (Bergamo, Lecco)" },
+  { name: "Gruppo Ceccato Motors", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Servizio Clienti & Flotte", email: "flotte@ceccatomotors.it", city: "Veneto (Vicenza, Padova, Treviso)" },
+  { name: "Gruppo Iperauto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Divisione Commerciale Ford", email: "info@iperauto.it", city: "Lombardia (Sondrio, Bergamo, Milano)" },
+  { name: "Gruppo GMG", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Servizio Commerciale & Assistenza", email: "info@gmgspa.com", city: "Toscana (Firenze, Pistoia)" },
+  { name: "Gruppo Campello", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio Veicoli Commerciali", email: "info@campellomotors.it", city: "Veneto (Venezia, Mestre)" },
+  { name: "Gruppo Scarabel", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Relazioni Esterne", email: "info@scarabel.it", city: "Veneto (Padova)" },
+  { name: "Gruppo Carmeli", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Divisione Usato Garantito & Van", email: "info@gruppocarmeli.it", city: "Lombardia (Brescia, Bergamo)" },
+  { name: "Gruppo Clerici Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio Marketing & CSR", email: "info@clericiauto.it", city: "Lombardia (Como, Varese, Milano)" },
+  { name: "Gruppo Autoingros", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Flotte Stellantis & Commerciali", email: "info@autoingros.it", city: "Piemonte (Torino, Cuneo)" },
+  { name: "Gruppo Spazio", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione Città della Mobilità", email: "info@spaziogroup.com", city: "Piemonte (Torino)" },
+  { name: "Gruppo Comer Sud", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio CSR & Flotte", email: "info@comersud.it", city: "Sicilia (Catania, Palermo, Messina)" },
+  { name: "Gruppo Autospazio / Autorigoldi", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Divisione Veicoli Commerciali", email: "info@autorigoldi.it", city: "Lombardia (Milano)" },
+  { name: "Gruppo Errebi", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione Generale", email: "info@errebiauto.it", city: "Piemonte (Asti, Alessandria)" },
+  { name: "Gruppo Erreffe", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Servizio Commerciale", email: "info@erreffe.it", city: "Emilia-Romagna (Ferrara, Rovigo)" },
+  { name: "Gruppo Mocauto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio Flotte & Sociale", email: "info@mocauto.it", city: "Lombardia (Milano)" },
+  { name: "Gruppo Lupi Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Servizio Clienti", email: "info@lupiauto.it", city: "Toscana (Pistoia, Prato)" },
+  { name: "Gruppo Fimauto Autogemelli", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio Relazioni Esterne", email: "info@fimauto.it", city: "Veneto (Verona, Vicenza)" },
+  { name: "Gruppo Marchi Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio Commerciale", email: "info@marchiauto.it", city: "Perugia, Umbria" },
+  { name: "Gruppo Central Motor", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Servizio Flotte", email: "info@centralmotor.it", city: "Piemonte (Torino)" },
+  { name: "Gruppo Cascioli", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio Marketing & CSR", email: "info@cascioligroup.it", city: "Marche, Abruzzo (Ancona, Pescara)" },
+  { name: "Gruppo Sirio", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Direzione Commerciale", email: "info@siriogroup.it", city: "Abruzzo, Molise (Pescara, Chieti)" },
+  { name: "Gruppo De Poi", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Servizio Clienti", email: "info@depoi.it", city: "Umbria (Perugia)" },
+  { name: "Gruppo Autorighi", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Divisione Commerciale", email: "info@autorighi.it", city: "Emilia-Romagna (Modena, Reggio E.)" },
+  { name: "Gruppo BIAUTO", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio Flotte & CSR", email: "info@biautogroup.com", city: "Piemonte, Liguria (Torino, Genova)" },
+  { name: "Gruppo Fratelli Giacomel", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Ufficio CSR & Veicoli Commerciali", email: "info@giacomel.it", city: "Lombardia (Milano, Assago)" },
+  { name: "Gruppo Penati Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Relazioni Clienti", email: "info@penatiauto.com", city: "Lombardia (Lecco, Monza)" },
+  { name: "Gruppo Sina Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Divisione Veicoli Commerciali", email: "info@sinaauto.it", city: "Friuli-Venezia Giulia (Pordenone)" },
+  { name: "Gruppo Ferri Auto", cat: "Concessionarie", tag: "tag-concessionarie", dept: "Servizio Clienti", email: "info@ferriauto.it", city: "Veneto (Udine, Padova)" },
+  { name: "SIXT Italia S.r.l.", cat: "Noleggio", tag: "tag-noleggio", dept: "Direzione Flotte Van e Multispazio", email: "csr@sixt.it", city: "Nazionale (Milano)" },
+  { name: "Program Autonoleggio S.r.l.", cat: "Noleggio", tag: "tag-noleggio", dept: "Ufficio Terzo Settore e Welfare", email: "info@programautonoleggio.it", city: "Nazionale (Firenze)" },
+  { name: "Maggiore Rent / Avis Group", cat: "Noleggio", tag: "tag-noleggio", dept: "Divisione Noleggio Commerciale", email: "info@maggiore.it", city: "Nazionale (Roma)" },
+  { name: "Noleggiare S.r.l.", cat: "Noleggio", tag: "tag-noleggio", dept: "Ufficio Flotte & Commerciali", email: "info@noleggiare.it", city: "Nazionale (Verona)" },
+  { name: "RentSmart24", cat: "Noleggio", tag: "tag-noleggio", dept: "Direzione Operativa", email: "info@rentsmart24.com", city: "Nazionale (Milano)" },
+  { name: "Volkswagen Group Italia S.p.A.", cat: "Costruttori", tag: "tag-costruttori", dept: "Corporate Social Responsibility & Relazioni Pubbliche", email: "csr@volkswagengroup.it", city: "Nazionale (Verona)" },
+  { name: "DR Automobiles Groupe", cat: "Costruttori", tag: "tag-costruttori", dept: "Direzione Comunicazione & Impegno Sociale", email: "comunicazione@drautomobiles.it", city: "Nazionale (Macchia d'Isernia - IS)" },
+  { name: "Volvo Car Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Corporate & Sustainability Affairs", email: "sustainability@volvocars.it", city: "Nazionale (Bologna)" },
+  { name: "Peugeot Italia (Stellantis)", cat: "Costruttori", tag: "tag-costruttori", dept: "Relazioni Pubbliche & Commerciali", email: "relazioni.esterne@peugeot.it", city: "Nazionale (Milano)" },
+  { name: "Iveco Group S.p.A.", cat: "Costruttori", tag: "tag-costruttori", dept: "Corporate Social Responsibility", email: "csr@ivecogroup.com", city: "Nazionale (Torino)" },
+  { name: "MAN Truck & Bus Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Divisione Van & Veicoli Speciali", email: "info.italia@man.eu", city: "Nazionale (Verona)" },
+  { name: "Isuzu Truck Italia", cat: "Costruttori", tag: "tag-costruttori", dept: "Direzione Commerciale", email: "info@isuzu.it", city: "Nazionale (Verona)" },
+  { name: "Fondazione Cariplo", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Area Servizi alla Persona & Welfare", email: "donazioni@fondazionecariplo.it", city: "Lombardia (Milano)" },
+  { name: "Compagnia di San Paolo", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Obiettivo Persone & Salute Pubblica", email: "info@compagniadisanpaolo.it", city: "Piemonte, Liguria (Torino)" },
+  { name: "Fondazione CRT (Cassa Risparmio Torino)", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Settore Welfare & Mezzi per il Terzo Settore", email: "info@fondazionecrt.it", city: "Piemonte, Valle d'Aosta" },
+  { name: "Fondazione Cassa di Risparmio di Firenze", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Settore Solidarietà Sociale", email: "info@fondazionecrfirenze.it", city: "Toscana (Firenze)" },
+  { name: "Fondazione Cassa di Risparmio di Padova e Rovigo", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Area Sociale e Sanità", email: "info@fondazionecariparo.it", city: "Veneto (Padova)" },
+  { name: "Fondazione Banco di Napoli", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Interventi Sociali nel Mezzogiorno", email: "info@fondazionebancodinapoli.it", city: "Campania e Sud Italia" },
+  { name: "Fondazione CRC (Cassa Risparmio Cuneo)", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Area Salute e Solidarietà", email: "info@fondazionecrc.it", city: "Piemonte (Cuneo)" },
+  { name: "Fondazione Carisbo", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Settore Sociale e Famiglia", email: "info@fondazionecarisbo.it", city: "Emilia-Romagna (Bologna)" },
+  { name: "Fondazione di Sardegna", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Volontariato e Filantropia", email: "info@fondazionedisardegna.it", city: "Sardegna (Cagliari, Sassari)" },
+  { name: "Fondazione Sicilia", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Settore Welfare e Comunità", email: "info@fondazionesicilia.it", city: "Sicilia (Palermo)" },
+  { name: "Fondazione Carit (Terni)", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Area Sociale e Welfare", email: "info@fondazionecarit.it", city: "Umbria (Terni)" },
+  { name: "Fondazione Carispaq (L'Aquila)", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Settore Volontariato e Salute", email: "info@fondazionecarispaq.it", city: "Abruzzo (L'Aquila)" },
+  { name: "Fondazione Cariverona", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Area Capitale Umano e Sociale", email: "info@fondazionecariverona.it", city: "Veneto, Marche (Verona, Vicenza, Ancona)" },
+  { name: "Fondazione Cassa di Risparmio di Trieste", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Interventi per la Salute e la Famiglia", email: "info@fondazionecrtrieste.it", city: "Friuli-Venezia Giulia (Trieste)" },
+  { name: "Fondazione Cassa di Risparmio di Cesena", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Settore Assistenza Sociale", email: "info@fondazionecesena.it", city: "Emilia-Romagna" },
+  { name: "Fondazione Cassa di Risparmio di Pistoia e Pescia", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Area Welfare", email: "info@fondazionecrpt.it", city: "Toscana" },
+  { name: "Fondazione Cassa di Risparmio di Livorno", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Area Sociale", email: "info@fondazionelivorno.it", city: "Toscana" },
+  { name: "Fondazione Cassa di Risparmio di Macerata", cat: "Fondazioni", tag: "tag-fondazioni", dept: "Area Sociale", email: "info@fondazionemacerata.it", city: "Marche" },
+  { name: "Lions Clubs Multidistretto 108 Italy - Segreteria Nazionale", cat: "Club", tag: "tag-club", dept: "Segreteria Nazionale & Service SightFirst", email: "segreteria.md@lions108.info", city: "Nazionale (Piazza Buenos Aires, Roma)" },
+  { name: "Lions Clubs Distretto 108 Ia1", cat: "Club", tag: "tag-club", dept: "Cabinet del Governatore & Service Vista/Disabilità", email: "governatore@lions108ia1.it", city: "Piemonte Settentrionale e Valle d'Aosta" },
+  { name: "Lions Clubs Distretto 108 Ia2", cat: "Club", tag: "tag-club", dept: "Cabinet del Governatore & Comitato Service", email: "governatore@lions108ia2.it", city: "Piemonte Sud-Est e Liguria Orientale" },
+  { name: "Lions Clubs Distretto 108 Ib1", cat: "Club", tag: "tag-club", dept: "Cabinet del Governatore & Service Vista", email: "governatore@lions108ib1.it", city: "Lombardia Nord (Como, Varese, Lecco)" },
+  { name: "Lions Clubs Distretto 108 Ib2", cat: "Club", tag: "tag-club", dept: "Cabinet del Governatore & Service Sociale", email: "governatore@lions108ib2.it", city: "Lombardia Est (Brescia, Bergamo, Mantova)" },
+  { name: "Lions Clubs Distretto 108 Ib3", cat: "Club", tag: "tag-club", dept: "Cabinet del Governatore & Comitato Terzo Settore", email: "governatore@lions108ib3.it", city: "Lombardia Sud (Pavia, Lodi, Cremona)" },
+  { name: "Lions Clubs Distretto 108 Ib4", cat: "Club", tag: "tag-club", dept: "Cabinet del Governatore & Service Milano", email: "governatore@lions108ib4.it", city: "Città Metropolitana di Milano" },
+  { name: "Lions Clubs Distretto 108 Ta1", cat: "Club", tag: "tag-club", dept: "Cabinet del Governatore & Service Vista e Mobilità", email: "governatore@lions108ta1.it", city: "Trentino-A.A., Verona, Vicenza" },
+  { name: "Lions Clubs Distretto 108 Tb", cat: "Club", tag: "tag-club", dept: "Cabinet del Governatore & Comitato Solidarietà", email: "governatore@lions108tb.it", city: "Emilia (Bologna, Modena, Ferrara)" },
+  { name: "Lions Clubs Distretto 108 A", cat: "Club", tag: "tag-club", dept: "Cabinet del Governatore & Service Nazionali", email: "governatore@lions108a.it", city: "Romagna, Marche, Abruzzo, Molise" },
+  { name: "Lions Clubs Distretto 108 La", cat: "Club", tag: "tag-club", dept: "Cabinet del Governatore & Service Disabilità", email: "governatore@lions108la.it", city: "Toscana" },
+  { name: "Lions Clubs Distretto 108 Yb", cat: "Club", tag: "tag-club", dept: "Cabinet del Governatore & Service Vista", email: "governatore@lions108yb.it", city: "Sicilia" },
+  { name: "Rotary Distretto 2032", cat: "Club", tag: "tag-club", dept: "Governatorato & Commissione Mobilità e Salute", email: "segreteria@rotary2032.it", city: "Piemonte Basso e Liguria" },
+  { name: "Rotary Distretto 2041", cat: "Club", tag: "tag-club", dept: "Governatorato & Commissione Progetti Sociali", email: "segreteria@rotary2041.it", city: "Milano e Città Metropolitana" },
+  { name: "Rotary Distretto 2042", cat: "Club", tag: "tag-club", dept: "Governatorato & Commissione Azione di Servizio", email: "segreteria@rotary2042.it", city: "Lombardia Nord e Orientale" },
+  { name: "Rotary Distretto 2060", cat: "Club", tag: "tag-club", dept: "Governatorato & Commissione Welfare e Salute", email: "segreteria@rotary2060.it", city: "Triveneto (Friuli, Trentino, Veneto)" },
+  { name: "Rotary Distretto 2071", cat: "Club", tag: "tag-club", dept: "Governatorato & Commissione Service", email: "segreteria@rotary2071.it", city: "Toscana" },
+  { name: "Rotary Distretto 2080", cat: "Club", tag: "tag-club", dept: "Governatorato & Commissione Mobilità Sanitaria", email: "segreteria@rotary2080.it", city: "Lazio e Sardegna" },
+  { name: "Rotary Distretto 2090", cat: "Club", tag: "tag-club", dept: "Governatorato & Commissione Service Territoriali", email: "segreteria@rotary2090.it", city: "Marche, Umbria, Abruzzo, Molise" },
+  { name: "Rotary Distretto 2110", cat: "Club", tag: "tag-club", dept: "Governatorato & Commissione Progetti Sociali", email: "segreteria@rotary2110.it", city: "Sicilia e Malta" },
+  { name: "Rotary Distretto 2120", cat: "Club", tag: "tag-club", dept: "Governatorato & Commissione Azione Sociale", email: "segreteria@rotary2120.it", city: "Puglia e Basilicata" },
+  { name: "ANGLAT Nazionale (Ass. Naz. Guida Categorie Speciali)", cat: "Associazioni", tag: "tag-associazioni", dept: "Ufficio Mobilità & Veicoli Attrezzati", email: "presidenza@anglat.it", city: "Nazionale (Roma)" },
+  { name: "UNITALSI Sede Nazionale", cat: "Associazioni", tag: "tag-associazioni", dept: "Servizio Trasporto Ammalati & Flotte", email: "info@unitalsi.it", city: "Nazionale (Roma)" },
+  { name: "ANMIC Sede Nazionale (Invalidi Civili)", cat: "Associazioni", tag: "tag-associazioni", dept: "Ufficio Welfare e Trasporti", email: "info@anmic.it", city: "Nazionale (Roma)" },
+  { name: "AISM (Associazione Italiana Sclerosi Multipla) Nazionale", cat: "Associazioni", tag: "tag-associazioni", dept: "Servizio Trasporti e Servizi Sanitari", email: "aism@aism.it", city: "Nazionale (Genova / Roma)" },
+  { name: "Fondazione Serono", cat: "Associazioni", tag: "tag-associazioni", dept: "Iniziative Malattie Rara & Disabilità", email: "info@fondazioneserono.it", city: "Nazionale (Roma)" },
+  { name: "IAPB Italia Onlus (Agenzia Int. Prevenzione Cecità)", cat: "Associazioni", tag: "tag-associazioni", dept: "Direzione Nazionale", email: "sezione.italiana@iapb.it", city: "Nazionale (Roma)" },
+  { name: "LILT Nazionale (Lega Italiana Lotta ai Tumori)", cat: "Associazioni", tag: "tag-associazioni", dept: "Servizio Accompagnamento Pazienti Oncologici", email: "info@lilt.it", city: "Nazionale (Roma)" },
+  { name: "Fondazione ANT Italia Onlus", cat: "Associazioni", tag: "tag-associazioni", dept: "Servizio Logistica & Trasporti Sanitari", email: "info@ant.it", city: "Nazionale (Bologna)" },
+  { name: "Misericordie d'Italia (Confederazione Nazionale)", cat: "Associazioni", tag: "tag-associazioni", dept: "Settore Trasporti Sanitari & Sociali", email: "info@misericordie.org", city: "Nazionale (Firenze)" },
+  { name: "ANPAS Nazionale (Ass. Naz. Pubbliche Assistenze)", cat: "Associazioni", tag: "tag-associazioni", dept: "Ufficio Mezzi & Trasporti Sanitari", email: "segreteria@anpas.org", city: "Nazionale (Firenze)" },
+  { name: "Croce Rossa Italiana - Comitato Nazionale", cat: "Associazioni", tag: "tag-associazioni", dept: "Area Sociale e Mobilità Assistita", email: "informazioni@cri.it", city: "Nazionale (Roma)" },
+  { name: "Associazione UNIAMO (Federazione Malattie Rare)", cat: "Associazioni", tag: "tag-associazioni", dept: "Servizio Supporto Famiglie", email: "info@uniamo.org", city: "Nazionale (Roma)" },
+  { name: "Fondazione Telethon", cat: "Associazioni", tag: "tag-associazioni", dept: "Ufficio Relazioni con le Famiglie", email: "info@telethon.it", city: "Nazionale (Roma)" },
+  { name: "Fondazione Francesca Rava N.P.H. Italia", cat: "Associazioni", tag: "tag-associazioni", dept: "Progetti Italia & Infanzia", email: "info@nph-italia.org", city: "Nazionale (Milano)" },
+  { name: "Associazione Bambino Inserito nell'Ospedale (ABIO)", cat: "Associazioni", tag: "tag-associazioni", dept: "Segreteria Generale", email: "info@abio.org", city: "Nazionale (Milano)" },
+  { name: "Fondazione Paideia Onlus", cat: "Associazioni", tag: "tag-associazioni", dept: "Servizio Trasporti e Supporto Famiglie", email: "info@fondazionepaideia.it", city: "Piemonte (Torino)" },
+  { name: "Fondazione Lega del Filo d'Oro", cat: "Associazioni", tag: "tag-associazioni", dept: "Servizio Assistenza & Logistica", email: "info@legadelfilodoro.it", city: "Nazionale (Osimo - AN)" },
+  { name: "ANGLAT Puglia", cat: "Associazioni", tag: "tag-associazioni", dept: "Servizio Assistenza Auto", email: "anglat.puglia@anglat.it", city: "Puglia (Bari)" },
+  { name: "UNITALSI Sezione Pugliese", cat: "Associazioni", tag: "tag-associazioni", dept: "Segreteria Regionale Trasporti", email: "pugliese@unitalsi.it", city: "Puglia (Bari)" },
+  { name: "AISM Puglia", cat: "Associazioni", tag: "tag-associazioni", dept: "Servizio Trasporti Regionale", email: "aism.puglia@aism.it", city: "Puglia (Bari)" }
 ];
 
 let sentSet = new Set(JSON.parse(localStorage.getItem('perniola_sent_set') || '[]'));
