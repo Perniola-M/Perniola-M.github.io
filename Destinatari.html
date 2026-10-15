@@ -111,7 +111,8 @@
       font-weight: 600;
     }
     .badge-info { background: #e0f2fe; color: #0369a1; }
-    .badge-sent { background: #dcfce7; color: #166534; }
+    .badge-sent { background: #dcfce7; color: #166534; border: 2px solid #166534; }
+    .badge-oggi { background: #fef9c3; color: #713f12; border: 2px solid #713f12; }
 
     .btn-top {
       background: #475569;
@@ -316,8 +317,8 @@
     </div>
 
     <div class="stats-container">
-      <span class="badge badge-info" id="countVisualizzati">Destinatari: 212</span>
       <span class="badge badge-sent" id="countInviati">Inviati: 0 / 212</span>
+      <span class="badge badge-oggi" id="countOggi">Oggi: 0</span>
       <button class="btn-top" onclick="apriModal(true)">👁️ Leggi testo lettera</button>
     </div>
 
@@ -799,10 +800,6 @@ async function inviaLettera(event, indirizzo, nomeAzienda, segnaRiga) {
     const giaInviata = quando === 'INVIATA' ? 'è già stata inviata' : `è già stata inviata il ${quando}`;
     if (!confirm(`La mail a ${nomeAzienda} ${giaInviata}.\n\nVuoi inviarla un'altra volta?`)) return;
     if (!confirm(`Sei sicuro di volerla inviare di nuovo?\n\nSi apre la mail per ${nomeAzienda}.`)) return;
-  } else {
-    // Bottone blu: doppia conferma prima di aprire la mail
-    if (!confirm(`Vuoi inviare la lettera a ${nomeAzienda}?`)) return;
-    if (!confirm(`Sei sicuro?\n\nSi apre la mail per ${nomeAzienda}.`)) return;
   }
   if (SU_TELEFONO) {
     avviso(`✉️ Si apre la mail per <b>${nomeAzienda}</b> con la lettera già scritta: controlla e premi Invia.`);
@@ -882,11 +879,15 @@ function segnaInviato(email, btn, rowId) {
   aggiornaContatori();
 }
 
-function aggiornaContatori(visibili = null) {
-  if (visibili !== null) {
-    document.getElementById('countVisualizzati').textContent = `Destinatari: ${visibili}`;
-  }
+function aggiornaContatori() {
   document.getElementById('countInviati').textContent = `Inviati: ${sentSet.size} / ${LISTA_DESTINATARI.length}`;
+  // Oggi: mail inviate dalla mezzanotte di oggi (ora del telefono/PC), uguale per tutti grazie all'archivio comune
+  const oggi = new Date().toDateString();
+  const nOggi = Array.from(sentSet).filter(m => {
+    const t = new Date(dataInvio[m.toLowerCase()] || '');
+    return !isNaN(t) && t.toDateString() === oggi;
+  }).length;
+  document.getElementById('countOggi').textContent = `Oggi: ${nOggi}`;
 }
 
 async function copiaEmail(nomeAzienda) {
