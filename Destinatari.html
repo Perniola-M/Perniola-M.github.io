@@ -29,6 +29,10 @@
     .caselle-posta { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 14px; }
     .btn-posta { flex: 1 1 180px; display: inline-flex; justify-content: center; align-items: center; gap: 8px; padding: 12px 16px; background: var(--success); color: #fff; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 1rem; }
     .btn-posta:hover { background: #166534; }
+    .btn-primo { display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; margin: -4px 0 14px; padding: 12px 16px; background: #facc15; color: #422006; border: none; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; font-family: inherit; }
+    .btn-primo:hover { background: #eab308; }
+    tr.evidenzia td, tr.evidenzia { animation: lampeggia 1.2s ease-in-out 2; }
+    @keyframes lampeggia { 50% { background: #fef08a; } }
     .c-nome strong { font-size: 24px; line-height: 1.25; }
     .foto-famiglia { display: block; width: 100%; max-width: 720px; height: auto; border-radius: 12px; margin: 6px auto 16px; box-shadow: 0 2px 10px rgba(0,0,0,.12); }
     .footer-sito { margin-top: 20px; padding: 16px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; text-align: center; font-size: 1.05rem; font-weight: 600; }
@@ -195,7 +199,7 @@
 
     .actions {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 6px;
       align-items: center;
     }
@@ -302,6 +306,7 @@
       <a class="btn-posta" href="?posta=inviata" onclick="return apriPosta(event, 'inviata')">📤 Posta inviata</a>
       <a class="btn-posta" href="?posta=arrivata" onclick="return apriPosta(event, 'arrivata')">📥 Posta arrivata</a>
     </div>
+    <button type="button" class="btn-primo" onclick="vaiAlPrimoDaInviare()">👇 Vai al primo da inviare</button>
     <div class="instructions">
       👉 Clicca su <strong>"✉️ Invia Email"</strong> per scrivere all'azienda.<br>
       <span class="solo-computer">Si apre la mail con destinatario e oggetto già pronti e la lettera, con le parole chiave in <strong>grassetto</strong>, viene copiata: clicca nel testo della mail e premi <strong>Ctrl+V</strong>.</span>
@@ -683,6 +688,11 @@ async function inviaLettera(event, indirizzo, nomeAzienda, segnaRiga) {
     const quando = etichettaInvio(indirizzo).replace('✅', '').trim();
     const giaInviata = quando === 'INVIATA' ? 'è già stata inviata' : `è già stata inviata il ${quando}`;
     if (!confirm(`La mail a ${nomeAzienda} ${giaInviata}.\n\nVuoi inviarla un'altra volta?`)) return;
+    if (!confirm(`Sei sicuro di volerla inviare di nuovo?\n\nSi apre la mail per ${nomeAzienda}.`)) return;
+  } else {
+    // Bottone blu: doppia conferma prima di aprire la mail
+    if (!confirm(`Vuoi inviare la lettera a ${nomeAzienda}?`)) return;
+    if (!confirm(`Sei sicuro?\n\nSi apre la mail per ${nomeAzienda}.`)) return;
   }
   if (SU_TELEFONO) {
     avviso(`✉️ Si apre la mail per <b>${nomeAzienda}</b> con la lettera già scritta: controlla e premi Invia.`);
@@ -777,6 +787,23 @@ async function copiaEmail(nomeAzienda) {
   } catch (e) {}
   await navigator.clipboard.writeText(`OGGETTO: ${OGGETTO_EMAIL}\n\n${testoSemplice(letteraPer(nomeAzienda))}`);
   avviso(`Lettera per <b>${nomeAzienda}</b> copiata in testo semplice.`, false);
+}
+
+// Bottone giallo: porta al primo destinatario ancora da inviare (bottone blu)
+function vaiAlPrimoDaInviare() {
+  const idx = LISTA_DESTINATARI.findIndex(d => !sentSet.has(d.email));
+  if (idx < 0) { alert('Tutte le mail sono già state inviate. 🎉'); return; }
+  // se un filtro nasconde l'elenco completo, lo si ripristina
+  const testo = document.getElementById('filtroTesto'), cat = document.getElementById('filtroCategoria');
+  if ((testo && testo.value) || (cat && cat.value !== 'ALL')) {
+    if (testo) testo.value = '';
+    if (cat) cat.value = 'ALL';
+    render(LISTA_DESTINATARI);
+  }
+  const riga = document.getElementById(`row-${idx}`);
+  if (!riga) return;
+  riga.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  riga.classList.remove('evidenzia'); void riga.offsetWidth; riga.classList.add('evidenzia');
 }
 
 function applicaFiltri() {
