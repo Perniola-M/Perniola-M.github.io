@@ -34,7 +34,7 @@
     tr.evidenzia td, tr.evidenzia { animation: lampeggia 1.2s ease-in-out 2; }
     @keyframes lampeggia { 50% { background: #fef08a; } }
     .c-nome strong { font-size: 24px; line-height: 1.25; }
-    .foto-famiglia { display: block; width: 100%; max-width: 720px; height: auto; border-radius: 12px; margin: 6px auto 16px; box-shadow: 0 2px 10px rgba(0,0,0,.12); }
+    .foto-famiglia { cursor: pointer; display: block; width: 100%; max-width: 720px; height: auto; border-radius: 12px; margin: 6px auto 16px; box-shadow: 0 2px 10px rgba(0,0,0,.12); }
     .footer-sito { margin-top: 20px; padding: 16px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; text-align: center; font-size: 1.05rem; font-weight: 600; }
     .footer-sito a { color: var(--secondary); font-weight: 800; word-break: break-all; }
     #testoAppelloPre a { color: var(--secondary); font-weight: 700; }
@@ -126,6 +126,8 @@
       text-decoration: none;
     }
     .btn-top:hover { background: #334155; }
+    .btn-lettera { background: var(--success); font-weight: 700; }
+    .btn-lettera:hover { background: #166534; }
 
     .filters {
       display: flex;
@@ -303,7 +305,7 @@
 <div class="wrapper">
   <header>
     <h1>Campagna Solidale Famiglia Perniola - Elenco Invio</h1>
-    <img class="foto-famiglia" src="Foto1.jpg" width="1511" height="755" alt="Famiglia Perniola">
+    <img class="foto-famiglia" src="Foto1.jpg" width="1511" height="755" alt="Famiglia Perniola" title="Tocca la foto per aggiornare la pagina" onclick="aggiornaTutto()">
     <div class="caselle-posta">
       <a class="btn-posta" href="?posta=inviata" onclick="return apriPosta(event, 'inviata')">📤 Posta inviata</a>
       <a class="btn-posta" href="?posta=arrivata" onclick="return apriPosta(event, 'arrivata')">📥 Posta arrivata</a>
@@ -318,7 +320,7 @@
     <div class="stats-container">
       <span class="badge badge-sent" id="countInviati">Inviati: 0 / 212</span>
       <span class="badge badge-oggi" id="countOggi">Oggi: 0</span>
-      <button class="btn-top" onclick="apriModal(true)">👁️ Leggi testo lettera</button>
+      <button class="btn-top btn-lettera" onclick="apriModal(true)">👁️ Testo lettera</button>
     </div>
 
     <div class="filters">
@@ -895,6 +897,19 @@ async function copiaEmail(nomeAzienda) {
   } catch (e) {}
   await navigator.clipboard.writeText(`OGGETTO: ${OGGETTO_EMAIL}\n\n${testoSemplice(letteraPer(nomeAzienda))}`);
   avviso(`Lettera per <b>${nomeAzienda}</b> copiata in testo semplice.`, false);
+}
+
+// Tocco sulla foto: ricarica tutto scavalcando la cache (pagina, foto, icone) e rilegge l'archivio.
+// I segni "in attesa" del telefono restano: si cancella solo la cache, non i dati.
+async function aggiornaTutto() {
+  const box = document.getElementById('avvisoCopia');
+  if (box) { box.innerHTML = '🔄 Aggiorno la pagina…'; box.className = 'avviso-copia attivo ok'; }
+  try {
+    const file = [location.pathname, 'Foto1.jpg', 'posta-192.png', 'posta-180.png', 'manifest-posta.webmanifest'];
+    await Promise.all(file.map(f => fetch(f, { cache: 'reload' }).catch(() => {})));
+    if (window.caches) { const k = await caches.keys(); await Promise.all(k.map(n => caches.delete(n))); }
+  } catch (e) {}
+  location.replace(location.pathname + '?agg=' + Date.now());
 }
 
 // Casetta accanto a ogni destinatario: torna a inizio pagina
