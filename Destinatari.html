@@ -312,8 +312,7 @@
     <div class="instructions">
       👉 Clicca su <strong>"✉️ Invia Email"</strong> per scrivere all'azienda.<br>
       <span class="solo-computer">Si apre la mail con destinatario e oggetto già pronti e la lettera, con le parole chiave in <strong>grassetto</strong>, viene copiata: clicca nel testo della mail e premi <strong>Ctrl+V</strong>.</span>
-      <span class="solo-telefono">Si apre l'app di posta con destinatario, oggetto e lettera <strong>già scritti</strong>: controlla e premi Invia.</span><br>
-      🔒 Ogni mail all'azienda parte anche in <strong>copia nascosta (Ccn)</strong> a <em>s.mazzarisi@mazzarisi.it</em>, per controllare l'invio: il destinatario non lo vede.
+      <span class="solo-telefono">Si apre l'app di posta con destinatario, oggetto e lettera <strong>già scritti</strong>: controlla e premi Invia.</span>
     </div>
 
     <div class="stats-container">
@@ -371,7 +370,6 @@
 </div>
 
 <script>
-const EMAIL_NINO = "s.mazzarisi@mazzarisi.it";
 const OGGETTO_EMAIL = "Un appello dal cuore: richiesta di aiuto per i viaggi sanitari della famiglia Perniola (ricerca di un van/auto a 7 posti, anche usato)";
 
 const CORPO_BASE = `Mi chiamo Michele Perniola, ho 64 anni e vi scrivo insieme a mia moglie Anna da un piccolo paese in provincia di Taranto. Vi raggiungiamo con questo messaggio con la massima umiltà e trasparenza, per raccontarvi la storia della nostra famiglia e chiedervi un aiuto concreto che per noi rappresenterebbe una vera e propria svolta di vita.
@@ -755,11 +753,9 @@ function testoHtml(t) {
 }
 
 // Link che apre la mail con destinatario e oggetto (corpo vuoto: la lettera si incolla con Ctrl+V)
-// Le mail ai destinatari (pulsante blu) partono anche in copia nascosta (Ccn) a Nino, per
-// controllare l'avvenuto invio: il destinatario non lo vede.
+// (nessuna copia nascosta: l'avvenuto invio si vede dal bottone verde con data e ora)
 function creaMailtoBreve(destinatarioEmail) {
-  const ccn = destinatarioEmail.toLowerCase() !== EMAIL_NINO.toLowerCase() ? `&bcc=${encodeURIComponent(EMAIL_NINO)}` : '';
-  return `mailto:${destinatarioEmail}?subject=${encodeURIComponent(OGGETTO_EMAIL)}${ccn}`;
+  return `mailto:${destinatarioEmail}?subject=${encodeURIComponent(OGGETTO_EMAIL)}`;
 }
 // Vecchio metodo, usato solo se la copia negli appunti non riesce: lettera intera in testo semplice
 function creaMailto(destinatarioEmail, nomeAzienda) {
