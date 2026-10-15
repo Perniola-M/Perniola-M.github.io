@@ -31,6 +31,13 @@
     .btn-posta:hover { background: #166534; }
     .btn-primo { display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; margin: -4px 0 14px; padding: 12px 16px; background: #facc15; color: #422006; border: none; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; font-family: inherit; }
     .btn-primo:hover { background: #eab308; }
+    .installa-app { display: none; margin: 0 0 16px; padding: 16px; border: 2px solid #16a34a; border-radius: 12px; background: #f0fdf4; text-align: center; }
+    .installa-app.visibile { display: block; }
+    .installa-app strong { display: block; margin-bottom: 5px; color: #14532d; font-size: 1.12rem; }
+    .installa-app p { margin: 0 0 12px; color: #334155; }
+    .btn-installa { width: 100%; padding: 14px 18px; border: 0; border-radius: 10px; background: #15803d; color: #fff; font: inherit; font-size: 1.08rem; font-weight: 800; cursor: pointer; }
+    .btn-installa:hover { background: #166534; }
+    .btn-installa:disabled { background: #94a3b8; cursor: wait; }
     tr.evidenzia td, tr.evidenzia { animation: lampeggia 1.2s ease-in-out 2; }
     @keyframes lampeggia { 50% { background: #fef08a; } }
     .c-nome strong { font-size: 24px; line-height: 1.25; }
@@ -305,6 +312,11 @@
 <div class="wrapper">
   <header>
     <h1>Campagna Solidale Famiglia Perniola - Elenco Invio</h1>
+    <section id="installaApp" class="installa-app" aria-live="polite">
+      <strong id="titoloInstalla">📱 Metti Email-Perniola sul telefono</strong>
+      <p id="testoInstalla">Basta un tocco: troverai l'app nella schermata Home.</p>
+      <button type="button" id="btnInstalla" class="btn-installa">Installa sul telefono</button>
+    </section>
     <img class="foto-famiglia" src="Foto1.jpg" width="1511" height="755" alt="Famiglia Perniola" title="Tocca la foto per aggiornare la pagina" onclick="aggiornaTutto()">
     <div class="caselle-posta">
       <a class="btn-posta" href="?posta=inviata" onclick="return apriPosta(event, 'inviata')">📤 Posta inviata</a>
@@ -372,6 +384,63 @@
 </div>
 
 <script>
+let richiestaInstallazione = null;
+const PARAMETRI_PROVA = new URLSearchParams(location.search);
+const MODALITA_PROVA_ANDROID = PARAMETRI_PROVA.get('prova-android') === '1';
+const E_ANDROID = /Android/i.test(navigator.userAgent) || MODALITA_PROVA_ANDROID;
+const E_WHATSAPP = /WhatsApp/i.test(navigator.userAgent) || PARAMETRI_PROVA.get('prova-whatsapp') === '1';
+const APP_GIA_INSTALLATA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+function apriInChrome() {
+  const destinazione = location.host + location.pathname + location.search;
+  location.href = `intent://${destinazione}#Intent;scheme=${location.protocol.replace(':', '')};package=com.android.chrome;end`;
+}
+
+function preparaInstallazione() {
+  const box = document.getElementById('installaApp');
+  const titolo = document.getElementById('titoloInstalla');
+  const testo = document.getElementById('testoInstalla');
+  const bottone = document.getElementById('btnInstalla');
+  if (!box || !bottone || !E_ANDROID || APP_GIA_INSTALLATA) return;
+
+  box.classList.add('visibile');
+  if (MODALITA_PROVA_ANDROID) {
+    titolo.textContent = '🧪 Prova del riquadro Android';
+    testo.textContent = 'Questa è un’anteprima: l’installazione vera si conferma da un telefono Android.';
+  }
+  if (E_WHATSAPP) {
+    titolo.textContent = '📱 Installa Email-Perniola';
+    testo.textContent = 'Prima apri questa pagina in Chrome, poi potrai installarla con un tocco.';
+    bottone.textContent = 'Apri in Chrome';
+    bottone.addEventListener('click', apriInChrome);
+    return;
+  }
+
+  bottone.addEventListener('click', async () => {
+    if (richiestaInstallazione) {
+      richiestaInstallazione.prompt();
+      await richiestaInstallazione.userChoice;
+      richiestaInstallazione = null;
+      box.classList.remove('visibile');
+      return;
+    }
+    testo.textContent = 'Se non compare la conferma, apri il menu ⋮ di Chrome e scegli “Installa app”.';
+  });
+}
+
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  richiestaInstallazione = event;
+  const bottone = document.getElementById('btnInstalla');
+  if (bottone) { bottone.disabled = false; bottone.textContent = 'Installa sul telefono'; }
+});
+
+window.addEventListener('appinstalled', () => {
+  richiestaInstallazione = null;
+  const box = document.getElementById('installaApp');
+  if (box) box.classList.remove('visibile');
+});
+
 const OGGETTO_EMAIL = "Un appello dal cuore: richiesta di aiuto per i viaggi sanitari della famiglia Perniola (ricerca di un van/auto a 7 posti, anche usato)";
 
 const CORPO_BASE = `Mi chiamo Michele Perniola, ho 64 anni e vi scrivo insieme a mia moglie Anna da un piccolo paese in provincia di Taranto. Vi raggiungiamo con questo messaggio con la massima umiltà e trasparenza, per raccontarvi la storia della nostra famiglia e chiedervi un aiuto concreto che per noi rappresenterebbe una vera e propria svolta di vita.
@@ -991,12 +1060,17 @@ function apriPosta(event, cartella) {
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
+  preparaInstallazione();
   render(LISTA_DESTINATARI);
   sincronizzaArchivio();
   // aggiornamento automatico: ogni minuto e ogni volta che si torna sulla pagina
   setInterval(sincronizzaArchivio, 60000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) sincronizzaArchivio(); });
 });
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw-posta.js').catch(() => {}));
+}
 </script>
 </body>
 </html>

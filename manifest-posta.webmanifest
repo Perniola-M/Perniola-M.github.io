@@ -3,12 +3,15 @@
   "short_name": "Email-Perniola",
   "description": "Invio della lettera di appello per la famiglia Perniola",
   "lang": "it",
-  "start_url": "Destinatari.html",
-  "display": "browser",
+  "id": "./Destinatari.html",
+  "start_url": "./Destinatari.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
   "background_color": "#f8fafc",
   "theme_color": "#1e3a8a",
   "icons": [
-    { "src": "posta-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "posta-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+    { "src": "posta-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "posta-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }
