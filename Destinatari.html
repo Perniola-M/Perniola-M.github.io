@@ -289,7 +289,7 @@
       .c-info { font-size: 0.85rem; color: #334155; }
       .c-info::before { content: attr(data-etichetta) ": "; font-weight: 700; color: var(--muted); }
       .c-nome small { word-break: break-all; }
-      .actions { margin-top: 8px; display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+      .actions { margin-top: 8px; display: grid; grid-template-columns: 1fr auto auto; gap: 8px; }
       .btn-send { justify-content: center; padding: 12px 10px; font-size: 0.95rem; }
       .btn-copy { padding: 12px 14px; font-size: 1rem; }
       .modal-box { padding: 16px; max-height: 90vh; }
@@ -743,6 +743,7 @@ function render(lista) {
              ${isSent ? etichettaInvio(item.email) : '✉️ Invia Email'}
           </a>
           <button class="btn-copy" title="Copia testo negli appunti" onclick="copiaEmail('${nomeJs}')">📋</button>
+          <button class="btn-copy" title="Torna a inizio pagina" onclick="tornaSu()">🏠</button>
         </div>
       </td>
     `;
@@ -788,6 +789,9 @@ async function copiaEmail(nomeAzienda) {
   await navigator.clipboard.writeText(`OGGETTO: ${OGGETTO_EMAIL}\n\n${testoSemplice(letteraPer(nomeAzienda))}`);
   avviso(`Lettera per <b>${nomeAzienda}</b> copiata in testo semplice.`, false);
 }
+
+// Casetta accanto a ogni destinatario: torna a inizio pagina
+function tornaSu() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
 // Bottone giallo: porta al primo destinatario ancora da inviare (bottone blu)
 function vaiAlPrimoDaInviare() {
