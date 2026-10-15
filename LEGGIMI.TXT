@@ -106,6 +106,11 @@ Altre parti
     Gli invii segnati prima sul suo telefono passano nell'archivio da soli la prima
     volta che riapre la pagina. Il pulsante "Ripristina avanzamento" e' stato tolto.
   - Sotto il titolo c'e' la foto della famiglia (Foto1.jpg, la stessa del sito).
+  - Il bottone verde mostra data e ora dell'invio (es. "15 OTTOBRE - 10:25"), uguale su
+    tutti i telefoni e PC. Gli invii fatti prima del 15/10/2026 mostrano "INVIATA"
+    perche' la loro ora non era stata registrata.
+  - Toccando un bottone verde la pagina avvisa che la mail e' gia' stata inviata
+    (con data e ora) e chiede conferma prima di aprirla di nuovo.
   - Per ogni destinatario ci sono due pulsanti:
       "Invia Email" ... apre la mail all'azienda con destinatario e oggetto
                         (e s.mazzarisi@mazzarisi.it in copia nascosta);
@@ -199,3 +204,6 @@ dalle impostazioni (sezione Connettori).
 14/10/2026  Anteprima WhatsApp della pagina email (anteprima-posta.png).
 15/10/2026  Segni verdi condivisi tra tutti i telefoni (archivio "Invii Perniola").
 15/10/2026  Foto della famiglia sotto il titolo; tolto "Ripristina avanzamento".
+15/10/2026  Nomi dei destinatari piu' grandi (24px).
+15/10/2026  Bottone verde con data e ora dell'invio.
+15/10/2026  Conferma prima di rimandare una mail gia' inviata.

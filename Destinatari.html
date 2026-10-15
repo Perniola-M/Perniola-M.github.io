@@ -29,6 +29,7 @@
     .caselle-posta { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 14px; }
     .btn-posta { flex: 1 1 180px; display: inline-flex; justify-content: center; align-items: center; gap: 8px; padding: 12px 16px; background: var(--success); color: #fff; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 1rem; }
     .btn-posta:hover { background: #166534; }
+    .c-nome strong { font-size: 24px; line-height: 1.25; }
     .foto-famiglia { display: block; width: 100%; max-width: 720px; height: auto; border-radius: 12px; margin: 6px auto 16px; box-shadow: 0 2px 10px rgba(0,0,0,.12); }
     .footer-sito { margin-top: 20px; padding: 16px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; text-align: center; font-size: 1.05rem; font-weight: 600; }
     .footer-sito a { color: var(--secondary); font-weight: 800; word-break: break-all; }
@@ -534,14 +535,17 @@ const ARCHIVIO_INVII = 'https://script.google.com/macros/s/AKfycbxp8v969__Cy4DJg
 let dataInvio = {};   // email (minuscolo) -> data/ora dell'invio, letta dall'archivio
 function leggiLista(chiave) { try { return JSON.parse(localStorage.getItem(chiave) || '[]'); } catch (e) { return []; } }
 function scriviLista(chiave, arr) { try { localStorage.setItem(chiave, JSON.stringify(arr)); } catch (e) {} }
+function leggiOre() { try { return JSON.parse(localStorage.getItem('perniola_ore_attesa') || '{}'); } catch (e) { return {}; } }
+function scriviOre(o) { try { localStorage.setItem('perniola_ore_attesa', JSON.stringify(o)); } catch (e) {} }
 function salvaLocale() { scriviLista('perniola_sent_set', Array.from(sentSet)); }
 function emailDellaLista(m) {
   const d = LISTA_DESTINATARI.find(x => x.email.toLowerCase() === String(m).toLowerCase());
   return d ? d.email : null;
 }
-function inviaAllArchivio(emails) {
+function inviaAllArchivio(emails, quando) {
   if (!emails.length) return;
-  const url = `${ARCHIVIO_INVII}?azione=segna&email=${encodeURIComponent(emails.join(','))}`;
+  const url = `${ARCHIVIO_INVII}?azione=segna&email=${encodeURIComponent(emails.join(','))}` +
+              (quando ? `&quando=${encodeURIComponent(quando)}` : '');
   // keepalive: la richiesta parte anche se il telefono passa subito all'app di posta
   try { fetch(url, { mode: 'no-cors', keepalive: true, credentials: 'omit' }).catch(() => {}); } catch (e) {}
 }
@@ -570,22 +574,44 @@ async function sincronizzaArchivio() {
   Object.keys(remoti).forEach(k => { dataInvio[k.toLowerCase()] = remoti[k]; });
   // Prima volta su questo telefono: porta nell'archivio gli invii segnati prima che esistesse
   if (localStorage.getItem('perniola_archivio_ok') !== '1') {
+    // (di questi invii l'ora non era mai stata registrata: vanno nell'archivio "senza data")
     const vecchi = Array.from(sentSet).filter(m => !dataInvio[m.toLowerCase()]);
-    scriviLista('perniola_in_attesa', Array.from(new Set(leggiLista('perniola_in_attesa').concat(vecchi))));
+    scriviLista('perniola_vecchi_attesa', Array.from(new Set(leggiLista('perniola_vecchi_attesa').concat(vecchi))));
     try { localStorage.setItem('perniola_archivio_ok', '1'); } catch (e) {}
   }
   // Segni non ancora arrivati all'archivio: si rimandano
+  const vecchiAttesa = leggiLista('perniola_vecchi_attesa').filter(m => !dataInvio[m.toLowerCase()]);
+  scriviLista('perniola_vecchi_attesa', vecchiAttesa);
+  inviaAllArchivio(vecchiAttesa, 'senza-data');
   const attesa = leggiLista('perniola_in_attesa').filter(m => !dataInvio[m.toLowerCase()]);
   scriviLista('perniola_in_attesa', attesa);
-  inviaAllArchivio(attesa);
+  // ogni segno in attesa ripartito con la sua ora vera (quella del tocco sul bottone blu)
+  const ore = leggiOre();
+  attesa.forEach(m => {
+    const q = ore[m.toLowerCase()];
+    if (q) dataInvio[m.toLowerCase()] = q;
+    inviaAllArchivio([m], q);
+  });
+  Object.keys(ore).forEach(k => { if (!attesa.some(m => m.toLowerCase() === k)) delete ore[k]; });
+  scriviOre(ore);
   // Verde = archivio comune + segni in attesa di questo telefono
   const nuovo = new Set();
   Object.keys(dataInvio).forEach(k => { const e = emailDellaLista(k); if (e) nuovo.add(e); });
-  attesa.forEach(m => { const e = emailDellaLista(m); if (e) nuovo.add(e); });
-  const cambiato = nuovo.size !== sentSet.size || [...nuovo].some(m => !sentSet.has(m));
+  attesa.concat(vecchiAttesa).forEach(m => { const e = emailDellaLista(m); if (e) nuovo.add(e); });
+  const etichette = [...nuovo].map(m => m + etichettaInvio(m)).join('|');
+  const cambiato = nuovo.size !== sentSet.size || [...nuovo].some(m => !sentSet.has(m)) || etichette !== sincronizzaArchivio._etichette;
+  sincronizzaArchivio._etichette = etichette;
   sentSet = nuovo;
   salvaLocale();
   if (cambiato) applicaFiltri(); else aggiornaContatori();
+}
+// Testo del bottone verde: data e ora dell'invio, es. "15 OTTOBRE - 10:25" (uguale su tutti i telefoni e PC)
+const MESI = ['GENNAIO','FEBBRAIO','MARZO','APRILE','MAGGIO','GIUGNO','LUGLIO','AGOSTO','SETTEMBRE','OTTOBRE','NOVEMBRE','DICEMBRE'];
+function etichettaInvio(email) {
+  const t = new Date(dataInvio[email.toLowerCase()] || '');
+  if (isNaN(t)) return '✅ INVIATA';   // invii fatti prima che l'ora venisse registrata
+  const hh = String(t.getHours()).padStart(2, '0'), mm = String(t.getMinutes()).padStart(2, '0');
+  return `✅ ${t.getDate()} ${MESI[t.getMonth()]} - ${hh}:${mm}`;
 }
 function quandoInviata(email) {
   const d = dataInvio[email.toLowerCase()];
@@ -652,6 +678,12 @@ document.documentElement.classList.add(SU_TELEFONO ? 'telefono' : 'computer');
 // Clic su "Invia Email": copia la lettera formattata e apre la mail
 async function inviaLettera(event, indirizzo, nomeAzienda, segnaRiga) {
   event.preventDefault();
+  // Bottone verde: la mail e' gia' partita, si chiede conferma prima di rimandarla
+  if (sentSet.has(indirizzo)) {
+    const quando = etichettaInvio(indirizzo).replace('✅', '').trim();
+    const giaInviata = quando === 'INVIATA' ? 'è già stata inviata' : `è già stata inviata il ${quando}`;
+    if (!confirm(`La mail a ${nomeAzienda} ${giaInviata}.\n\nVuoi inviarla un'altra volta?`)) return;
+  }
   if (SU_TELEFONO) {
     avviso(`✉️ Si apre la mail per <b>${nomeAzienda}</b> con la lettera già scritta: controlla e premi Invia.`);
     if (segnaRiga) segnaRiga();
@@ -698,7 +730,7 @@ function render(lista) {
           <a href="${mailtoAzienda}" 
              class="btn-send ${isSent ? 'sent-state' : ''}" title="${titoloInvio}" 
              onclick="inviaLettera(event, '${item.email}', '${nomeJs}', () => segnaInviato('${item.email}', this, 'row-${idx}'))">
-             ${isSent ? '✅ Inviata' : '✉️ Invia Email'}
+             ${isSent ? etichettaInvio(item.email) : '✉️ Invia Email'}
           </a>
           <button class="btn-copy" title="Copia testo negli appunti" onclick="copiaEmail('${nomeJs}')">📋</button>
         </div>
@@ -716,11 +748,14 @@ function segnaInviato(email, btn, rowId) {
   // anche nell'archivio comune (resta "in attesa" finche' l'archivio non lo conferma)
   if (!dataInvio[email.toLowerCase()]) {
     scriviLista('perniola_in_attesa', Array.from(new Set(leggiLista('perniola_in_attesa').concat([email]))));
-    dataInvio[email.toLowerCase()] = new Date().toISOString();
-    inviaAllArchivio([email]);
+    const adesso = new Date().toISOString();
+    dataInvio[email.toLowerCase()] = adesso;
+    const ore = leggiOre(); ore[email.toLowerCase()] = adesso; scriviOre(ore);
+    inviaAllArchivio([email], adesso);
   }
   btn.classList.add('sent-state');
-  btn.innerHTML = '✅ Inviata';
+  btn.innerHTML = etichettaInvio(email);
+  btn.title = quandoInviata(email) || 'Inviata';
   const r = document.getElementById(rowId);
   if (r) r.classList.add('is-sent');
   aggiornaContatori();
