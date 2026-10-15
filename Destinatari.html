@@ -524,6 +524,75 @@ const LISTA_DESTINATARI = [
 
 let sentSet = new Set(JSON.parse(localStorage.getItem('perniola_sent_set') || '[]'));
 
+// ===== Archivio comune degli invii (Google Apps Script "Invii Perniola", account di Nino) =====
+// Quando Perniola preme il bottone blu, il segno "inviata" va anche nell'archivio comune:
+// chiunque apra questa pagina (Nino compreso) vede in verde gli stessi destinatari.
+// Perniola non deve fare nulla di diverso. I segni che non riescono a partire restano
+// "in attesa" sul telefono e vengono rimandati da soli alla prossima apertura della pagina.
+const ARCHIVIO_INVII = 'https://script.google.com/macros/s/AKfycbxp8v969__Cy4DJgkqZXm5TaNeQR5gRiIjhyxc1aBUhnzt2HXXEuJgP3A2MzRLY1uHg/exec';
+let dataInvio = {};   // email (minuscolo) -> data/ora dell'invio, letta dall'archivio
+function leggiLista(chiave) { try { return JSON.parse(localStorage.getItem(chiave) || '[]'); } catch (e) { return []; } }
+function scriviLista(chiave, arr) { try { localStorage.setItem(chiave, JSON.stringify(arr)); } catch (e) {} }
+function salvaLocale() { scriviLista('perniola_sent_set', Array.from(sentSet)); }
+function emailDellaLista(m) {
+  const d = LISTA_DESTINATARI.find(x => x.email.toLowerCase() === String(m).toLowerCase());
+  return d ? d.email : null;
+}
+function inviaAllArchivio(emails) {
+  if (!emails.length) return;
+  const url = `${ARCHIVIO_INVII}?azione=segna&email=${encodeURIComponent(emails.join(','))}`;
+  // keepalive: la richiesta parte anche se il telefono passa subito all'app di posta
+  try { fetch(url, { mode: 'no-cors', keepalive: true, credentials: 'omit' }).catch(() => {}); } catch (e) {}
+}
+async function chiamaArchivio(query) {
+  try {
+    const r = await fetch(ARCHIVIO_INVII + query, { credentials: 'omit', cache: 'no-store' });
+    return await r.json();
+  } catch (e) {  // ripiego (JSONP) se fetch non e' permesso
+    return await new Promise((ok, ko) => {
+      const cb = 'cbArchivio' + Date.now();
+      const s = document.createElement('script');
+      window[cb] = d => { delete window[cb]; s.remove(); ok(d); };
+      s.onerror = () => { delete window[cb]; s.remove(); ko(new Error('archivio non raggiungibile')); };
+      s.src = `${ARCHIVIO_INVII}${query}&callback=${cb}`;
+      document.head.appendChild(s);
+      setTimeout(() => ko(new Error('timeout')), 15000);
+    });
+  }
+}
+async function sincronizzaArchivio() {
+  let dati;
+  try { dati = await chiamaArchivio('?azione=lista'); } catch (e) { return; }  // senza rete: resta tutto come prima
+  if (!dati || !dati.ok) return;
+  const remoti = dati.inviati || {};
+  dataInvio = {};
+  Object.keys(remoti).forEach(k => { dataInvio[k.toLowerCase()] = remoti[k]; });
+  // Prima volta su questo telefono: porta nell'archivio gli invii segnati prima che esistesse
+  if (localStorage.getItem('perniola_archivio_ok') !== '1') {
+    const vecchi = Array.from(sentSet).filter(m => !dataInvio[m.toLowerCase()]);
+    scriviLista('perniola_in_attesa', Array.from(new Set(leggiLista('perniola_in_attesa').concat(vecchi))));
+    try { localStorage.setItem('perniola_archivio_ok', '1'); } catch (e) {}
+  }
+  // Segni non ancora arrivati all'archivio: si rimandano
+  const attesa = leggiLista('perniola_in_attesa').filter(m => !dataInvio[m.toLowerCase()]);
+  scriviLista('perniola_in_attesa', attesa);
+  inviaAllArchivio(attesa);
+  // Verde = archivio comune + segni in attesa di questo telefono
+  const nuovo = new Set();
+  Object.keys(dataInvio).forEach(k => { const e = emailDellaLista(k); if (e) nuovo.add(e); });
+  attesa.forEach(m => { const e = emailDellaLista(m); if (e) nuovo.add(e); });
+  const cambiato = nuovo.size !== sentSet.size || [...nuovo].some(m => !sentSet.has(m));
+  sentSet = nuovo;
+  salvaLocale();
+  if (cambiato) applicaFiltri(); else aggiornaContatori();
+}
+function quandoInviata(email) {
+  const d = dataInvio[email.toLowerCase()];
+  if (!d) return '';
+  const t = new Date(d);
+  return isNaN(t) ? '' : 'Inviata il ' + t.toLocaleDateString('it-IT') + ' alle ' + t.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+}
+
 // Le parole tra **...** nella lettera vanno in grassetto.
 // testoSemplice(): lettera senza segni (per il vecchio metodo e per i programmi che non accettano formattazione)
 // testoHtml():     lettera formattata (grassetto, a capo, link cliccabile) da incollare nella mail
@@ -606,6 +675,7 @@ function render(lista) {
 
   lista.forEach((item, idx) => {
     const isSent = sentSet.has(item.email);
+    const titoloInvio = isSent ? (quandoInviata(item.email) || 'Inviata') : 'Invia la lettera';
     const tr = document.createElement('tr');
     tr.id = `row-${idx}`;
     if (isSent) tr.classList.add('is-sent');
@@ -625,7 +695,7 @@ function render(lista) {
       <td class="c-azioni">
         <div class="actions">
           <a href="${mailtoAzienda}" 
-             class="btn-send ${isSent ? 'sent-state' : ''}" 
+             class="btn-send ${isSent ? 'sent-state' : ''}" title="${titoloInvio}" 
              onclick="inviaLettera(event, '${item.email}', '${nomeJs}', () => segnaInviato('${item.email}', this, 'row-${idx}'))">
              ${isSent ? '✅ Inviata' : '✉️ Invia Email'}
           </a>
@@ -641,7 +711,13 @@ function render(lista) {
 
 function segnaInviato(email, btn, rowId) {
   sentSet.add(email);
-  localStorage.setItem('perniola_sent_set', JSON.stringify(Array.from(sentSet)));
+  salvaLocale();
+  // anche nell'archivio comune (resta "in attesa" finche' l'archivio non lo conferma)
+  if (!dataInvio[email.toLowerCase()]) {
+    scriviLista('perniola_in_attesa', Array.from(new Set(leggiLista('perniola_in_attesa').concat([email]))));
+    dataInvio[email.toLowerCase()] = new Date().toISOString();
+    inviaAllArchivio([email]);
+  }
   btn.classList.add('sent-state');
   btn.innerHTML = '✅ Inviata';
   const r = document.getElementById(rowId);
@@ -684,9 +760,12 @@ function applicaFiltri() {
 }
 
 function resetInviati() {
-  if (confirm("Vuoi davvero azzerare lo storico delle email già inviate?")) {
+  if (confirm("Vuoi davvero azzerare lo storico delle email già inviate?\n\nAttenzione: i segni verdi spariscono per tutti, anche sugli altri telefoni.")) {
     sentSet.clear();
+    dataInvio = {};
     localStorage.removeItem('perniola_sent_set');
+    localStorage.removeItem('perniola_in_attesa');
+    try { fetch(ARCHIVIO_INVII + '?azione=azzera', { mode: 'no-cors', keepalive: true, credentials: 'omit' }).catch(() => {}); } catch (e) {}
     render(LISTA_DESTINATARI);
   }
 }
@@ -735,6 +814,10 @@ function apriPosta(event, cartella) {
 
 document.addEventListener('DOMContentLoaded', () => {
   render(LISTA_DESTINATARI);
+  sincronizzaArchivio();
+  // aggiornamento automatico: ogni minuto e ogni volta che si torna sulla pagina
+  setInterval(sincronizzaArchivio, 60000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) sincronizzaArchivio(); });
 });
 </script>
 </body>
