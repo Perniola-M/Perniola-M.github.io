@@ -31,6 +31,22 @@
     .btn-posta:hover { background: #166534; }
     .btn-primo { display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; margin: -4px 0 14px; padding: 12px 16px; background: #facc15; color: #422006; border: none; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; font-family: inherit; }
     .btn-primo:hover { background: #eab308; }
+    .riga-primo { display: flex; gap: 10px; margin: -4px 0 14px; }
+    .riga-primo .btn-primo { flex: 1; margin: 0; }
+    .btn-home { flex: 0 0 auto; padding: 12px 18px; background: #1e3a8a; color: #fff; border: none; border-radius: 10px; font-weight: 800; font-size: 1rem; cursor: pointer; font-family: inherit; }
+    .btn-home:hover { background: #172554; }
+    /* Guida "+ Home": stesso aspetto della guida in immagine (barra colorata, icone, grassetto) */
+    #guidaHome { margin: auto; border: none; border-radius: 16px; padding: 0; width: min(560px, calc(100vw - 24px)); max-height: calc(100vh - 24px); box-shadow: 0 12px 40px rgba(0,0,0,.35); }
+    #guidaHome::backdrop { background: rgba(15,23,42,.6); }
+    #guidaHome .gh-corpo { padding: 46px 14px 14px; overflow: auto; }
+    #guidaHome .gh-chiudi { position: absolute; top: 4px; right: 6px; background: none; border: none; font-size: 30px; line-height: 1; color: #475569; cursor: pointer; padding: 4px 10px; }
+    .gh-tab { border: 1.5px solid #222; margin: 0 0 16px; background: #fff; color: #111; }
+    .gh-tit { padding: 12px 10px; text-align: center; font-size: 1.12rem; border-bottom: 1.5px solid #222; }
+    .gh-tit.ios { background: #d9f3d0; } .gh-tit.android { background: #fae3d5; }
+    .gh-tab ol { list-style: none; margin: 0; padding: 8px 12px; }
+    .gh-tab li { display: flex; gap: 10px; align-items: baseline; padding: 6px 0; font-size: 1.05rem; line-height: 1.35; }
+    .gh-tab li .i { flex: 0 0 26px; text-align: center; font-size: 1.15rem; }
+    .gh-inst { width: 100%; margin: 0 0 14px; padding: 14px; border: none; border-radius: 10px; background: #15803d; color: #fff; font: inherit; font-size: 1.08rem; font-weight: 800; cursor: pointer; }
     .installa-app { display: none; margin: 0 0 16px; padding: 16px; border: 2px solid #16a34a; border-radius: 12px; background: #f0fdf4; text-align: center; }
     .installa-app.visibile { display: block; }
     .installa-app strong { display: block; margin-bottom: 5px; color: #14532d; font-size: 1.12rem; }
@@ -322,7 +338,36 @@
       <a class="btn-posta" href="?posta=inviata" onclick="return apriPosta(event, 'inviata')">📤 Posta inviata</a>
       <a class="btn-posta" href="?posta=arrivata" onclick="return apriPosta(event, 'arrivata')">📥 Posta arrivata</a>
     </div>
-    <button type="button" class="btn-primo" onclick="vaiAlPrimoDaInviare()">👇 Vai al primo da inviare</button>
+    <div class="riga-primo">
+      <button type="button" class="btn-primo" onclick="vaiAlPrimoDaInviare()">👇 Vai al prossimo</button>
+      <button type="button" class="btn-home" id="btnHome" onclick="apriGuidaHome()">+ Home</button>
+    </div>
+    <dialog id="guidaHome" aria-label="Come aggiungere Email-Perniola alla schermata Home">
+      <div class="gh-corpo">
+        <button class="gh-chiudi" aria-label="Chiudi" onclick="document.getElementById('guidaHome').close()">×</button>
+        <div id="ghInstalla"></div>
+        <div class="gh-tab" id="ghIos">
+          <div class="gh-tit ios">Aggiungi <b>Email-Perniola</b> alle tue app <b>iOS</b></div>
+          <ol>
+            <li><span class="i">🔗</span><span><b>Apri il link</b> nella chat di WhatsApp</span></li>
+            <li><span class="i">🧭</span><span><b>Tocca la bussola</b> (in basso a destra per passare a Safari)</span></li>
+            <li><span class="i">📤</span><span><b>Tocca Condividi</b> (il quadrato con la freccia in basso al centro)</span></li>
+            <li><span class="i" style="color:#7c3aed;font-weight:900">＋</span><span><b>Scorri e tocca</b> "Aggiungi alla schermata Home"</span></li>
+            <li><span class="i">✅</span><span><b>Tocca "Aggiungi"</b> (in alto a destra)</span></li>
+          </ol>
+        </div>
+        <div class="gh-tab" id="ghAndroid">
+          <div class="gh-tit android">Aggiungi <b>Email-Perniola</b> alle tue app <b>Android</b></div>
+          <ol>
+            <li><span class="i">🔗</span><span><b>Apri il link</b> nella chat di WhatsApp</span></li>
+            <li><span class="i"><b>⋮</b></span><span><b>Tocca i 3 puntini</b> (in alto a destra) e scegli "Apri nel browser"</span></li>
+            <li><span class="i"><b>⋮</b></span><span><b>Tocca di nuovo i 3 puntini</b> (in alto a destra nel browser)</span></li>
+            <li><span class="i" style="color:#7c3aed;font-weight:900">＋</span><span><b>Scorri e tocca</b> "Aggiungi a schermata Home"</span></li>
+            <li><span class="i">✅</span><span><b>Tocca "Aggiungi"</b> per confermare</span></li>
+          </ol>
+        </div>
+      </div>
+    </dialog>
     <div class="instructions">
       👉 Clicca su <strong>"✉️ Invia Email"</strong> per scrivere all'azienda.<br>
       <span class="solo-computer">Si apre la mail con destinatario e oggetto già pronti e la lettera, con le parole chiave in <strong>grassetto</strong>, viene copiata: clicca nel testo della mail e premi <strong>Ctrl+V</strong>.</span>
@@ -998,6 +1043,23 @@ async function aggiornaTutto() {
   location.replace(location.pathname + '?agg=' + Date.now());
 }
 
+// Bottone "+ Home": guida per aggiungere la pagina alla schermata Home (solo la parte del proprio telefono;
+// sul PC entrambe). Su Android, se Chrome può installarla, in cima c'è anche il bottone a un tocco.
+function apriGuidaHome() {
+  const d = document.getElementById('guidaHome');
+  document.getElementById('ghIos').style.display = E_ANDROID ? 'none' : '';
+  document.getElementById('ghAndroid').style.display = E_IOS ? 'none' : '';
+  const inst = document.getElementById('ghInstalla');
+  inst.innerHTML = '';
+  if (E_ANDROID && richiestaInstallazione) {
+    const b = document.createElement('button');
+    b.className = 'gh-inst'; b.textContent = '📲 Aggiungi alla schermata Home con un tocco';
+    b.onclick = async () => { const r = richiestaInstallazione; richiestaInstallazione = null; r.prompt(); await r.userChoice; d.close(); };
+    inst.appendChild(b);
+  }
+  if (d.showModal) d.showModal(); else d.setAttribute('open', '');
+}
+
 // Casetta accanto a ogni destinatario: torna a inizio pagina
 function tornaSu() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
@@ -1077,7 +1139,9 @@ function apriPosta(event, cartella) {
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
-  preparaInstallazione();
+  // il riquadro automatico in alto non si mostra più: la guida si apre con il bottone "+ Home"
+  // se la pagina è già aperta dall'icona sulla Home, il bottone "+ Home" non serve e si nasconde
+  if (APP_GIA_INSTALLATA) { const b = document.getElementById('btnHome'); if (b) b.style.display = 'none'; }
   render(LISTA_DESTINATARI);
   sincronizzaArchivio();
   // aggiornamento automatico: ogni minuto e ogni volta che si torna sulla pagina
