@@ -700,5 +700,66 @@
             });
         });
     </script>
+<!-- Aiuto "Aggiungi alla schermata Home" (iPhone: istruzioni; Android: richiesta di installazione) -->
+<style>
+  #aiutoHome { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 9999; max-width: 520px; margin: 0 auto;
+    background: #fff; color: #0f172a; border: 2px solid #f59e0b; border-radius: 14px; box-shadow: 0 8px 30px rgba(0,0,0,.25);
+    padding: 14px 44px 14px 14px; font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; display: none; }
+  #aiutoHome.attivo { display: block; }
+  #aiutoHome b { font-weight: 700; }
+  #aiutoHome .titolo { font-weight: 800; font-size: 17px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  #aiutoHome .titolo img { width: 32px; height: 32px; border-radius: 8px; }
+  #aiutoHome ol { margin: 6px 0 0 20px; padding: 0; }
+  #aiutoHome li { margin: 3px 0; }
+  #aiutoHome .chiudi { position: absolute; top: 6px; right: 8px; background: none; border: none; font-size: 26px; line-height: 1; color: #64748b; cursor: pointer; padding: 4px 8px; }
+  #aiutoHome .installa { margin-top: 10px; width: 100%; padding: 12px; border: none; border-radius: 10px; background: #f59e0b; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; }
+  #aiutoHome .ico { display: inline-block; border: 1.5px solid #0f172a; border-radius: 5px; padding: 0 5px; font-size: 14px; }
+</style>
+<div id="aiutoHome" role="dialog" aria-label="Aggiungi alla schermata Home">
+  <button class="chiudi" aria-label="Chiudi" onclick="chiudiAiutoHome()">×</button>
+  <div class="titolo"><img src="apple-touch-icon.png" alt="">Metti "Van-Perniola" sulla Home</div>
+  <div id="aiutoHomeTesto"></div>
+</div>
+<script>
+(function () {
+  var CHIAVE = 'aiutoHome_chiuso_Van-Perniola';
+  var ua = navigator.userAgent || '';
+  var suIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var giaSuHome = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  var chiuso = false; try { chiuso = localStorage.getItem(CHIAVE) === '1'; } catch (e) {}
+  var box = document.getElementById('aiutoHome'), testo = document.getElementById('aiutoHomeTesto');
+  window.chiudiAiutoHome = function () { box.classList.remove('attivo'); try { localStorage.setItem(CHIAVE, '1'); } catch (e) {} };
+  if (giaSuHome || chiuso) return;
+  if (suIOS) {
+    // dentro WhatsApp/Facebook/Instagram & C. (niente "Safari" nel nome del browser) la voce non esiste: prima aprire in Safari
+    var inApp = /FBAN|FBAV|Instagram|WhatsApp|Line\/|GSA\//.test(ua) || !/Safari\//.test(ua);
+    var condividi = '<span class="ico">⬆︎</span> <b>Condividi</b>';
+    testo.innerHTML = inApp
+      ? 'Questa pagina è aperta dentro un\'app (per esempio WhatsApp).<ol>' +
+        '<li>Tocca <b>⋯</b> oppure l\'icona della bussola e scegli <b>Apri in Safari</b>.</li>' +
+        '<li>In Safari tocca ' + condividi + ' (se non lo vedi, prima <b>⋯</b>).</li>' +
+        '<li>Scegli <b>Aggiungi alla schermata Home</b> e poi <b>Aggiungi</b>.</li></ol>'
+      : 'Due tocchi e la trovi sempre sul telefono:<ol>' +
+        '<li>Tocca ' + condividi + ' in basso (se non lo vedi, prima <b>⋯</b>).</li>' +
+        '<li>Scorri e scegli <b>Aggiungi alla schermata Home</b>, poi <b>Aggiungi</b>.</li></ol>' +
+        '<div style="margin-top:6px;color:#64748b;font-size:14px">Se la voce non c\'è, apri il link in Safari.</div>';
+    setTimeout(function () { box.classList.add('attivo'); }, 1500);
+  } else {
+    // Android/Chrome: il bottone compare solo se Chrome permette l'installazione
+    var richiesta = null;
+    window.addEventListener('beforeinstallprompt', function (ev) {
+      ev.preventDefault(); richiesta = ev;
+      testo.innerHTML = 'Aggiungi l\'icona alla schermata Home per aprire la pagina con un tocco.' +
+        '<button class="installa" id="aiutoHomeInstalla">📲 Aggiungi alla schermata Home</button>';
+      document.getElementById('aiutoHomeInstalla').onclick = function () {
+        richiesta.prompt();
+        richiesta.userChoice.then(function (s) { if (s.outcome === 'accepted') chiudiAiutoHome(); });
+      };
+      box.classList.add('attivo');
+    });
+    window.addEventListener('appinstalled', function () { chiudiAiutoHome(); });
+  }
+})();
+</script>
 </body>
 </html>

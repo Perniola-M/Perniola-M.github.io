@@ -389,6 +389,9 @@ const PARAMETRI_PROVA = new URLSearchParams(location.search);
 const MODALITA_PROVA_ANDROID = PARAMETRI_PROVA.get('prova-android') === '1';
 const E_ANDROID = /Android/i.test(navigator.userAgent) || MODALITA_PROVA_ANDROID;
 const E_WHATSAPP = /WhatsApp/i.test(navigator.userAgent) || PARAMETRI_PROVA.get('prova-whatsapp') === '1';
+const E_IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+// dentro WhatsApp/Facebook/Instagram & C. su iPhone manca "Aggiungi alla schermata Home": prima va aperto Safari
+const E_IOS_IN_APP = E_IOS && (/FBAN|FBAV|Instagram|WhatsApp|Line\/|GSA\//.test(navigator.userAgent) || !/Safari\//.test(navigator.userAgent));
 const APP_GIA_INSTALLATA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
 function apriInChrome() {
@@ -401,7 +404,21 @@ function preparaInstallazione() {
   const titolo = document.getElementById('titoloInstalla');
   const testo = document.getElementById('testoInstalla');
   const bottone = document.getElementById('btnInstalla');
-  if (!box || !bottone || !E_ANDROID || APP_GIA_INSTALLATA) return;
+  if (!box || !bottone || APP_GIA_INSTALLATA) return;
+
+  // iPhone/iPad: Apple non permette il tocco unico, si spiegano i passi in Safari
+  if (E_IOS) {
+    box.classList.add('visibile');
+    bottone.style.display = 'none';
+    const condividi = '<span style="display:inline-block;border:1.5px solid #14532d;border-radius:5px;padding:0 5px">⬆︎</span> <b>Condividi</b>';
+    titolo.textContent = '📱 Metti Email-Perniola sulla Home';
+    testo.style.textAlign = 'left';
+    testo.innerHTML = E_IOS_IN_APP
+      ? 'La pagina è aperta dentro un\'app (per esempio WhatsApp).<br>1. Tocca <b>⋯</b> o la bussola e scegli <b>Apri in Safari</b>.<br>2. In Safari tocca ' + condividi + ' (se non lo vedi, prima <b>⋯</b>).<br>3. Scegli <b>Aggiungi alla schermata Home</b> e poi <b>Aggiungi</b>.'
+      : '1. Tocca ' + condividi + ' in basso (se non lo vedi, prima <b>⋯</b>).<br>2. Scegli <b>Aggiungi alla schermata Home</b> e poi <b>Aggiungi</b>.<br><span style="color:#64748b;font-size:.9em">Se la voce non c\'è, apri il link in Safari.</span>';
+    return;
+  }
+  if (!E_ANDROID) return;
 
   box.classList.add('visibile');
   if (MODALITA_PROVA_ANDROID) {
