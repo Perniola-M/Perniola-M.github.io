@@ -35,6 +35,7 @@
     .riga-primo .btn-primo { flex: 1; margin: 0; }
     .btn-home { flex: 0 0 auto; padding: 12px 18px; background: #1e3a8a; color: #fff; border: none; border-radius: 10px; font-weight: 800; font-size: 1rem; cursor: pointer; font-family: inherit; }
     .btn-home:hover { background: #172554; }
+    .gh-pc { margin: 6px 4px 14px; font-size: 16px; line-height: 1.45; }
     /* Guida "+ Home": stesso aspetto della guida in immagine (barra colorata, icone, grassetto) */
     #guidaHome { margin: auto; border: none; border-radius: 16px; padding: 0; width: min(560px, calc(100vw - 24px)); max-height: calc(100vh - 24px); box-shadow: 0 12px 40px rgba(0,0,0,.35); }
     #guidaHome::backdrop { background: rgba(15,23,42,.6); }
@@ -1045,6 +1046,7 @@ async function aggiornaTutto() {
 
 // Bottone "+ Home": guida per aggiungere la pagina alla schermata Home (solo la parte del proprio telefono;
 // sul PC entrambe). Su Android, se Chrome può installarla, in cima c'è anche il bottone a un tocco.
+// Sul PC in cima c'è "Installa Email-Perniola sul PC" (Chrome/Edge): icona sul desktop e nel menu Start.
 function apriGuidaHome() {
   const d = document.getElementById('guidaHome');
   document.getElementById('ghIos').style.display = E_ANDROID ? 'none' : '';
@@ -1056,6 +1058,26 @@ function apriGuidaHome() {
     b.className = 'gh-inst'; b.textContent = '📲 Aggiungi alla schermata Home con un tocco';
     b.onclick = async () => { const r = richiestaInstallazione; richiestaInstallazione = null; r.prompt(); await r.userChoice; d.close(); };
     inst.appendChild(b);
+  }
+  // PC Windows (Chrome o Edge): installa la pagina come app, con l'icona sul desktop e nel menu Start
+  if (!E_ANDROID && !E_IOS) {
+    const t = document.createElement('div');
+    t.className = 'gh-tit'; t.innerHTML = 'Metti <b>Email-Perniola</b> sul desktop del <b>PC</b>';
+    inst.appendChild(t);
+    if (richiestaInstallazione) {
+      const b = document.createElement('button');
+      b.className = 'gh-inst'; b.textContent = '💻 Installa Email-Perniola sul PC';
+      b.onclick = async () => { const r = richiestaInstallazione; richiestaInstallazione = null; r.prompt(); await r.userChoice; d.close(); };
+      inst.appendChild(b);
+    } else {
+      const p = document.createElement('p');
+      p.className = 'gh-pc';
+      p.innerHTML = 'Con <b>Chrome</b> o <b>Edge</b>: clicca l\'icona <b>Installa</b> a destra nella barra degli indirizzi '
+        + '(uno schermo con la freccia), oppure dal menu <b>⋮</b> / <b>…</b> scegli <b>Installa Email-Perniola</b> '
+        + '(Chrome: Trasmetti, salva e condividi; Edge: App). Avrà la sua icona sul desktop e nel menu Start.<br>'
+        + '<span style="color:#64748b">Se è già installata, aprila dall\'icona sul desktop.</span>';
+      inst.appendChild(p);
+    }
   }
   if (d.showModal) d.showModal(); else d.setAttribute('open', '');
 }
